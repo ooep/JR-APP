@@ -195,3 +195,28 @@ nohup python3 -m http.server 8932 --directory <主目录> &
 - **顺带**：`RV_ATLAS_VER=2` 版本参数（commit `5522805`）防 PNG/JSON CDN 缓存错配。
 
 **已知限制**：主站默认地图（未选线路）俯瞰状态下共享段直通仍显示 E217（它们物理上确实在山手線轨道运行，属正确显示）；cute/vec 两套图集同源旧错配未修（主站可选模式）。
+
+## 11. 第十一轮：图集补齐 + 5 处错配修复（atlas v3→v5，2026-10-15）
+
+**背景**：用户要求"地图显示的图标必须对"→ 全量数据层 audit 发现：
+- **3 条线无图集 key**：いすみ線 / 湊線(ひたちなか海浜鉄道) / 六甲ケーブル線 → 湊線无素材（不配，显示 fallback）；いすみ線配 `isumi-rail__ismi20.png`（橙白）、六甲配 `rokko-funicular__cb-roko1.png`（红蓝）。
+- **2 个爱称无图集 key**：関空快速 / 紀州路快速（tokkyu.json nm 节的快速爱称，非特急）→ 统一配 `hanwa-line__w225-51.png`（225系関空快速色银灰，与 line 表阪和線一致 cell 216/215）。
+- **5 处错配修复**（line_icons_new.json）：
+  | 线路 | 原（错） | 改（对） |
+  |---|---|---|
+  | 関西空港線 | kix-skytrain-apm（APM摆渡车） | hanwa-line__w225-51（225系） |
+  | 相鉄本線 | sagami-line__j35st4（JR相模線E131米白） | sotetsu-rail__sote12000（相鉄12000系蓝黄） |
+  | 身延線 | mt-minobusan slp-mnb1（身延山缆车） | minobu-line__c123（キハ123） |
+  | ポートアイランド線 | rokko-liner roko1000/3000（六甲ライナー） | port-liner-apm__port2000（2000形） |
+- **主站 index.html 版本参数修复**：v3 轮遗留 bug——L3291/3301 `s.file+'?v=N'` 与 L3269 URL 自带版本叠加成 `?v=5?v=5`；已改为 fetch 裸 URL（版本在定义内），vector/cute 定义补 `?v=5`（commit `00877cd`）。
+
+**版本链**：atlas 重新生成后 cell 全重排，页面 `RV_ATLAS_VER=3→4→5`、主站 index.html `?v=3→5`，两端同步推。
+
+**提交**：主站 atlas.json `45f77d1`/`b338cd1`→`81cfcf1`、index.html `50d550f`→`c873e6e`→`00877cd`；JR-APP `42f570e`(v3)→`1c11897`(v4)→`74f7b0f`(v5)。
+
+**验证**：
+- jr-static 远端 v5 JSON ✓（878 lines/142 tokkyu，各线 cell 正确）。
+- JR-APP 线上实测：関西空港線はるか=457(281系)、相鉄本線 16 辆 11×176+5×365（全 12000系蓝黄）✓、JR関西空港線関空快速=215(225系) ✓。
+- 主站渲染需用户真机确认（环境无 WebGL2，仅数据链验证）。
+
+**注意**：cute/vec 两套图集仍未修（用户未要求）；湊線无图标素材（fallback E217）；sote13000 文件名可疑（实为 12000系 蓝黄图，视觉已确认）。

@@ -2657,7 +2657,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         /* ============ 线路图实时列车（主站 trains 对接，左列=上り，右列=下り） ============ */
         // 图集与主站默认图标模式一致（default 集）；tokkyu 特急爱称表同源
         const RV_DATA = location.hostname === 'localhost' ? 'http://localhost:8932/.ttdata/' : 'https://jr-static.suki.ing/data/';
-        const RV_ATLAS_VER = 3; /* 与远端 train_icons_atlas 更新同步；图集重新生成后 bump 以绕缓存（PNG+JSON 必须同版本） */
+        const RV_ATLAS_VER = 4; /* 与远端 train_icons_atlas 更新同步；图集重新生成后 bump 以绕缓存（PNG+JSON 必须同版本） */
         const RV_ATLAS = { url: RV_DATA + 'train_icons_atlas.json?v=' + RV_ATLAS_VER, png: RV_DATA + 'train_icons_atlas.png?v=' + RV_ATLAS_VER };
         const RV_TOKKYU_URL = RV_DATA + 'tokkyu.json';
         let rvTrainsTimer = null, rvAtlas = null, rvTokkyu = null, rvYMap = new Map(), rvTrainsSeq = 0;

@@ -220,3 +220,15 @@ nohup python3 -m http.server 8932 --directory <主目录> &
 - 主站渲染需用户真机确认（环境无 WebGL2，仅数据链验证）。
 
 **注意**：cute/vec 两套图集仍未修（用户未要求）；湊線无图标素材（fallback E217）；sote13000 文件名可疑（实为 12000系 蓝黄图，视觉已确认）。
+
+## 12. 第十二轮：恢复主站 index.html 被覆盖的山手修复（2026-10-15）
+
+**事故**：v3-v5 轮用 GitHub Contents API 全文件 PUT 主站 `mini-japanrail-3d/index.html` 时，**本地 repo checkout（38446989227043586/repo）落后远程**（HEAD 停在 4528faf，缺 5868383be1 的山手环判定 YAMANOTE_RING、併结 _coupleOff 补偿、Clarity 追踪、'関'→関空快速 爱称修正、百度 meta 验证）——PUT 用本地旧文件内容覆盖远程，**把这些既有修复全部抹掉**（线上只剩 E235 特判，YAMANOTE_RING/併结/Clarity 丢失）。
+
+**根因**：本地 checkout 从未拉取远程（远程用 Contents API 提交的 commit 未同步本地）；Contents API 全文件覆盖不校验基线差异。
+
+**恢复**（commit `7bdcfd7`）：以远程正确基线 **5868383be1**（`git show 5868383be1:mini-japanrail-3d/index.html`，本地对象库有）为基底，重放 v5 版本参数改动（ATLAS_SETS 三套 ?v=5、fetch 裸 URL、iconStyle ?v=5）。验证：远程权威 = 7bdcfd7（YAMANOTE_RING 3/E235 4/?v=5 7/Clarity/併结/爱称修正 全 ✓），Action run 38738419169 success 已部署。
+
+**红线教训**：改主站文件**必须先 git fetch origin 并 diff 远程最新**再改，禁止基于本地旧 checkout 全文件 PUT；Contents API PUT 前必须 GET 最新 sha 且核对内容差异。JR-APP 页面走 git 仓库统一管理（无此风险）。
+
+**当前两端状态（最终）**：JR-APP 线上 v5（相鉄本線 16 辆全 12000系实测 ✓）；主站代码 7bdcfd7 已部署 + atlas v5 数据已生效（878/142 各线 cell 正确）；主站 3D 渲染画面需用户真机确认（环境无 WebGL2）。

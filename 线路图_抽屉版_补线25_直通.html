@@ -2737,6 +2737,8 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             if (rvIsKeihin(t.lines, t.jas)) { const v = rvAtlas.line['根岸線']; if (v !== undefined) return v; }
             if (rvIsOsakaChuo(t.lines, t.jasN)) { const v = rvAtlas.line['大阪メトロ中央線']; if (v !== undefined) return v; }
             if (rvIsMinamiaso(t.lines)) { const v = rvAtlas.line['高森線']; if (v !== undefined) return v; }
+            /* 参宮線：远端 atlas 误配琴平参宮電鉄(绿电车 cell71)，实为 JR东海キハ25形気動車——与太多線同型同涂装 */
+            if (rvLineMainName() === '参宮線') { const v = rvAtlas.line['太多線']; if (v !== undefined) return v; }
             if (t.lines.length > 1 && t.lines.every(ln => RV_ICON_SKIP.has(ln)) && rvAtlas.fallback !== undefined) return rvAtlas.fallback;
             if (rvLineMainName() && rvAtlas.line[rvLineMainName()] !== undefined) return rvAtlas.line[rvLineMainName()];
             const li = rvLineIconFor(t);
@@ -2943,6 +2945,8 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             else if (key && key.k === 'ln' && key.v === '西九州線') list = ['松浦鉄道MR-400形気動車'];
             else if (key && key.k === 'ln' && (key.v === '熊本市電幹線' || key.v === '健軍線' || key.v === '水前寺線')) list = ['熊本市交通局9700形電車'];
             else if (key && key.k === 'ln' && (key.v === '鹿児島市電唐湊線' || key.v === '鹿児島市電第一期線' || key.v === '鹿児島市電第二期線' || key.v === '鹿児島市電谷山線')) list = ['鹿児島市交通局700形電車'];
+            /* 参宮線：远端误配琴平参宮電鉄（香川废线路面电车），实为 JR东海キハ25形気動車 */
+            else if (key && key.k === 'ln' && key.v === '参宮線') list = ['JR東海キハ25形気動車'];
             else list = key ? ((key.k === 'tk' ? (m.tk || {}) : (m.ln || {}))[key.v]) : m.fb;
             /* 通用清洗①：私铁/地下鉄线被远端误标 JR/新幹線车型 → 丢弃（jr東西線等含JR前缀的不受影响） */
             if (key && key.k === 'ln' && list && list.length) {

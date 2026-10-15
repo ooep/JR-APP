@@ -106,6 +106,13 @@
 - **rvTripGeo 时刻解码验证**：s 字段压缩编码解码逻辑（首时刻+行驶/停车差分）与主站一致，深夜车跨日处理（`dep[N-1]>1440 → now+=1440`）正确，未发车 20 分钟内显示等待正确。
 - **rvDayBit 数据文件对应**：平日→trains_wd、周六→trains_sa、周日→trains_su，与 rvDayBit()（周日=4/周六=2/其他=1）一致。
 
+### 第七轮（2026-10-15 参宮線图标错配）
+- **参宮線小图标错配**：远端 `train_wiki_map.json` 的 `ln['参宮線']=['琴平参宮電鉄']`（香川县已废止的路面电车会社）→ atlas `line['参宮線']=71` 被错配为绿色电车图标。JR参宮線普通车实为 JR东海キハ25形気動車（同太多線/武豊線）。
+- **修复①图标**（rvTrainIconIdx）：`rvLineMainName()==='参宮線'` → 用 `line['太多線']`(cell305, 银灰+橙気動車)，替换 cell71 绿色电车。南紀特急仍走 tokkyu(474) 不受影响。
+- **修复②车型文字**（rvWikiVehicles）：特判 `参宮線` → `['JR東海キハ25形気動車']`，详情抽屉不再显示「琴平参宮電鉄」。
+- **本地浏览器实测**：参宮線 2 趟车 cell 71→305；rvWikiVehicles 输出「JR東海キハ25形気動車」✓。
+- **顺带扫描**：wiki ln 表另有大量私铁↔私铁远端错配（如京阪本線=近鉄5800系、近鉄京都線=東武10030系），仅影响详情抽屉车型文字、不影响线路图标；本轮未逐一修复（需逐条核实真实车型，留待后续）。
+
 ## 6. 已知问题 / 待办
 
 1. **远端 `train_wiki_map.json` 仍有错配**（页面已用特判绕过，建议同步修远端数据，主站也受益）：
@@ -136,7 +143,7 @@ nohup python3 -m http.server 8932 --directory <主目录> &
 
 ## 8. 部署
 
-- 建议：GitHub Pages（本仓库）。单文件 HTML 直接放根目录即可。
+- **已部署**：https://ooep.github.io/JR-APP/（main 分支根目录，legacy build；index.html 重定向到主文件；push 后约 1 分钟自动重建）。
 - 数据源：线上默认 `https://jr-static.suki.ing/data/`；若部署到自有域名且想自托管数据，把 `RV_DATA` / `TT_DATA_BASE` 改为同目录相对路径（注意 TT_DATA_BASE 已是相对路径）。
 - 车型百科仍指向 `ressha-wiki.suki.ing`（第三方静态源）。
 

@@ -2661,6 +2661,8 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         const RV_ATLAS = { url: RV_DATA + 'train_icons_atlas.json?v=' + RV_ATLAS_VER, png: RV_DATA + 'train_icons_atlas.png?v=' + RV_ATLAS_VER };
         const RV_TOKKYU_URL = RV_DATA + 'tokkyu.json';
         let rvTrainsTimer = null, rvAtlas = null, rvTokkyu = null, rvYMap = new Map(), rvTrainsSeq = 0;
+        /* 山手环 30 站（normStop 归一化后形态；山手線抽屉只收本线列车=起终点均在此环上） */
+        const YAMANOTE_RING = new Set(['東京','神田','秋葉原','御徒町','上野','鶯谷','日暮里','西日暮里','田端','駒込','巣鴨','大塚','池袋','目白','高田馬場','新大久保','新宿','代々木','原宿','渋谷','恵比寿','目黒','五反田','大崎','品川','高輪ゲートウェイ','田町','浜松町','新橋','有楽町']);
         async function rvAtlasLoad() {
             if (rvAtlas) return rvAtlas;
             for (let i = 0; i < 3 && !rvAtlas; i++) {
@@ -2847,6 +2849,13 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
                 if (lines.join(' ').includes('新幹線') && !mains.some(m => m.includes('新幹線'))) continue;
                 /* 京浜東北・根岸線：排除 横浜線 直通根岸線 的列车（那属于横浜線系统，不是京浜東北・根岸線） */
                 if (rvLineObj.name === 'JR京浜東北・根岸線' && lines.includes('横浜線')) continue;
+                /* 山手線抽屉：只收本线列车——运行段起终点站都必须在山手环上。
+                   山手线不给其他列车行驶，共享轨道段的直通（上野東京線/湘南新宿/相鉄直通等 逗子→宇都宮 等段）
+                   走的是并行干道，不得闯入山手線抽屉 */
+                if (main === '山手線') {
+                    const _sj = tm.s_jas || [];
+                    if (_sj.length < 2 || !YAMANOTE_RING.has(normStop(_sj[0])) || !YAMANOTE_RING.has(normStop(_sj[_sj.length - 1]))) continue;
+                }
                 /* 线路名匹配失败时，用"车站交集"补充，但必须过线路实体判定（见 rvStopsFallbackOk） */
                 if (!mains.some(m => lines.includes(m)) && !(rvStopsFallbackOk(lines) && (function () { const jas = tm.s_jas || []; for (let i = 0; i < jas.length; i++) if (rvYMap.has(normStop(jas[i]))) return true; return false; })())) continue;
                 if (seen.has(t._)) continue; seen.add(t._);

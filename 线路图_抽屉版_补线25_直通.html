@@ -240,12 +240,6 @@
         .rv-link.tight { height: 52px; }   /* 横へ分かれる胶囊と並ぶ直線の胶囊：線を延ばしすぎない */
         .rv-link.dash.slide { height: 59px; }   /* 駅と駅を直接つなぐ点線（根室本線）は、信越本線の点線と同じ見た目の長さに */
         .rv-tl { display: none; }
-        .rv-route.loop { padding-top: 150px; padding-bottom: 150px; }
-        .rv-loopfade { position: absolute; left: -8px; right: 0; height: 300px; z-index: 4; pointer-events: none; display: flex; justify-content: center; }
-        .rv-loopfade.top { top: 0; background: linear-gradient(to bottom, var(--surface) 45%, transparent); align-items: flex-start; }
-        .rv-loopfade.bottom { bottom: 0; background: linear-gradient(to top, var(--surface) 45%, transparent); align-items: flex-end; }
-        .rv-loopmsg { padding: 40px 0; font-size: .8rem; color: #9ca3af; letter-spacing: .05em; }
-        html.dark .rv-loopmsg { color: #6b7280; }
         .rv-hd { display: none; position: absolute; left: -33px; top: -6px; width: 7px; height: 7px; border-radius: 50%; background: #fff; border: 2.5px solid var(--c); box-sizing: content-box; z-index: 1; }
         .rv-gapnote { position: absolute; left: 48px; top: 50%; transform: translateY(-50%); font-size: .74rem; color: #9ca3af; line-height: 1.3; }
         .rv-hdname { position: absolute; left: 48px; top: -10px; font-size: .78rem; color: #9ca3af; line-height: 20px; }
@@ -1400,8 +1394,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         const lineObjByIdx = i => LINES[i] ? { idx: i, name: LINES[i][0], bg: LINES[i][1], text: LINES[i][2] } : null;
         const lineObjByName = nm => { const i = LINES.findIndex(l => l[0] === nm); return i < 0 ? null : { idx: i, name: LINES[i][0], bg: LINES[i][1], text: LINES[i][2] }; };
         const LOOP_LINES = new Set(['JR山手線', 'JR大阪環状線', '名古屋市営地下鉄名城線', '札幌市電', '富山地鉄富山都心線', '広島電鉄循環線']);
-        const LOOP_FIRST = 3;
-        const LOOP_COPIES = 10;   // 環状線は 10 周ぶん並べ、真ん中の周から見せる。両端は淡く消えて一言
+        const LOOP_WRAP_THRESHOLD = 150;   // 環状線：端まで来て、さらにこれだけ滑らせたら反対の端へ戻る（px）
         function makeVariants(segs, line) {
             const segItems = (seg, nm) => {
                 if (!seg || !seg[1]) return [];   // GAP_CONNECT が存在しない seg を参照したときも落ちない
@@ -1464,15 +1457,8 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             }
             const stIts = mainItems.filter(x => !x.link);
             const vs = [{ items: mainItems, bp: null, label: splitBracket(stIts[stIts.length - 1].name).main }];
-            // 環状線：駅の並びを何周ぶんか続けて並べ、上下どちらへスクロールしても終わりなく回り続けるようにする
-            if (LOOP_LINES.has(line.name) && segs.length === 1 && !pieces) {
-                const one = mainItems;
-                vs[0].items = [];
-                // 最初は 3 周だけ並べて素早く開き、開き終わって落ち着いてから 10 周に増やす（一度に全部作ると開くときに重い）
-                for (let k = 0; k < LOOP_FIRST; k++) vs[0].items = vs[0].items.concat(one.map(x => Object.assign({}, x)));
-                vs[0].loop = one.length; vs[0].loopLaps = LOOP_FIRST;
-                vs[0].label = '';
-            }
+            // 環状線：駅は一周ぶんだけ並べる。端まで来てさらに滑らせたときは、反対の端へ戻す（「何周も並べる」方式はやめた）
+            if (LOOP_LINES.has(line.name) && segs.length === 1 && !pieces) vs[0].loopLine = true;
             const detached = [];
             segs.forEach((seg, si) => {
                 if (chainSegs.has(si)) return;
@@ -1687,7 +1673,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             const ul = document.createElement('div');
             ul.className = 'rv-route';
             ul.style.setProperty('--c', line.bg);
-            if (v.loop) { ul.dataset.loop = String(v.loop); ul.classList.add('loop'); }
+            if (v.loopLine) ul.classList.add('loop');
             let prevName = '', si = 0;
             // 支線・第三セクターの画面：本線へ戻る胶囊を先頭に置き、線の「頭」をそこから引き出す
             // 第三セクター区間の画面：本線側と同じく直線で、上下それぞれ隣の区間（JR 本線 or 隣の第三セクター）につなぐ
@@ -1769,17 +1755,12 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
                 if (v.next.dashPrev) { const e = document.createElement('span'); e.className = 'rv-hd'; lk.insertBefore(e, lk.firstChild); }   // 点線の先から始まる線の頭
             } }
             else if (v.ext) ul.appendChild(extLink(v.next, 'bottom', v.to));
-            if (v.loop) ['top', 'bottom'].forEach(end => {
-                const f = document.createElement('div'); f.className = 'rv-loopfade ' + end;
-                const m = document.createElement('div'); m.className = 'rv-loopmsg'; m.textContent = 'さすがにスクロールしすぎでは…？';
-                f.appendChild(m); ul.appendChild(f);
-            });
             return ul;
         }
         function updateNote() {
             const st = shownStation || baseStation, v = rvVariants[rvVar];
-            const n = v.loop || (v.items.filter(x => !x.link).length + (v.ext ? 0 : rvDetached.reduce((s, g) => s + g[1].length, 0)));
-            const tag = v.loop ? '（環状線）' : rvVariants.length > 1 ? '（' + (v.ext ? v.label : v.label + (rvVar ? '方面の支線' : '方面')) + '）' : '';
+            const n = v.items.filter(x => !x.link).length + (v.ext ? 0 : rvDetached.reduce((s, g) => s + g[1].length, 0));
+            const tag = v.loopLine ? '（環状線）' : rvVariants.length > 1 ? '（' + (v.ext ? v.label : v.label + (rvVar ? '方面の支線' : '方面')) + '）' : '';
             document.getElementById('rv-note').textContent = (st ? '現在地：' + splitBracket(st.kanji).main + '　／　' : '') + '全 ' + n + ' 駅' + tag;
             // 見出しのバッジも、いま表示している路線に合わせる
             const bd = rvSlot.querySelector('.rv-badge'), ln = v.lineObj || rvLineObj;
@@ -1892,76 +1873,96 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
                 rvBody.appendChild(ul);
             });
         }
-        // 環状線では同じ駅が何周ぶんも並ぶので、真ん中の周のものを使う
+        // 駅を探す：一周ぶんしか並んでいないので、見つかった先頭のものを使う（昔は同じ駅が何周ぶんも並んでいた）
         function loopMiddle(list) {
             const arr = [...list]; if (!arr.length) return null;
             const ul = arr[0].closest('.rv-route');
             return ul && ul.dataset.loop ? arr[Math.floor(arr.length / 2)] : arr[0];
         }
 
-        // 環状線：スクロールが止まったら（指が離れ、惯性も終わったら）、見た目が同じまま真ん中の周へ戻す。
-        // 動いている最中は位置を変えないので惯性が途中で止まらない。止まるたびに前後へ何周もの余裕ができ、終わりなく回って見える。
-        // いちばん端（淡く消えた先の一言）まで来ていたら、そのままにする
-        let loopIdle = 0, loopTouch = false, loopLastScroll = 0, loopExtTimer = 0;
-        // 環状線を 3 周から 10 周へ増やす。いま見ている駅の位置は変えずに入れ替える
-        function extendLoop() {
-            const v = rvVariants[rvVar], old = rvBody.querySelector('.rv-route[data-loop]');
-            if (!v || !v.loop || !old || v.loopLaps >= LOOP_COPIES || rvSwitching || rvBusy) return;
-            const n = v.loop, oldRows = old.querySelectorAll(':scope > .rv-st');
-            const st = rvBody.scrollTop;
-            let k = 0; for (; k < oldRows.length - 1; k++) if (old.offsetTop + oldRows[k].offsetTop + oldRows[k].offsetHeight > st) break;
-            const dy = st - (old.offsetTop + oldRows[k].offsetTop);
-            const one = v.items.slice(0, n);
-            v.items = []; for (let j = 0; j < LOOP_COPIES; j++) v.items = v.items.concat(one.map(x => Object.assign({}, x)));
-            const shift = (Math.floor(LOOP_COPIES / 2) - Math.floor(v.loopLaps / 2)) * n;
-            v.loopLaps = LOOP_COPIES;
-            const nu = renderVariant();
-            old.replaceWith(nu);
-            drawLine(nu);
-            rvTrainsInit();
-            const rows = nu.querySelectorAll(':scope > .rv-st');
-            const sb = rvBody.style.scrollBehavior; rvBody.style.scrollBehavior = 'auto';
-            rvBody.scrollTop = nu.offsetTop + rows[Math.min(rows.length - 1, k + shift)].offsetTop + dy;
-            rvBody.style.scrollBehavior = sb;
+        /* ===== 環状線：駅は一周ぶんだけ。 =====
+           端まで来て、さらに同じ向きへ滑らせると内容が薄くなり、一定量を超えると反対の端へ戻る。
+           位置の入れ替えは既存の「scrollBehavior を一時的に切る」手法で一瞬で行い、
+           そのあとは抽斗を開いたときと同じ playRouteAnim で線と駅を出し直す（新しい動きは足さない）。 */
+        const LOOP_WRAP_FLOOR = 0.15;      // 薄くなる下限（完全に消すと「壊れた」ように見えるので少し残す）
+        let wrapOver = 0, wrapTouch = false, wrapLastY = 0, wrapBusy = false, wrapDecay = 0, wrapIntroUntil = 0;
+        // 一周ぶんなので、端の判定は rvBody のスクロール限界そのものでよい
+        const wrapAtTop = () => rvBody.scrollTop <= 0;
+        const wrapAtBot = () => rvBody.scrollTop >= rvBody.scrollHeight - rvBody.clientHeight - 1;
+        const wrapRoute = () => rvBody.querySelector('.rv-route.loop');
+        function wrapAble() {
+            return rvOpen && !wrapBusy && !!wrapRoute()
+                && rvBody.scrollHeight - rvBody.clientHeight > 8;   // 駅が少なくて伸び縮みしない環状線は対象外
         }
-        // 開いてから少し待ち、指が離れていてスクロールも止まっているときに増やす
-        function scheduleLoopExtend() {
-            clearTimeout(loopExtTimer);
-            const tryIt = () => {
-                if (!rvOpen) return;
-                if (loopTouch || performance.now() - loopLastScroll < 300 || rvSwitching || rvBusy) { loopExtTimer = setTimeout(tryIt, 250); return; }
-                extendLoop();
-            };
-            loopExtTimer = setTimeout(tryIt, 700);
+        // 滑らせた量ぶんだけ薄くする
+        function wrapFade() {
+            const ul = wrapRoute(); if (!ul) return;
+            ul.style.transition = '';
+            ul.style.opacity = wrapOver ? String(1 - (1 - LOOP_WRAP_FLOOR) * Math.min(1, wrapOver / LOOP_WRAP_THRESHOLD)) : '';
         }
-        function loopRecenter() {
-            const ul = rvBody.querySelector('.rv-route[data-loop]'); if (!ul) return;
-            const n = +ul.dataset.loop, rows = ul.querySelectorAll(':scope > .rv-st');
-            if (rows.length < n * 3) return;
-            const cyc = rows[n].offsetTop - rows[0].offsetTop;
-            const first = ul.offsetTop + rows[0].offsetTop, last = ul.offsetTop + rows[rows.length - 1].offsetTop;
-            const st = rvBody.scrollTop;
-            // 端の淡く消える帯が少しでも画面に入っているあいだは戻さない（帯の外まで来てから戻す）
-            const fTop = ul.querySelector('.rv-loopfade.top'), fBot = ul.querySelector('.rv-loopfade.bottom');
-            const topEnd = ul.offsetTop + (fTop ? fTop.offsetTop + fTop.offsetHeight : rows[0].offsetTop);
-            const botStart = ul.offsetTop + (fBot ? fBot.offsetTop : last + rows[0].offsetHeight);
-            if (st < topEnd || st + rvBody.clientHeight > botStart) return;
-            const laps = Math.round(rows.length / n), mid = Math.floor(laps / 2);
-            const lap = Math.floor((st - first) / cyc);
-            // 真ん中から 3 周以上離れたときだけ戻す（戻す回数を減らす。遠くへ一気に飛ぶと、iPhone はまだ描いていない所を一瞬白く見せることがある）
-            if (Math.abs(lap - mid) < 3) return;
-            const sb = rvBody.style.scrollBehavior; rvBody.style.scrollBehavior = 'auto';
-            rvBody.scrollTop = st + (mid - lap) * cyc;
-            rvBody.style.scrollBehavior = sb;
+        // 抽斗を閉じるとき／路線を切り替えるときの掃除：薄さとタイマーを持ち越さない
+        function wrapReset() {
+            clearTimeout(wrapDecay);
+            wrapOver = 0; wrapBusy = false; wrapTouch = false;
+            const ul = wrapRoute();
+            if (ul) { ul.style.transition = ''; ul.style.opacity = ''; }
         }
-        rvBody.addEventListener('touchstart', () => { loopTouch = true; clearTimeout(loopIdle); }, { passive: true });
-        rvBody.addEventListener('touchend', () => { loopTouch = false; }, { passive: true });
-        rvBody.addEventListener('touchcancel', () => { loopTouch = false; }, { passive: true });
-        rvBody.addEventListener('scroll', () => {
-            loopLastScroll = performance.now();
-            if (!rvBody.querySelector('.rv-route[data-loop]')) return;
-            clearTimeout(loopIdle);
-            loopIdle = setTimeout(() => { if (!loopTouch) loopRecenter(); }, 180);
+        // 端に届かずに手を離した（やり直し）：既存の曲線で不透明へ戻す
+        function wrapRelease() {
+            clearTimeout(wrapDecay);
+            const ul = wrapRoute(); if (!ul) return;
+            if (!wrapOver) { ul.style.transition = ''; ul.style.opacity = ''; return; }
+            wrapOver = 0;
+            if (reduceMotion() || !ul.animate) { ul.style.transition = ''; ul.style.opacity = ''; return; }
+            ul.style.transition = 'opacity 260ms cubic-bezier(.2,.8,.2,1)';
+            ul.style.opacity = '1';
+            wrapDecay = setTimeout(() => { ul.style.transition = ''; ul.style.opacity = ''; }, 300);
+        }
+        /* 反対の端へ戻す。dir=+1 はいちばん下でさらに下へ滑らせた → いちばん上へ。dir=-1 はその逆。
+           飛び先でいきなり全部見せるのではなく、抽斗を開いたときと同じ出現のしかたで見せる */
+        function rvWrapJump(dir) {
+            const ul = wrapRoute();
+            if (!ul || wrapBusy) return;
+            wrapBusy = true; wrapOver = 0;
+            clearTimeout(wrapDecay);
+            const from = String(LOOP_WRAP_FLOOR);
+            const sb = rvBody.style.scrollBehavior, oy = rvBody.style.overflowY;
+            rvBody.style.scrollBehavior = 'auto'; rvBody.style.overflowY = 'hidden';
+            rvBody.scrollTop = dir > 0 ? 0 : rvBody.scrollHeight - rvBody.clientHeight;
+            rvBody.style.scrollBehavior = sb; rvBody.style.overflowY = oy;
+            const settle = () => { ul.style.transition = ''; ul.style.opacity = ''; wrapBusy = false; };
+            if (reduceMotion() || !ul.animate) { ul.style.transition = ''; ul.style.opacity = ''; wrapBusy = false; return; }
+            ul.style.opacity = from;
+            const a = ul.animate([{ opacity: from }, { opacity: '1' }], { duration: 440, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+            a.finished.then(settle).catch(settle);
+            wrapIntroUntil = performance.now() + 1200;   // このあいだは finishIntro に演出を打ち切らせない
+            playRouteAnim(rvBody.scrollTop);
+        }
+        // 端に着いたあと、同じ向きへさらに動かした分を積む（rvBody は overscroll しないので自前で測る）
+        function wrapPush(amount, dir) {
+            wrapOver = Math.max(0, wrapOver + amount);
+            if (wrapOver >= LOOP_WRAP_THRESHOLD) rvWrapJump(dir);
+            else wrapFade();
+        }
+        rvBody.addEventListener('touchstart', e => { wrapTouch = true; wrapLastY = e.touches[0].clientY; clearTimeout(wrapDecay); }, { passive: true });
+        rvBody.addEventListener('touchmove', e => {
+            if (!wrapTouch || !wrapAble()) return;
+            const y = e.touches[0].clientY;
+            const dy = wrapLastY - y; wrapLastY = y;          // dy > 0 ＝ 指を上へ ＝ 下へ進む
+            if (dy > 0 && wrapAtBot()) wrapPush(dy, 1);
+            else if (dy < 0 && wrapAtTop()) wrapPush(-dy, -1);
+            else if (wrapOver && !wrapAtTop() && !wrapAtBot()) wrapRelease();
+        }, { passive: true });
+        const wrapEnd = () => { if (!wrapTouch) return; wrapTouch = false; wrapRelease(); };
+        rvBody.addEventListener('touchend', wrapEnd, { passive: true });
+        rvBody.addEventListener('touchcancel', wrapEnd, { passive: true });
+        rvBody.addEventListener('wheel', e => {
+            if (!wrapAble()) return;
+            if (e.deltaY > 0 && wrapAtBot()) wrapPush(e.deltaY, 1);
+            else if (e.deltaY < 0 && wrapAtTop()) wrapPush(-e.deltaY, -1);
+            else if (wrapOver && !wrapAtTop() && !wrapAtBot()) wrapRelease();
+            clearTimeout(wrapDecay);
+            wrapDecay = setTimeout(() => { if (wrapOver) wrapRelease(); }, 220);
         }, { passive: true });
         let rvSwitching = false;
         // 別の路線の全体の画面へ切り替える（第三セクター区間から JR 線へ戻るとき）。つなぎ目の駅が見える位置へスクロール
@@ -2014,7 +2015,6 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             }
             rvBody.style.overflowX = '';
             rvSwitching = false;
-            if (rvBody.querySelector('.rv-route[data-loop]')) scheduleLoopExtend();
         }
         // 現在のルートを右へ押し出し、支線を左から滑り込ませる（戻るときはその逆）
         async function switchVariant(to, bpName) {
@@ -2062,7 +2062,6 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             detached.forEach(el => el.getAnimations().forEach(a => a.cancel()));
             rvBody.style.overflowX = '';
             rvSwitching = false;
-            if (rvBody.querySelector('.rv-route[data-loop]')) scheduleLoopExtend();
         }
 
         // 把本线和所有岔路画成同一条 SVG 路径（没有接缝），按布局后的实际位置计算
@@ -2100,11 +2099,6 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
                 }
             }
             if (isLink(nodes[0])) edges.unshift({ y1: enter(nodes[0]), y2: exit(nodes[0]), s: styleOf(nodes[0]) });
-            if (ul.classList.contains('loop')) {   // 環状線：線は上下の端まで続け、淡く消える部分の下に隠す
-                // 線の端は、淡く消える部分の中ほどで止める（いちばん端まで引くと、端末によっては帯の外に線の切れ端が見えることがある）
-                edges.unshift({ y1: 70, y2: enter(nodes[0]), s: styleOf(nodes[0]) });
-                edges.push({ y1: exit(nodes[nodes.length - 1]), y2: ul.offsetHeight - 70, s: styleOf(nodes[nodes.length - 1]) });
-            }
             const lastNode = nodes[nodes.length - 1], lastChild = ul.lastElementChild;
             if (lastChild.classList.contains('rv-forkrow')) edges.push({ y1: exit(lastNode), y2: lastChild.offsetTop, s: Object.assign({}, styleOf(lastNode), [...ul.querySelectorAll(':scope > .rv-forkrow')].filter(f => !f.classList.contains('up') && f.offsetTop > exit(lastNode)).every(f => f.classList.contains('part')) ? { thin: true } : {}) });
             const svg = document.createElementNS(SVGNS, 'svg');
@@ -2444,6 +2438,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             if (!orig) return;
             rvBusy = true; rvLine = line; rvOrig = orig;
             rvFlip = false;
+            wrapReset();   // 前の路線で薄くなったまま／タイマーが残っていないように
             buildRoute(line);
             updateNote();
             // 头部的目标徽章（先放着，等飞入后显示）
@@ -2522,10 +2517,11 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             if (grow) grow();      // 着地と同じ瞬間に伸び始める
             fly.remove();
             rvOpen = true; rvBusy = false;
-            if (rvBody.querySelector('.rv-route[data-loop]')) scheduleLoopExtend();
         }
         // 線路一覧の「上から順に描く」演出を即座に完了させる（線の描き出し・行の出現・胶囊）。落石や裂ける山の演出は残す
         function finishIntro() {
+            // 環状線が端から端へ戻った直後は、せっかくの出現の演出をつぶさないよう少しのあいだ待つ
+            if (performance.now() < wrapIntroUntil) return;
             rvBody.querySelectorAll('.rv-route').forEach(ul => {
                 const els = [...ul.querySelectorAll(':scope > .rv-curtain, :scope > .rv-st, .rv-fork, .rv-hdname')];
                 els.forEach(el => el && el.getAnimations().forEach(a => { try { if (a.playState !== 'finished') a.finish(); } catch (e) {} }));
@@ -2537,6 +2533,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         async function closeRouteView(immediate) {
             if (!rvOpen || rvBusy) return;
             rvBusy = true;
+            wrapReset();   // 环状线の薄さ・タイマーを持ち越さない（抽斗を閉じたあとに残らないように）
             trClose();
             const orig = rvOrig, line = rvLine;
             const target = rvSlot.querySelector('.rv-badge');

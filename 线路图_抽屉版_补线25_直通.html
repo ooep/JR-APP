@@ -2662,14 +2662,24 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         let rvTrainsTimer = null, rvAtlas = null, rvTokkyu = null, rvYMap = new Map(), rvTrainsSeq = 0;
         async function rvAtlasLoad() {
             if (rvAtlas) return rvAtlas;
-            try { const r = await fetch(RV_ATLAS.url, { signal: AbortSignal.timeout(25000) }); rvAtlas = await r.json(); }
-            catch (e) { rvAtlas = null; }
+            for (let i = 0; i < 3 && !rvAtlas; i++) {
+                try {
+                    if (i) await new Promise(r => setTimeout(r, 1000));
+                    const r = await fetch(RV_ATLAS.url, { signal: AbortSignal.timeout(25000) });
+                    if (r.ok) rvAtlas = await r.json();
+                } catch (e) { /* 瞬时失败重试 */ }
+            }
             return rvAtlas;
         }
         async function rvTokkyuLoad() {
             if (rvTokkyu) return rvTokkyu;
-            try { const r = await fetch(RV_TOKKYU_URL, { signal: AbortSignal.timeout(25000) }); rvTokkyu = await r.json(); }
-            catch (e) { rvTokkyu = null; }
+            for (let i = 0; i < 3 && !rvTokkyu; i++) {
+                try {
+                    if (i) await new Promise(r => setTimeout(r, 1000));
+                    const r = await fetch(RV_TOKKYU_URL, { signal: AbortSignal.timeout(25000) });
+                    if (r.ok) rvTokkyu = await r.json();
+                } catch (e) { /* 瞬时失败重试 */ }
+            }
             return rvTokkyu;
         }
         function rvLineMainName() { const nm = (rvLineObj && rvLineObj.name) || ''; const m = LINE_MAIN[nm]; return Array.isArray(m) ? m[0] : (m || nm); }
@@ -2897,8 +2907,8 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             }
             clearInterval(rvTrainsTimer);
             rvTrainsTimer = setInterval(rvTrainsRefresh, 10000);
-            rvAtlasLoad().then(() => rvTrainsRefresh()).catch(() => {});
-            rvTokkyuLoad().then(() => rvTrainsRefresh()).catch(() => {});
+            rvAtlasLoad().then(() => rvTrainsRefresh()).catch(() => rvTrainsRefresh());
+            rvTokkyuLoad().then(() => rvTrainsRefresh()).catch(() => rvTrainsRefresh());
             if (TT_raw) { rvTrainsRefresh(); }
             else { ttLoad(rvDayBit()).then(() => rvTrainsRefresh()).catch(() => {}); }
         }

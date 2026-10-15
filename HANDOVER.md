@@ -124,6 +124,7 @@
 - **RV_WIKI_VER 常量**（=3）：与远端 v 字段同步，`RV_TW_MAP_URL` 带 `?v=` 绕缓存；远端数据更新时 bump 该常量。
 - **修复 rvLoadTwMap 返回 Promise 的 bug**：旧实现 `if (_twMapP) return _twMapP` 使后续调用 await 到 undefined → 走 `m.ln` 的线车型显示为空（特判命中的线不受影响，掩盖了此 bug）。
 - **页面特判与远端值并存**：页面特判（山陽本線→227系、西九州線→MR-400、熊本市電→9700形 等）优先于远端值，两端数值略有差异但均为真实车型（如 MR-400 vs MR-600、9700形 vs 8200形），双保险不冲突。
+- **atlas/tokkyu 加载加 3 次重试**（rvAtlasLoad/rvTokkyuLoad）：此前远端瞬时失败 → 整个线路图无车；失败后仍触发一次 rvTrainsRefresh 兜底。
 
 ## 6. 已知问题 / 待办
 

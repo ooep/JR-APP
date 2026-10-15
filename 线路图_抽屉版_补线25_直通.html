@@ -1316,7 +1316,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         let selectedLineObj = null, shownStation = null;
         let rvOpen = false, rvBusy = false, rvOrig = null, rvLine = null;
         const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const normStop = s => String(s || '').replace(/[〈（(][^〉）)]*[〉）)]/g, '').replace(/[\s　]/g, '').replace(/ヶ/g, 'ケ').replace(/１/g, '1').replace(/２/g, '2');
+        const normStop = s => String(s || '').normalize('NFKC').replace(/[〈（(][^〉）)]*[〉）)]/g, '').replace(/[\s　]/g, '').replace(/ヶ/g, 'ケ').replace(/^モノレール/, '');
 
         // 站名 → 车站（须属于该线路）；找不到说明该站不在本应用收录范围内
         let stationsByStopName = null, linePrefs = null;

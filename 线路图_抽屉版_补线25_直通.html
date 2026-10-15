@@ -2944,6 +2944,15 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
             else if (key && key.k === 'ln' && (key.v === '熊本市電幹線' || key.v === '健軍線' || key.v === '水前寺線')) list = ['熊本市交通局9700形電車'];
             else if (key && key.k === 'ln' && (key.v === '鹿児島市電唐湊線' || key.v === '鹿児島市電第一期線' || key.v === '鹿児島市電第二期線' || key.v === '鹿児島市電谷山線')) list = ['鹿児島市交通局700形電車'];
             else list = key ? ((key.k === 'tk' ? (m.tk || {}) : (m.ln || {}))[key.v]) : m.fb;
+            /* 通用清洗①：私铁/地下鉄线被远端误标 JR/新幹線车型 → 丢弃（jr東西線等含JR前缀的不受影响） */
+            if (key && key.k === 'ln' && list && list.length) {
+                const RV_PRIV = /^(京急|京成|南海|名鉄|東急|東武|阪急|阪神|近鉄|小田急|西武|京王|京阪|叡山|一畑|えちぜん|高松琴平|富山地方|都営|横浜市|仙台市|神戸市|京都市|大阪市|名古屋市|福岡市|札幌市|函館市|熊本市|鹿児島市|東京メトロ|大阪メトロ|神戸高速|東葉高速|埼玉高速|横浜高速|北大阪急行)/;
+                if (RV_PRIV.test(key.v) && list.some(x => /JR|新幹線/.test(x))) return null;
+            }
+            /* 通用清洗②：新干线特急爱称里混入的通勤电车(E231等)与纯公司名 → 过滤 */
+            if (key && key.k === 'tk' && Array.isArray(list)) {
+                list = list.filter(x => /系|形/.test(x) && !/E231|E233|E235|E217|E127|E129/.test(x));
+            }
             if (!list || !list.length) return null;
             return { primary: list[0], others: list.slice(1) };
         }

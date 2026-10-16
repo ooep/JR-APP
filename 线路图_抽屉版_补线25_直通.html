@@ -578,7 +578,7 @@
         .tr-head { display: flex; flex-direction: column; gap: 13px; padding: 16px 16px 14px; border-bottom: 1px solid #f3f4f6; }
         .tr-row1 { display: flex; align-items: flex-start; gap: 12px; }
         #tr-slot { position: relative; flex: 1; min-width: 0; min-height: 36px; display: flex; align-items: flex-start; }
-        .tr-badge { display: flex; align-items: center; gap: 8px; max-width: 100%; font-weight: 700; font-size: .88rem; letter-spacing: 0; padding: 5px 11px 5px 6px; border-radius: 9px; white-space: nowrap; line-height: 1.25; }
+        .tr-badge { display: flex; align-items: center; gap: 8px; max-width: 100%; font-weight: 700; font-size: 1rem; letter-spacing: 0; padding: 6px 12px 6px 7px; border-radius: 9px; white-space: nowrap; line-height: 1.25; }
         .tr-badge .tr-btic { width: 31px; height: 37px; background-repeat: no-repeat; flex: none; }
         .tr-badge .tr-tx { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .tr-badge .tr-bt { display: inline-block; position: relative; z-index: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
@@ -596,12 +596,12 @@
         #tr-close:active { transform: scale(.9); }
         .tr-body { flex: 1; overflow-y: auto; padding: 18px 20px 40px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
         .tr-body::-webkit-scrollbar { width: 5px; }
-        .tr-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .tr-body::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--lc, #4f8ef7) 32%, #cbd5e1); border-radius: 3px; }
         /* 主视觉：细状态条——状态胶囊 + 时钟一行，次站信息并入同一行内联，无卡片 */
-        .tr-hero { flex: none; margin: 12px 20px 0; padding: 0 2px 14px; border-bottom: 1px solid #eef1f5; }
+        .tr-hero { flex: none; margin: 12px 20px 0; padding: 0 2px 14px; border-bottom: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 14%, #eef1f5); }
         .tr-hero-top { display: flex; align-items: center; gap: 10px; }
-        .tr-st { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: .64rem; font-weight: 700; letter-spacing: .06em; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 3px 9px; }
-        .tr-st.stop { background: #64748b; }
+        .tr-st { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: .64rem; font-weight: 700; letter-spacing: .06em; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 3px 9px; box-shadow: 0 2px 8px color-mix(in srgb, var(--lc, #4f8ef7) 30%, transparent); }
+        .tr-st.stop { background: #64748b; box-shadow: none; }
         .tr-hero-top .tr-hr { flex: 1; height: 1px; background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #e8edf2); }
         .tr-clk { flex: none; font-size: .68rem; font-weight: 600; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
         .tr-hero-lb { display: inline-block; margin-top: 11px; font-size: .64rem; font-weight: 700; letter-spacing: .08em; color: #94a3b8; margin-right: 8px; }
@@ -615,7 +615,8 @@
         .tr-chip { font-size: .66rem; font-weight: 600; color: #fff; padding: 3px 10px; border-radius: 999px; white-space: nowrap; letter-spacing: .02em; }
         /* 分区标题：细体大字距，作为内容的呼吸分隔 */
         .tr-sec-title { display: flex; align-items: baseline; gap: 10px; margin: 26px 2px 3px; padding-bottom: 10px; border-bottom: 1px solid #eef1f5; }
-        .tr-sec-title .tt { font-size: .7rem; font-weight: 700; letter-spacing: .1em; color: #64748b; }
+        .tr-sec-title .tt { display: inline-flex; align-items: center; gap: 8px; font-size: .7rem; font-weight: 700; letter-spacing: .1em; color: #64748b; }
+        .tr-sec-title .tt::before { content: ''; flex: none; width: 3px; height: 12px; border-radius: 2px; background: var(--lc, #4f8ef7); }
         .tr-sec-title .cnt { margin-left: auto; font-size: .7rem; font-weight: 600; color: #b6c0cd; font-variant-numeric: tabular-nums; }
         /* 停靠站时间线：无行分隔线，用色点与当前站高亮承担结构 */
         .tr-stops { margin-top: 0; }
@@ -625,11 +626,15 @@
         .tr-stop .tr-vn .vln.up { top: 0; bottom: 50%; }
         .tr-stop .tr-vn .vln.dn { top: 50%; bottom: 0; }
         .tr-stop .tr-vn .dot { position: relative; z-index: 1; width: 8px; height: 8px; border-radius: 50%; background: #fff; border: 2.5px solid var(--lc, #4f8ef7); margin: 13px 0; box-sizing: content-box; }
-        .tr-stop .tr-vc { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; padding: 10px 8px 10px 10px; border-radius: 9px; transition: background .2s; }
+        .tr-stop .tr-vc { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; padding: 10px 8px 10px 10px; border-radius: 9px; transition: background .2s, transform .12s; animation: trRowIn .38s cubic-bezier(.22,1,.36,1) both; }
+        .tr-stop .tr-vc:hover { background: color-mix(in srgb, var(--lc, #4f8ef7) 5%, transparent); }
+        .tr-stop .tr-vc:active { transform: scale(.99); }
+        @keyframes trRowIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        @media (prefers-reduced-motion: reduce) { .tr-stop .tr-vc { animation: none; } }
         .tr-stop .tr-vnm { font-size: .92rem; font-weight: 600; color: #0f172a; letter-spacing: 0; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tr-stop .tr-vtm { font-size: .7rem; font-weight: 600; color: #64748b; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 8px; flex: none; }
-        .tr-stop .tr-vtm .t-arr { color: #2563eb; }
-        .tr-stop .tr-vtm .t-dep { color: #0d9488; }
+        .tr-stop .tr-vtm .t-arr { color: color-mix(in srgb, var(--lc, #4f8ef7) 60%, #1e293b); font-weight: 700; }
+        .tr-stop .tr-vtm .t-dep { color: color-mix(in srgb, var(--lc, #4f8ef7) 42%, #64748b); }
         .tr-stop .tr-vtm i { font-style: normal; color: #e2e8f0; }
         .tr-stop.done .tr-vnm { color: #a3aebd; }
         .tr-stop.done .tr-vtm { color: #c3ccd8; }
@@ -653,10 +658,10 @@
         @keyframes trPulse { 0% { transform: scale(.45); opacity: .75; } 70%, 100% { transform: scale(1.35); opacity: 0; } }
         @media (prefers-reduced-motion: reduce) { .tr-pulse::after { animation: none; } }
         /* 车型百科折叠：与上方内容用留白+细线区隔，卡片更轻（展开高度由 JS 按实测内容设定） */
-        .tr-wiki { margin: 22px 0 4px; border: 1px solid #eef1f5; border-radius: 14px; overflow: hidden; background: #fcfdfe; }
+        .tr-wiki { margin: 22px 0 4px; border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 16%, #eef1f5); border-radius: 14px; overflow: hidden; background: #fcfdfe; }
         .tr-wiki .tr-wk-hd { display: flex; align-items: center; gap: 10px; padding: 13px 14px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: background .18s; }
-        .tr-wiki .tr-wk-hd:active { background: #f4f7fa; }
-        .tr-wiki .tr-wk-hd .lb { font-size: .62rem; font-weight: 700; color: #b6c0cd; letter-spacing: .1em; flex: none; }
+        .tr-wiki .tr-wk-hd:active { background: color-mix(in srgb, var(--lc, #4f8ef7) 7%, #f4f7fa); }
+        .tr-wiki .tr-wk-hd .lb { font-size: .62rem; font-weight: 700; color: color-mix(in srgb, var(--lc, #4f8ef7) 55%, #b6c0cd); letter-spacing: .1em; flex: none; }
         .tr-wiki .tr-wk-hd .mv { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .tr-wiki .tr-wk-hd .dw-v { font-size: .82rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tr-wiki .tr-wk-hd .dw-ar { color: #b6c0cd; transition: transform .24s; display: flex; }
@@ -701,7 +706,7 @@
         html.dark .tr-note .tr-nln { background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #3a3f4a)); }
         html.dark .tr-pulse { background: #34d399; }
         html.dark .tr-pulse::after { border-color: #34d399; }
-        html.dark .tr-hero { border-bottom-color: #2c313b; }
+        html.dark .tr-hero { border-bottom-color: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2c313b); }
         html.dark .tr-hero-top .tr-hr { background: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2c313b); }
         html.dark .tr-hero-lb { color: #6b7280; }
         html.dark .tr-hero-nm { color: #f8fafc; }
@@ -713,8 +718,8 @@
         html.dark .tr-sec-title .cnt { color: #57606e; }
         html.dark .tr-stop .tr-vnm { color: #e2e8f0; }
         html.dark .tr-stop .tr-vtm { color: #9ca3af; }
-        html.dark .tr-stop .tr-vtm .t-arr { color: #7aa2f7; }
-        html.dark .tr-stop .tr-vtm .t-dep { color: #5eead4; }
+        html.dark .tr-stop .tr-vtm .t-arr { color: color-mix(in srgb, var(--lc, #4f8ef7) 70%, #e2e8f0); }
+        html.dark .tr-stop .tr-vtm .t-dep { color: color-mix(in srgb, var(--lc, #4f8ef7) 48%, #9ca3af); }
         html.dark .tr-stop .tr-vtm i { color: #343842; }
         html.dark .tr-stop.done .tr-vnm { color: #6b7280; }
         html.dark .tr-stop.done .tr-vtm { color: #4b5563; }
@@ -723,10 +728,11 @@
         html.dark .tr-stop.next .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 6%, transparent); }
         html.dark .tr-stop.next .tr-vnm { color: #e2e8f0; }
         html.dark .tr-stop.next .tr-vnm::after { background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, transparent); }
+        html.dark .tr-body::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--lc, #4f8ef7) 28%, #3a3f4a); }
         html.dark .tr-stop.end:not(.here):not(.next) .tr-vnm::after { color: #fbbf24; background: rgba(245,158,11,.14); }
-        html.dark .tr-wiki { background: #23262d; border-color: #2f333c; }
+        html.dark .tr-wiki { background: #23262d; border-color: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2f333c); }
         html.dark .tr-wiki .tr-wk-hd:active { background: #292d35; }
-        html.dark .tr-wiki .tr-wk-hd .lb { color: #6b7280; }
+        html.dark .tr-wiki .tr-wk-hd .lb { color: color-mix(in srgb, var(--lc, #4f8ef7) 50%, #6b7280); }
         html.dark .tr-wiki .tr-wk-hd .dw-v { color: #f3f4f6; }
         html.dark .tr-wiki .tr-wk-hd .dw-ar { color: #57606e; }
         html.dark .dw-name { color: #f3f4f6; }
@@ -3153,7 +3159,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
                     '<span class="tr-vn">' + (k > 0 ? '<span class="vln up" style="background:' + col + '"></span>' : '') +
                     '<span class="dot" style="--lc:' + col + ';border-color:' + col + '"></span>' +
                     (k < N - 1 ? '<span class="vln dn" style="background:' + col + '"></span>' : '') + '</span>' +
-                    '<span class="tr-vc"><span class="tr-vnm">' + rvEsc(jas[k]) + '</span>' +
+                    '<span class="tr-vc" style="animation-delay:' + Math.min(k * 14, 280) + 'ms"><span class="tr-vnm">' + rvEsc(jas[k]) + '</span>' +
                     (tm2.length ? '<span class="tr-vtm">' + tm2.join('<i>·</i>') + '</span>' : '') + '</span></div>';
             }
             const chips = (tr.lines || []).slice(0, 5).map(l => '<span class="tr-chip" style="background:' + stLineColorOf(l).bg + '">' + rvEsc(l) + '</span>').join('') + ((tr.lines || []).length > 5 ? '<span class="tr-chip" style="background:#6b7280">+' + (tr.lines.length - 5) + '</span>' : '');

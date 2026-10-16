@@ -201,6 +201,7 @@
         .rv-backdrop { will-change: opacity; position: absolute; inset: 0; background: rgba(15,23,42,.2); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: opacity .4s ease; }
         #route-view.on .rv-backdrop { opacity: 1; }
         .rv-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 28rem; height: min(88dvh, 760px); background: #fff; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,.18); }
+        .rv-grab { flex: none; width: 40px; height: 4px; border-radius: 2px; background: #e5e7eb; margin: 8px auto 0; }
         .rv-head { display: flex; align-items: center; gap: 12px; padding: 16px 16px 14px; border-bottom: 1px solid #f3f4f6; }
         #rv-slot { position: relative; flex: none; min-height: 34px; display: flex; align-items: flex-start; }   /* 徽章は上端をそろえ、読みが出るときは下へ伸びる */
         .rv-badge { display: inline-block; font-weight: 700; font-size: 1.05rem; padding: 6px 14px; border-radius: 9px; white-space: nowrap; line-height: 1.2; }
@@ -346,6 +347,7 @@
         /* 線路一覧 */
         html.dark .rv-backdrop { background: rgba(0,0,0,.45); }
         html.dark .rv-sheet { background: #1c1e23; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
+        html.dark .rv-grab { background: #3a3f4a; }
         html.dark .rv-head { border-bottom-color: #2a2d33; }
         html.dark #rv-note, html.dark .rv-seg, html.dark .rv-st .no, html.dark .rv-empty, html.dark .rv-st.na, html.dark .rv-gapnote, html.dark .rv-hdname { color: #6b7280; }
         html.dark #rv-close, html.dark #sm-close, html.dark #pm-close { background: #2a2d33; color: #9ca3af; }
@@ -419,20 +421,20 @@
         #st-view[hidden] { display: none; }
         .st-backdrop { will-change: opacity; position: absolute; inset: 0; background: rgba(15,23,42,.25); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: opacity .4s ease; }
         #st-view.on .st-backdrop { opacity: 1; }
-        .st-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 28rem; height: min(92dvh, 860px); background: #fff; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,.18); transform: translateY(100%); transition: transform .54s cubic-bezier(.2,.8,.2,1); }
+        .st-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 28rem; height: min(88dvh, 760px); background: #fff; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,.18); transform: translateY(100%); transition: transform .54s cubic-bezier(.2,.8,.2,1); }
         #st-view.on .st-sheet { transform: translateY(0); }
         .st-grab { flex: none; width: 40px; height: 4px; border-radius: 2px; background: #e5e7eb; margin: 8px auto 0; }
-        .st-head { display: flex; align-items: center; gap: 12px; padding: 14px 18px 12px; }
+        .st-head { display: flex; align-items: center; gap: 12px; padding: 16px 16px 14px; }
         #st-slot { position: relative; flex: none; min-height: 34px; display: flex; align-items: flex-start; }
         .st-badge { display: inline-block; font-weight: 700; font-size: 1.05rem; padding: 6px 14px; border-radius: 9px; white-space: nowrap; line-height: 1.2; }
         .st-badge .st-bt { display: inline-block; position: relative; z-index: 1; }
         .st-badge .st-bs { display: block; font-size: .5em; font-weight: 700; letter-spacing: .05em; line-height: 1.25; opacity: .78; white-space: nowrap; }
         #st-slot .st-badge.has-sub { display: inline-flex; flex-direction: column; align-items: flex-start; }
         .st-note { flex: none; max-width: 42%; min-width: 0; font-size: .74rem; color: #9ca3af; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #st-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 38px; height: 38px; border-radius: 11px; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
+        #st-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 32px; height: 32px; border-radius: 50%; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
         #st-close:hover { background: #e5e7eb; }
         #st-close:active { transform: scale(.9); }
-        .st-controls { display: flex; align-items: center; padding: 0 18px 14px; border-bottom: 1px solid #f3f4f6; }
+        .st-controls { display: flex; align-items: center; padding: 0 16px 14px; border-bottom: 1px solid #f3f4f6; }
         .st-controls .st-seg + .st-seg { margin-left: auto; }
         .st-seg { display: inline-flex; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; padding: 2px; gap: 2px; }
         .st-seg button { border: 0; background: transparent; color: #6b7280; font-size: .73rem; font-weight: 700; padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: background .18s, color .18s, box-shadow .18s, transform .1s; -webkit-tap-highlight-color: transparent; }
@@ -441,7 +443,7 @@
         .st-seg button.on { background: #fff; color: #111827; box-shadow: 0 1px 4px rgba(0,0,0,.14); }
         .st-seg#st-daybar button.on { background: #059669; color: #fff; box-shadow: 0 1px 6px rgba(5,150,105,.35); }
         .st-seg#st-deparr button.on { background: #2563eb; color: #fff; box-shadow: 0 1px 6px rgba(37,99,235,.35); }
-        .st-body { flex: 1; overflow-y: auto; padding: 12px 16px 36px; scroll-behavior: smooth; }
+        .st-body { flex: 1; overflow-y: auto; padding: 18px 20px 40px; scroll-behavior: smooth; }
         .st-body::-webkit-scrollbar { width: 5px; }
         .st-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
         .st-loading, .st-empty { text-align: center; color: #9ca3af; padding: 56px 0; font-size: .9rem; }
@@ -538,6 +540,12 @@
             .st-dgcell.rapid { background: #5f1e1e; }
             .st-dgcell .st-m { color: #f3f4f6; }
         }
+        /* 与线路/列车抽屉的深色模式对齐：容器、把手、关闭按钮、分隔线统一为 html.dark 体系 */
+        html.dark .st-sheet { background: #1c1e23; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
+        html.dark .st-grab { background: #3a3f4a; }
+        html.dark #st-close { background: #2a2d33; color: #9ca3af; }
+        html.dark #st-close:hover { background: #343842; }
+        html.dark .st-controls { border-bottom-color: #2a2d33; }
 
 
         /* ==== 线路图实时列车列（左侧两列：上り/下り） ==== */
@@ -564,10 +572,10 @@
         #tr-view[hidden] { display: none; }
         .tr-backdrop { will-change: opacity; position: absolute; inset: 0; background: rgba(15,23,42,.25); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: opacity .4s ease; }
         #tr-view.on .tr-backdrop { opacity: 1; }
-        .tr-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 30rem; height: min(93dvh, 880px); background: #fff; border-radius: 26px 26px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -14px 50px rgba(15,23,42,.22); transform: translateY(100%); transition: transform .54s cubic-bezier(.2,.8,.2,1); }
+        .tr-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 28rem; height: min(88dvh, 760px); background: #fff; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,.18); transform: translateY(100%); transition: transform .54s cubic-bezier(.2,.8,.2,1); }
         #tr-view.on .tr-sheet { transform: translateY(0); }
-        .tr-grab { flex: none; width: 40px; height: 4px; border-radius: 2px; background: #e2e8f0; margin: 12px auto 0; }
-        .tr-head { display: flex; flex-direction: column; gap: 13px; padding: 14px 20px 16px; }
+        .tr-grab { flex: none; width: 40px; height: 4px; border-radius: 2px; background: #e5e7eb; margin: 8px auto 0; }
+        .tr-head { display: flex; flex-direction: column; gap: 13px; padding: 16px 16px 14px; border-bottom: 1px solid #f3f4f6; }
         .tr-row1 { display: flex; align-items: flex-start; gap: 12px; }
         #tr-slot { position: relative; flex: 1; min-width: 0; min-height: 36px; display: flex; align-items: flex-start; }
         .tr-badge { display: flex; align-items: center; gap: 11px; max-width: 100%; font-weight: 800; font-size: 1.1rem; letter-spacing: -.01em; padding: 9px 16px 9px 10px; border-radius: 16px; white-space: nowrap; line-height: 1.2; box-shadow: 0 3px 16px rgba(15,23,42,.12); }
@@ -583,10 +591,10 @@
         .tr-note .tr-nln::before { left: -4px; }
         .tr-note .tr-nln::after { right: -4px; }
         .tr-note .tr-ntm { flex: none; font-size: .74rem; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
-        #tr-close { flex: none; margin-left: auto; border: 0; background: #f1f5f9; color: #64748b; width: 38px; height: 38px; border-radius: 50%; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
-        #tr-close:hover { background: #e2e8f0; }
+        #tr-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 32px; height: 32px; border-radius: 50%; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
+        #tr-close:hover { background: #e5e7eb; }
         #tr-close:active { transform: scale(.9); }
-        .tr-body { flex: 1; overflow-y: auto; padding: 18px 20px 52px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .tr-body { flex: 1; overflow-y: auto; padding: 18px 20px 40px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
         .tr-body::-webkit-scrollbar { width: 5px; }
         .tr-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         /* 主视觉：运行状态 + 下一站大字。位于滚动区之外常驻——自动定位时不会被切掉 */
@@ -685,8 +693,9 @@
         .gd-retry { margin: 8px 0; border: 1px solid #e2e8f0; background: #fff; border-radius: 999px; padding: 6px 15px; font-size: .76rem; font-weight: 700; color: #334155; cursor: pointer; }
         .dw-note { font-size: .68rem; color: #b45309; margin-top: 8px; }
         .dw-src { font-size: .62rem; color: #cbd5e1; margin-top: 12px; text-align: right; }
-        html.dark .tr-sheet { background: #1c1e23; box-shadow: 0 -14px 50px rgba(0,0,0,.66); }
+        html.dark .tr-sheet { background: #1c1e23; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
         html.dark .tr-grab { background: #3a3f4a; }
+        html.dark .tr-head { border-bottom-color: #2a2d33; }
         html.dark .tr-note .tr-nep { color: #e2e8f0; }
         html.dark .tr-note .tr-ntm { color: #6b7280; }
         html.dark .tr-note .tr-nln { background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #3a3f4a)); }
@@ -733,8 +742,8 @@
         html.dark .dw-sw-t { color: #6b7280; }
         html.dark .dw-src { color: #4b5563; }
         html.dark .gd-loading::before { border-color: #343842; border-top-color: #6b7280; }
-        html.dark #tr-close { background: #343842; color: #d1d5db; }
-        html.dark #tr-close:hover { background: #414754; }
+        html.dark #tr-close { background: #2a2d33; color: #9ca3af; }
+        html.dark #tr-close:hover { background: #343842; }
 </style>
 </head>
 <body>
@@ -746,6 +755,7 @@
     <div id="route-view" hidden>
         <div class="rv-backdrop"></div>
         <div class="rv-sheet" role="dialog" aria-modal="true">
+            <div class="rv-grab"></div>
             <div class="rv-head">
                 <div id="rv-slot"></div>
     <div id="st-view" hidden>

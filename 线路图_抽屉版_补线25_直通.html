@@ -564,159 +564,177 @@
         #tr-view[hidden] { display: none; }
         .tr-backdrop { will-change: opacity; position: absolute; inset: 0; background: rgba(15,23,42,.25); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: opacity .4s ease; }
         #tr-view.on .tr-backdrop { opacity: 1; }
-        .tr-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 28rem; height: min(92dvh, 860px); background: #fff; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,.18); transform: translateY(100%); transition: transform .54s cubic-bezier(.2,.8,.2,1); }
+        .tr-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 30rem; height: min(93dvh, 880px); background: #fff; border-radius: 26px 26px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -14px 50px rgba(15,23,42,.22); transform: translateY(100%); transition: transform .54s cubic-bezier(.2,.8,.2,1); }
         #tr-view.on .tr-sheet { transform: translateY(0); }
-        .tr-grab { flex: none; width: 44px; height: 4.5px; border-radius: 2.5px; background: #e5e7eb; margin: 10px auto 0; }
-        .tr-head { display: flex; flex-direction: column; gap: 9px; padding: 10px 16px 12px; }
-        .tr-row1 { display: flex; align-items: flex-start; gap: 10px; }
-        #tr-slot { position: relative; flex: 1; min-width: 0; min-height: 34px; display: flex; align-items: flex-start; }
-        .tr-badge { display: flex; align-items: center; gap: 10px; max-width: 100%; font-weight: 700; font-size: 1rem; padding: 7px 14px 7px 9px; border-radius: 14px; white-space: nowrap; line-height: 1.2; box-shadow: 0 2px 12px rgba(15,23,42,.08); }
-        .tr-badge .tr-btic { width: 44px; height: 52px; background-repeat: no-repeat; flex: none; }
+        .tr-grab { flex: none; width: 40px; height: 4px; border-radius: 2px; background: #e2e8f0; margin: 12px auto 0; }
+        .tr-head { display: flex; flex-direction: column; gap: 13px; padding: 14px 20px 16px; }
+        .tr-row1 { display: flex; align-items: flex-start; gap: 12px; }
+        #tr-slot { position: relative; flex: 1; min-width: 0; min-height: 36px; display: flex; align-items: flex-start; }
+        .tr-badge { display: flex; align-items: center; gap: 11px; max-width: 100%; font-weight: 800; font-size: 1.1rem; letter-spacing: -.01em; padding: 9px 16px 9px 10px; border-radius: 16px; white-space: nowrap; line-height: 1.2; box-shadow: 0 3px 16px rgba(15,23,42,.12); }
+        .tr-badge .tr-btic { width: 40px; height: 47px; background-repeat: no-repeat; flex: none; }
         .tr-badge .tr-tx { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .tr-badge .tr-bt { display: inline-block; position: relative; z-index: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-        .tr-badge .tr-bs { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: .5em; font-weight: 700; letter-spacing: .05em; line-height: 1.25; opacity: .78; white-space: nowrap; }
-        .tr-note { flex: none; display: flex; align-items: center; gap: 8px; min-width: 0; padding-left: 2px; }
-        .tr-note .tr-nep { font-size: .78rem; font-weight: 700; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42%; }
-        .tr-note .tr-nln { position: relative; flex: 1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 40%, #e5e7eb)); }
-        .tr-note .tr-nln::before, .tr-note .tr-nln::after { content: ''; position: absolute; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--lc, #4f8ef7); transform: translateY(-50%); }
-        .tr-note .tr-nln::before { left: -3px; }
-        .tr-note .tr-nln::after { right: -3px; }
-        .tr-note .tr-ntm { flex: none; font-size: .68rem; font-weight: 700; color: #9ca3af; font-variant-numeric: tabular-nums; }
-        #tr-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 36px; height: 36px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
-        #tr-close:hover { background: #e5e7eb; }
+        .tr-badge .tr-bs { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: .48em; font-weight: 700; letter-spacing: .07em; line-height: 1.3; opacity: .8; white-space: nowrap; }
+        /* 区间条：起点 — 线色渐变 — 终点 */
+        .tr-note { flex: none; display: flex; align-items: center; gap: 9px; min-width: 0; }
+        .tr-note .tr-nep { font-size: .8rem; font-weight: 800; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 38%; }
+        .tr-note .tr-nln { position: relative; flex: 1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #e2e8f0)); }
+        .tr-note .tr-nln::before, .tr-note .tr-nln::after { content: ''; position: absolute; top: 50%; width: 8px; height: 8px; border-radius: 50%; background: var(--lc, #4f8ef7); transform: translateY(-50%); }
+        .tr-note .tr-nln::before { left: -4px; }
+        .tr-note .tr-nln::after { right: -4px; }
+        .tr-note .tr-ntm { flex: none; font-size: .74rem; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+        #tr-close { flex: none; margin-left: auto; border: 0; background: #f1f5f9; color: #64748b; width: 38px; height: 38px; border-radius: 50%; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
+        #tr-close:hover { background: #e2e8f0; }
         #tr-close:active { transform: scale(.9); }
-        .tr-body { flex: 1; overflow-y: auto; padding: 0 16px 44px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .tr-body { flex: 1; overflow-y: auto; padding: 18px 20px 52px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
         .tr-body::-webkit-scrollbar { width: 5px; }
-        .tr-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-        /* 状态卡：两张小卡合成一张淡色卡，用发丝线分隔 */
-        .tr-meta { display: flex; align-items: stretch; margin: 14px 0 0; padding: 4px; border-radius: 18px; background: color-mix(in srgb, var(--lc, #4f8ef7) 6%, #fff); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 16%, #eef0f3); }
-        .tr-cell { flex: 1; min-width: 0; border: 0; background: transparent; border-radius: 14px; padding: 11px 14px 10px; transition: background .2s; }
-        .tr-cell + .tr-cell { border-left: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 12%, #e5e7eb); }
-        .tr-cell .tr-clb { font-size: .6rem; font-weight: 800; letter-spacing: .12em; color: #9ca3af; margin-bottom: 5px; }
-        .tr-cell .tr-cv { font-size: .95rem; font-weight: 800; color: #111827; line-height: 1.45; }
-        .tr-cell .tr-cv b { font-weight: 900; }
-        .tr-cell.running { background: color-mix(in srgb, #10b981 9%, transparent); }
-        .tr-cell.running .tr-cv { color: #059669; }
-        .tr-cell .tr-eta { color: var(--lc, #2563eb); font-weight: 800; font-size: .82em; margin-left: 2px; }
-        /* 经由线路：去掉外框，只留线路色胶囊 */
-        .tr-via { display: flex; align-items: flex-start; gap: 12px; margin: 12px 2px 0; padding: 0; }
-        .tr-via .tr-vlb { font-size: .6rem; font-weight: 800; letter-spacing: .12em; color: #9ca3af; flex: none; padding-top: 6px; }
+        .tr-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        /* 主视觉：运行状态 + 下一站大字。位于滚动区之外常驻——自动定位时不会被切掉 */
+        .tr-hero { flex: none; margin: 16px 20px 0; padding: 17px 19px 16px; border-radius: 22px; background: linear-gradient(158deg, color-mix(in srgb, var(--lc, #4f8ef7) 11%, #fff) 0%, color-mix(in srgb, var(--lc, #4f8ef7) 3%, #fff) 100%); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 17%, #e8ecf1); }
+        .tr-hero-top { display: flex; align-items: center; gap: 10px; }
+        .tr-st { display: inline-flex; align-items: center; gap: 7px; flex: none; font-size: .7rem; font-weight: 800; letter-spacing: .1em; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 5px 13px 5px 11px; box-shadow: 0 2px 10px color-mix(in srgb, var(--lc, #4f8ef7) 32%, transparent); }
+        .tr-st.stop { background: #64748b; box-shadow: none; }
+        .tr-hero-top .tr-hr { flex: 1; height: 1px; background: color-mix(in srgb, var(--lc, #4f8ef7) 16%, #e2e8f0); }
+        .tr-clk { flex: none; font-size: .74rem; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+        .tr-hero-lb { margin-top: 13px; font-size: .68rem; font-weight: 800; letter-spacing: .16em; color: #94a3b8; }
+        .tr-hero-nm { font-size: 1.72rem; font-weight: 900; color: #0f172a; line-height: 1.24; letter-spacing: -.015em; margin-top: 3px; word-break: break-word; }
+        .tr-hero-sub { margin-top: 6px; font-size: .84rem; font-weight: 700; color: #64748b; line-height: 1.5; }
+        .tr-hero-sub b { color: var(--lc, #4f8ef7); font-weight: 800; }
+        /* 经由线路：无外框，仅一条细线色短杠 + 线路色胶囊 */
+        .tr-via { display: flex; align-items: flex-start; gap: 11px; margin: 0 2px; padding: 0; }
+        .tr-via .tr-vlb { flex: none; font-size: .68rem; font-weight: 800; letter-spacing: .14em; color: #94a3b8; padding-top: 6px; }
         .tr-via .tr-chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
-        .tr-chip { font-size: .66rem; font-weight: 700; color: #fff; padding: 4px 11px; border-radius: 999px; white-space: nowrap; }
-        /* 停靠站时间线：去掉行分隔线，用色点与当前站高亮承担结构 */
-        .tr-stops { margin-top: 18px; }
-        .tr-stops-title { display: flex; align-items: baseline; gap: 8px; font-size: .86rem; font-weight: 900; color: #374151; padding: 0 4px 10px; }
-        .tr-stops-title .cnt { font-size: .62rem; font-weight: 700; color: #9ca3af; }
+        .tr-chip { font-size: .68rem; font-weight: 700; color: #fff; padding: 4px 11px; border-radius: 999px; white-space: nowrap; letter-spacing: .02em; }
+        /* 分区标题：细体大字距，作为内容的呼吸分隔 */
+        .tr-sec-title { display: flex; align-items: baseline; gap: 10px; margin: 30px 2px 4px; padding-bottom: 12px; border-bottom: 1px solid #eef1f5; }
+        .tr-sec-title .tt { font-size: .72rem; font-weight: 800; letter-spacing: .18em; color: #64748b; }
+        .tr-sec-title .cnt { margin-left: auto; font-size: .72rem; font-weight: 700; color: #b6c0cd; font-variant-numeric: tabular-nums; }
+        /* 停靠站时间线：无行分隔线，用色点与当前站高亮承担结构 */
+        .tr-stops { margin-top: 0; }
         .tr-stop { display: flex; align-items: stretch; }
         .tr-stop .tr-vn { position: relative; width: 34px; flex: none; display: flex; flex-direction: column; align-items: center; }
         .tr-stop .tr-vn .vln { position: absolute; left: 50%; width: 2.5px; margin-left: -1.25px; }
         .tr-stop .tr-vn .vln.up { top: 0; bottom: 50%; }
         .tr-stop .tr-vn .vln.dn { top: 50%; bottom: 0; }
-        .tr-stop .tr-vn .dot { position: relative; z-index: 1; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 3px solid var(--lc, #4f8ef7); margin: 13px 0; box-sizing: content-box; }
-        .tr-stop .tr-vc { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; padding: 10px 8px 10px 10px; border-radius: 12px; transition: background .2s; }
-        .tr-stop .tr-vnm { font-size: .9rem; font-weight: 700; color: #111827; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tr-stop .tr-vtm { font-size: .68rem; font-weight: 700; color: #6b7280; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 7px; flex: none; }
+        .tr-stop .tr-vn .dot { position: relative; z-index: 1; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 3px solid var(--lc, #4f8ef7); margin: 14px 0; box-sizing: content-box; }
+        .tr-stop .tr-vc { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; padding: 12px 8px 12px 12px; border-radius: 12px; transition: background .2s; }
+        .tr-stop .tr-vnm { font-size: .97rem; font-weight: 700; color: #0f172a; letter-spacing: .005em; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tr-stop .tr-vtm { font-size: .72rem; font-weight: 700; color: #64748b; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 8px; flex: none; }
         .tr-stop .tr-vtm .t-arr { color: #2563eb; }
-        .tr-stop .tr-vtm .t-dep { color: #059669; }
-        .tr-stop .tr-vtm i { font-style: normal; color: #e5e7eb; }
-        .tr-stop.done .tr-vnm { color: #9ca3af; }
-        .tr-stop.done .tr-vtm { color: #b6bfcc; }
-        .tr-stop.done .tr-vn { opacity: .55; }
+        .tr-stop .tr-vtm .t-dep { color: #0d9488; }
+        .tr-stop .tr-vtm i { font-style: normal; color: #e2e8f0; }
+        .tr-stop.done .tr-vnm { color: #a3aebd; }
+        .tr-stop.done .tr-vtm { color: #c3ccd8; }
+        .tr-stop.done .tr-vn { opacity: .5; }
         .tr-stop.here .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 9%, transparent); }
+        .tr-stop.here .tr-vnm { font-weight: 900; color: #0f172a; }
         .tr-stop.here .tr-vn .dot { background: var(--lc, #4f8ef7); border-color: #fff; box-shadow: 0 0 0 3px color-mix(in srgb, var(--lc, #4f8ef7) 30%, transparent); }
-        .tr-stop.here .tr-vnm::after { content: '現在'; margin-left: 8px; font-size: .58rem; font-weight: 800; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 2px 8px; vertical-align: 2px; }
+        .tr-stop.here .tr-vnm::after { content: '現在'; margin-left: 9px; font-size: .6rem; font-weight: 800; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 2px 9px; vertical-align: 2px; letter-spacing: .06em; }
         .tr-stop.next .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 4%, transparent); }
-        .tr-stop.next .tr-vnm::after { content: '次'; margin-left: 8px; font-size: .58rem; font-weight: 800; color: var(--lc, #4f8ef7); background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #fff); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 40%, transparent); border-radius: 999px; padding: 1px 8px; vertical-align: 2px; }
+        .tr-stop.next .tr-vnm { font-weight: 800; }
+        .tr-stop.next .tr-vnm::after { content: '次駅'; margin-left: 9px; font-size: .58rem; font-weight: 800; color: var(--lc, #4f8ef7); background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #fff); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 40%, transparent); border-radius: 999px; padding: 1px 9px; vertical-align: 2px; letter-spacing: .06em; }
         .tr-stop.end .tr-vn .dot { border-color: #f59e0b; }
-        .tr-stop.start .dot, .tr-stop.end .dot { width: 12px; height: 12px; margin: 12px 0; }
+        .tr-stop.start .dot, .tr-stop.end .dot { width: 12px; height: 12px; margin: 13px 0; }
         /* 走过的区间：当前站（含）以上的连线淡化——亮线永远在列车前方 */
         .tr-stop.done .tr-vn .vln.up, .tr-stop.here .tr-vn .vln.up { opacity: .4; }
         .tr-stop.here .tr-vc, .tr-stop.next .tr-vc { box-shadow: inset 2.5px 0 0 var(--lc, #4f8ef7); }
-        .tr-stop.end:not(.here):not(.next) .tr-vnm::after { content: '終点'; margin-left: 8px; font-size: .56rem; font-weight: 800; color: #b45309; background: #fef3c7; border-radius: 999px; padding: 1px 7px; vertical-align: 2px; }
+        .tr-stop.end:not(.here):not(.next) .tr-vnm::after { content: '終点'; margin-left: 9px; font-size: .58rem; font-weight: 800; color: #b45309; background: #fef3c7; border-radius: 999px; padding: 1px 9px; vertical-align: 2px; letter-spacing: .06em; }
         /* 运行中：脉动圆点（动画跟随全线 reduce-motion 设定） */
         .tr-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 7px; position: relative; vertical-align: 0; }
         .tr-pulse::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid #10b981; opacity: 0; animation: trPulse 1.8s cubic-bezier(.2,.8,.2,1) infinite; }
         @keyframes trPulse { 0% { transform: scale(.45); opacity: .75; } 70%, 100% { transform: scale(1.35); opacity: 0; } }
         @media (prefers-reduced-motion: reduce) { .tr-pulse::after { animation: none; } }
-        /* 车型百科折叠（展开高度由 JS 按实测内容设定后再放开，内容再长也不会被裁掉） */
-        .tr-wiki { margin: 16px 0 4px; border: 1px solid #eef0f3; border-radius: 18px; overflow: hidden; background: #fafafa; }
-        .tr-wiki .tr-wk-hd { display: flex; align-items: center; gap: 8px; padding: 12px 14px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
-        .tr-wiki .tr-wk-hd .lb { font-size: .66rem; font-weight: 700; color: #9ca3af; letter-spacing: .06em; flex: none; }
-        .tr-wiki .tr-wk-hd .mv { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .tr-wiki .tr-wk-hd .dw-v { font-size: .82rem; font-weight: 800; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tr-wiki .tr-wk-hd .dw-ar { color: #9ca3af; transition: transform .22s; display: flex; }
+        /* 车型百科折叠：与上方内容用留白+细线区隔，卡片更轻（展开高度由 JS 按实测内容设定） */
+        .tr-wiki { margin: 22px 0 4px; border: 1px solid #eef1f5; border-radius: 18px; overflow: hidden; background: #fcfdfe; }
+        .tr-wiki .tr-wk-hd { display: flex; align-items: center; gap: 10px; padding: 15px 16px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: background .18s; }
+        .tr-wiki .tr-wk-hd:active { background: #f4f7fa; }
+        .tr-wiki .tr-wk-hd .lb { font-size: .66rem; font-weight: 800; color: #b6c0cd; letter-spacing: .14em; flex: none; }
+        .tr-wiki .tr-wk-hd .mv { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .tr-wiki .tr-wk-hd .dw-v { font-size: .86rem; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tr-wiki .tr-wk-hd .dw-ar { color: #b6c0cd; transition: transform .24s; display: flex; }
         .tr-wiki[data-open="1"] .dw-ar { transform: rotate(180deg); }
         .tr-wiki .tr-wk-bd { max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.22,1,.36,1); }
-        .tr-wiki .tr-wk-bd .dw-in { padding: 0 14px 14px; }
-        .tr-wiki.na .tr-wk-hd .mv { color: #9ca3af; font-size: .78rem; }
-        .dw-name { font-size: .98rem; font-weight: 900; color: #111827; }
-        .dw-name small { display: block; font-size: .68rem; font-weight: 600; color: #9ca3af; margin-top: 2px; }
-        .dw-op { font-size: .68rem; font-weight: 600; color: #6b7280; margin: 6px 0 8px; }
-        .dw-intro { font-size: .78rem; line-height: 1.7; color: #374151; margin: 10px 0; }
-        .dw-secs { margin: 10px 0; }
-        .dw-sec { border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 6px; background: #fff; overflow: hidden; }
-        .dw-sec summary { font-size: .74rem; font-weight: 700; color: #111827; padding: 9px 12px; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
-        .dw-sec summary::after { content: '▾'; font-size: .7rem; color: #9ca3af; }
+        .tr-wiki .tr-wk-bd .dw-in { padding: 2px 16px 16px; }
+        .tr-wiki.na .tr-wk-hd .mv { color: #a3aebd; font-size: .8rem; }
+        .dw-name { font-size: 1.04rem; font-weight: 900; color: #0f172a; letter-spacing: -.005em; }
+        .dw-name small { display: block; font-size: .7rem; font-weight: 600; color: #94a3b8; margin-top: 3px; }
+        .dw-op { font-size: .7rem; font-weight: 600; color: #64748b; margin: 7px 0 0; }
+        .dw-intro { font-size: .8rem; line-height: 1.8; color: #334155; margin: 12px 0; }
+        .dw-secs { margin: 12px 0; }
+        .dw-sec { border: 1px solid #eef1f5; border-radius: 12px; margin-bottom: 7px; background: #fff; overflow: hidden; }
+        .dw-sec summary { font-size: .76rem; font-weight: 700; color: #0f172a; padding: 11px 13px; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+        .dw-sec summary::after { content: '▾'; font-size: .72rem; color: #c3ccd8; }
         .dw-sec[open] summary::after { content: '▴'; }
-        .dw-sec summary:active { background: #f6f7f9; }
+        .dw-sec summary:active { background: #f6f9fc; }
         .dw-sec[open] p { animation: dwSecIn .28s cubic-bezier(.2,.8,.2,1); }
         @keyframes dwSecIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-        .dw-sec p { font-size: .74rem; line-height: 1.75; color: #374151; padding: 0 12px 10px; margin: 0; }
-        .dw-none { font-size: .76rem; color: #9ca3af; padding: 10px 0; }
-        .dw-trip { font-size: .7rem; color: #9ca3af; margin-top: 8px; }
-        .dw-link { display: inline-block; font-size: .72rem; font-weight: 700; color: #2563eb; margin: 8px 0; text-decoration: none; }
+        .dw-sec p { font-size: .76rem; line-height: 1.85; color: #334155; padding: 0 13px 12px; margin: 0; }
+        .dw-none { font-size: .78rem; color: #94a3b8; padding: 10px 0; }
+        .dw-trip { font-size: .72rem; color: #94a3b8; margin-top: 8px; }
+        .dw-link { display: inline-block; font-size: .74rem; font-weight: 700; color: #2563eb; margin: 10px 0; text-decoration: none; }
         .dw-link:hover { text-decoration: underline; }
-        .dw-sw { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-        .dw-sw-t { font-size: .62rem; color: #9ca3af; font-weight: 700; }
-        .dw-chip { border: 1px solid #e5e7eb; background: #fff; color: #374151; font-size: .66rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; cursor: pointer; }
-        .dw-chip:hover { background: #f3f4f6; }
-        .dw-more { font-size: .66rem; color: #9ca3af; font-weight: 700; }
-        .gd-loading { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: #9ca3af; padding: 12px 0; }
-        .gd-loading::before { content: ''; flex: none; width: 13px; height: 13px; border-radius: 50%; border: 2px solid #e5e7eb; border-top-color: #9ca3af; animation: gdSpin .8s linear infinite; }
+        .dw-sw { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+        .dw-sw-t { font-size: .64rem; color: #b6c0cd; font-weight: 700; }
+        .dw-chip { border: 1px solid #e6ebf1; background: #fff; color: #334155; font-size: .68rem; font-weight: 700; padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+        .dw-chip:hover { background: #f4f7fa; }
+        .dw-more { font-size: .68rem; color: #b6c0cd; font-weight: 700; }
+        .gd-loading { display: flex; align-items: center; gap: 9px; font-size: .8rem; color: #94a3b8; padding: 14px 0; }
+        .gd-loading::before { content: ''; flex: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #e2e8f0; border-top-color: #94a3b8; animation: gdSpin .8s linear infinite; }
         @keyframes gdSpin { to { transform: rotate(360deg); } }
         @media (prefers-reduced-motion: reduce) { .gd-loading::before { animation: none; } }
-        .gd-retry { margin: 8px 0; border: 1px solid #e5e7eb; background: #fff; border-radius: 999px; padding: 6px 14px; font-size: .74rem; font-weight: 700; color: #374151; cursor: pointer; }
-        .dw-note { font-size: .66rem; color: #b45309; margin-top: 8px; }
-        .dw-src { font-size: .6rem; color: #d1d5db; margin-top: 10px; text-align: right; }
-        html.dark .tr-sheet { background: #1c1e23; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
-        html.dark .tr-grab { background: #343842; }
-        html.dark .tr-note { color: #8b919c; }
-        html.dark .tr-note .tr-nep { color: #e5e7eb; }
+        .gd-retry { margin: 8px 0; border: 1px solid #e2e8f0; background: #fff; border-radius: 999px; padding: 6px 15px; font-size: .76rem; font-weight: 700; color: #334155; cursor: pointer; }
+        .dw-note { font-size: .68rem; color: #b45309; margin-top: 8px; }
+        .dw-src { font-size: .62rem; color: #cbd5e1; margin-top: 12px; text-align: right; }
+        html.dark .tr-sheet { background: #1c1e23; box-shadow: 0 -14px 50px rgba(0,0,0,.66); }
+        html.dark .tr-grab { background: #3a3f4a; }
+        html.dark .tr-note .tr-nep { color: #e2e8f0; }
         html.dark .tr-note .tr-ntm { color: #6b7280; }
+        html.dark .tr-note .tr-nln { background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #3a3f4a)); }
         html.dark .tr-pulse { background: #34d399; }
         html.dark .tr-pulse::after { border-color: #34d399; }
-        html.dark .tr-stop.end:not(.here):not(.next) .tr-vnm::after { color: #fbbf24; background: rgba(245,158,11,.14); }
-        html.dark .dw-sec summary:active { background: #23262d; }
-        html.dark .gd-loading::before { border-color: #343842; border-top-color: #6b7280; }
-        html.dark #tr-close { background: #343842; color: #d1d5db; }
-        html.dark .tr-meta { background: color-mix(in srgb, var(--lc, #4f8ef7) 13%, #1c1e23); border-color: color-mix(in srgb, var(--lc, #4f8ef7) 20%, #2a2d34); }
-        html.dark .tr-cell { background: transparent; }
-        html.dark .tr-cell + .tr-cell { border-left-color: color-mix(in srgb, var(--lc, #4f8ef7) 16%, #2a2d34); }
-        html.dark .tr-cell.running { background: rgba(16,185,129,.13); }
-        html.dark .tr-cell .tr-clb { color: #6b7280; }
-        html.dark .tr-cell .tr-cv { color: #f3f4f6; }
+        html.dark .tr-hero { background: linear-gradient(158deg, color-mix(in srgb, var(--lc, #4f8ef7) 17%, #1c1e23) 0%, color-mix(in srgb, var(--lc, #4f8ef7) 6%, #1c1e23) 100%); border-color: color-mix(in srgb, var(--lc, #4f8ef7) 24%, #2c313b); }
+        html.dark .tr-hero-top .tr-hr { background: color-mix(in srgb, var(--lc, #4f8ef7) 20%, #2c313b); }
+        html.dark .tr-hero-lb { color: #6b7280; }
+        html.dark .tr-hero-nm { color: #f8fafc; }
+        html.dark .tr-hero-sub { color: #94a3b8; }
+        html.dark .tr-st.stop { background: #4b5563; }
         html.dark .tr-via .tr-vlb { color: #6b7280; }
-        html.dark .tr-stops-title { color: #e5e7eb; }
-        html.dark .tr-stops-title .cnt { color: #6b7280; }
-        html.dark .tr-stop .tr-vnm { color: #e5e7eb; }
+        html.dark .tr-sec-title { border-bottom-color: #2c313b; }
+        html.dark .tr-sec-title .tt { color: #9ca3af; }
+        html.dark .tr-sec-title .cnt { color: #57606e; }
+        html.dark .tr-stop .tr-vnm { color: #e2e8f0; }
         html.dark .tr-stop .tr-vtm { color: #9ca3af; }
         html.dark .tr-stop .tr-vtm .t-arr { color: #7aa2f7; }
-        html.dark .tr-stop .tr-vtm .t-dep { color: #6ec9a2; }
+        html.dark .tr-stop .tr-vtm .t-dep { color: #5eead4; }
+        html.dark .tr-stop .tr-vtm i { color: #343842; }
         html.dark .tr-stop.done .tr-vnm { color: #6b7280; }
-        html.dark .tr-stop.done .tr-vtm { color: #57606e; }
+        html.dark .tr-stop.done .tr-vtm { color: #4b5563; }
         html.dark .tr-stop.here .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 16%, transparent); }
+        html.dark .tr-stop.here .tr-vnm { color: #f8fafc; }
         html.dark .tr-stop.next .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 8%, transparent); }
+        html.dark .tr-stop.next .tr-vnm { color: #e2e8f0; }
+        html.dark .tr-stop.next .tr-vnm::after { background: color-mix(in srgb, var(--lc, #4f8ef7) 18%, #1c1e23); }
+        html.dark .tr-stop.end:not(.here):not(.next) .tr-vnm::after { color: #fbbf24; background: rgba(245,158,11,.14); }
         html.dark .tr-wiki { background: #23262d; border-color: #2f333c; }
+        html.dark .tr-wiki .tr-wk-hd:active { background: #292d35; }
         html.dark .tr-wiki .tr-wk-hd .lb { color: #6b7280; }
         html.dark .tr-wiki .tr-wk-hd .dw-v { color: #f3f4f6; }
+        html.dark .tr-wiki .tr-wk-hd .dw-ar { color: #57606e; }
         html.dark .dw-name { color: #f3f4f6; }
         html.dark .dw-op { color: #9ca3af; }
         html.dark .dw-intro { color: #d1d5db; }
         html.dark .dw-sec { background: #1c1e23; border-color: #343842; }
         html.dark .dw-sec summary { color: #e5e7eb; }
+        html.dark .dw-sec summary:active { background: #292d35; }
+        html.dark .dw-sec summary::after { color: #57606e; }
         html.dark .dw-sec p { color: #c3c9d3; }
         html.dark .dw-chip { background: #1c1e23; border-color: #343842; color: #d1d5db; }
         html.dark .dw-chip:hover { background: #343842; }
+        html.dark .dw-sw-t { color: #6b7280; }
+        html.dark .dw-src { color: #4b5563; }
+        html.dark .gd-loading::before { border-color: #343842; border-top-color: #6b7280; }
+        html.dark #tr-close { background: #343842; color: #d1d5db; }
+        html.dark #tr-close:hover { background: #414754; }
 </style>
 </head>
 <body>
@@ -764,6 +782,7 @@
                 </div>
                 <div id="tr-note" class="tr-note"></div>
             </div>
+            <div class="tr-hero" id="tr-hero"></div>
             <div class="tr-body" id="tr-body"></div>
         </div>
     </div>
@@ -1561,7 +1580,7 @@ const TOKYO_METRO = new Set(['丸ノ内線','銀座線','日比谷線','東西�
         };
         // 他社線との直通運転（直通先の最初の一社だけ）。[路線, 駅, 直通先, 特急やごく少ない列車だけか（細い線）, 路線の番号, 直通先の番号]（番号 -1 は名前で探す）
         // 端の駅なら線の上下の端に、途中の駅なら支線と同じ形で、直通先へ切り替える胶囊を出す
-        const THROUGH = [["日比谷線","北千住","東武スカイツリーライン",0,-1,-1,0],["東武スカイツリーライン","北千住","日比谷線",0,-1,-1,0,1],["東西線","中野","JR中央・総武線",0,-1,-1,0],["東西線","西船橋","東葉高速線",0,-1,-1,0],["東西線","西船橋","JR中央・総武線",0,-1,-1,0],["東葉高速線","西船橋","東西線",0,-1,-1,0],["JR中央・総武線","中野","東西線",0,-1,-1,0],["JR中央・総武線","西船橋","東西線",0,-1,-1,0,1],["千代田線","代々木上原","小田急小田原線",0,-1,-1,0],["千代田線","綾瀬","JR常磐線（各駅停車）",0,-1,-1,0],["JR常磐線（各駅停車）","綾瀬","千代田線",0,-1,-1,0],["小田急小田原線","代々木上原","千代田線",0,-1,-1,0,1],["有楽町線","和光市","東武東上線",0,-1,-1,0],["有楽町線","小竹向原","西武有楽町線",0,-1,-1,0,1],["副都心線","和光市","東武東上線",0,-1,-1,0],["副都心線","小竹向原","西武有楽町線",0,-1,-1,0,1],["副都心線","渋谷","東急東横線",0,-1,-1,0],["東武東上線","和光市","有楽町線",0,-1,-1,0,1],["東武東上線","和光市","副都心線",0,-1,-1,0,1],["西武有楽町線","小竹向原","有楽町線",0,-1,-1,1],["西武有楽町線","小竹向原","副都心線",0,-1,-1,1],["西武有楽町線","練馬","西武池袋線",0,-1,-1,0],["西武池袋線","練馬","西武有楽町線",0,-1,-1,0,1],["東急東横線","渋谷","副都心線",0,-1,-1,0],["東急東横線","横浜","みなとみらい線",0,-1,-1,0],["東急東横線","日吉","東急新横浜線",0,-1,-1,0],["みなとみらい線","横浜","東急東横線",0,-1,-1,0],["半蔵門線","渋谷","東急田園都市線",0,-1,-1,0],["半蔵門線","押上〈スカイツリー前〉","東武スカイツリーライン",0,-1,-1,0],["東急田園都市線","渋谷","半蔵門線",0,-1,-1,0],["東武スカイツリーライン","押上〈スカイツリー前〉","半蔵門線",0,-1,-1,0,1],["南北線","目黒","東急目黒線",0,-1,-1,0],["南北線","赤羽岩淵","埼玉高速鉄道線",0,-1,-1,0],["埼玉高速鉄道線","赤羽岩淵","南北線",0,-1,-1,0],["都営三田線","目黒","東急目黒線",0,-1,-1,0],["東急目黒線","目黒","南北線",0,-1,-1,1],["東急目黒線","目黒","都営三田線",0,-1,-1,1],["東急目黒線","日吉","東急新横浜線",0,-1,-1,0],["東急新横浜線","日吉","東急目黒線",0,-1,-1,1],["東急新横浜線","日吉","東急東横線",0,-1,-1,1],["東急新横浜線","新横浜","相鉄新横浜線",0,-1,-1,0],["相鉄新横浜線","新横浜","東急新横浜線",0,-1,-1,0],["相鉄新横浜線","羽沢横浜国大","JR埼京線",0,-1,-1,0],["JR埼京線","大崎","りんかい線",0,-1,-1,0],["JR埼京線","大崎","相鉄新横浜線",0,-1,-1,0],["りんかい線","大崎","JR埼京線",0,-1,-1,0],["都営新宿線","新宿","京王新線",0,-1,-1,0],["京王新線","新宿","都営新宿線",0,-1,-1,0],["京王新線","笹塚","京王線",0,-1,-1,0],["京王線","笹塚","京王新線",0,-1,-1,0,1],["都営浅草線","押上（スカイツリー前）","京成押上線",0,-1,-1,0],["都営浅草線","泉岳寺","京急本線",0,-1,-1,0,1],["京急本線","泉岳寺","都営浅草線",0,-1,-1,0],["京成押上線","押上（スカイツリー前）","都営浅草線",0,-1,-1,0],["京成押上線","京成高砂","北総鉄道北総線",0,-1,-1,0],["北総鉄道北総線","京成高砂","京成押上線",0,-1,-1,0],["JR宇都宮線","栗橋","東武日光線",1,-1,-1,0],["東武日光線","栗橋","JR宇都宮線",1,-1,-1,0,1],["小田急小田原線","新松田","JR御殿場線",1,-1,-1,0],["JR御殿場線","松田","小田急小田原線",1,-1,-1,0,1],["小田急小田原線","小田原","箱根登山鉄道鉄道線",0,-1,-1,0],["箱根登山鉄道鉄道線","小田原","小田急小田原線",0,-1,-1,0],["富士急行線","大月","JR中央本線",0,-1,560,0],["JR中央本線","大月","富士急行線",0,560,-1,0],["伊豆急行線","伊東","JR伊東線",0,-1,-1,0],["JR伊東線","伊東","伊豆急行線",0,-1,-1,0],["伊豆箱根鉄道駿豆線","三島","JR東海道本線",1,-1,-1,0],["JR東海道本線","三島","伊豆箱根鉄道駿豆線",1,-1,-1,0],["会津鉄道会津線","西若松","JR只見線",0,-1,-1,0],["JR只見線","西若松","会津鉄道会津線",0,-1,-1,0],["阿武隈急行線","槻木","JR東北本線",0,-1,-1,0],["JR東北本線","槻木","阿武隈急行線",0,-1,-1,0,1],["仙台空港線","名取","JR東北本線",0,-1,-1,0],["JR東北本線","名取","仙台空港線",0,-1,-1,0,1],["いわて銀河鉄道線","好摩","JR花輪線",0,-1,-1,0],["JR花輪線","好摩","いわて銀河鉄道線",0,-1,-1,0],["青い森鉄道線","野辺地","JR大湊線",0,-1,-1,0],["JR大湊線","野辺地","青い森鉄道線",0,-1,-1,0],["えちぜん鉄道三国芦原線","田原町","福井鉄道福武線",0,-1,-1,0,1],["福井鉄道福武線","田原町","えちぜん鉄道三国芦原線",0,-1,-1,0],["名古屋市営地下鉄鶴舞線","上小田井","名鉄犬山線",0,-1,-1,0],["名古屋市営地下鉄鶴舞線","赤池","名鉄豊田線",0,-1,-1,0],["名鉄犬山線","上小田井","名古屋市営地下鉄鶴舞線",0,-1,-1,0,1],["名鉄豊田線","赤池","名古屋市営地下鉄鶴舞線",0,-1,-1,0],["名古屋市営地下鉄上飯田線","上飯田","名鉄小牧線",0,-1,-1,0],["名鉄小牧線","上飯田","名古屋市営地下鉄上飯田線",0,-1,-1,0],["愛知環状鉄道線","高蔵寺","JR中央本線",0,-1,3,0],["JR中央本線","高蔵寺","愛知環状鉄道線",0,3,-1,0,1],["伊勢鉄道伊勢線","河原田","JR関西本線",0,-1,571,0],["伊勢鉄道伊勢線","津","JR紀勢本線",0,-1,-1,0],["JR関西本線","河原田","伊勢鉄道伊勢線",0,571,-1,0],["JR紀勢本線","津","伊勢鉄道伊勢線",0,-1,-1,0,1],["京都市営地下鉄烏丸線","竹田","近鉄京都線",0,-1,-1,0],["近鉄京都線","竹田","京都市営地下鉄烏丸線",0,-1,-1,0,1],["京都市営地下鉄東西線","御陵","京阪京津線",0,-1,-1,0,1],["京阪京津線","御陵","京都市営地下鉄東西線",0,-1,-1,0],["中央線","長田","近鉄けいはんな線",0,-1,-1,0],["近鉄けいはんな線","長田","中央線",0,-1,-1,0],["阪神なんば線","大阪難波","近鉄難波線",0,-1,-1,0],["近鉄難波線","大阪難波","阪神なんば線",0,-1,-1,0],["堺筋線","天神橋筋六丁目","阪急千里線",0,-1,-1,0],["阪急千里線","天神橋筋六丁目","堺筋線",0,-1,-1,0],["御堂筋線","江坂","北大阪急行電鉄",0,-1,-1,0],["北大阪急行電鉄","江坂","御堂筋線",0,-1,-1,0],["阪急神戸本線","神戸三宮","神戸高速東西線",0,-1,-1,0],["阪神本線","元町","神戸高速東西線",0,-1,-1,0],["神戸高速東西線","三宮","阪急神戸本線",0,-1,-1,0],["神戸高速東西線","元町","阪神本線",0,-1,-1,0],["神戸高速東西線","西代","山陽電鉄本線",0,-1,-1,0],["山陽電鉄本線","西代","神戸高速東西線",0,-1,-1,0],["神戸高速南北線","湊川","神戸電鉄有馬線",0,-1,-1,0],["神戸電鉄有馬線","湊川","神戸高速南北線",0,-1,-1,0],["能勢電鉄妙見線","川西能勢口","阪急宝塚本線",0,-1,-1,0],["阪急宝塚本線","川西能勢口","能勢電鉄妙見線",0,-1,-1,0],["泉北線","中百舌鳥","南海高野線",0,-1,-1,0],["南海高野線","中百舌鳥","泉北線",0,-1,-1,0],["京都丹後鉄道宮福線","福知山","JR山陰本線",1,-1,-1,0],["JR山陰本線","福知山","京都丹後鉄道宮福線",1,-1,-1,0],["智頭急行智頭線","上郡","JR山陽本線",1,-1,-1,0],["智頭急行智頭線","智頭","JR因美線",0,-1,-1,0],["JR山陽本線","上郡","智頭急行智頭線",1,-1,-1,0],["JR因美線","智頭","智頭急行智頭線",0,-1,-1,0],["錦川清流線","川西","JR岩徳線",0,-1,-1,0],["JR岩徳線","川西","錦川清流線",0,-1,-1,0],["土佐くろしお鉄道中村線","窪川","JR土讃線",1,-1,-1,0],["JR土讃線","窪川","土佐くろしお鉄道中村線",1,-1,-1,0],["ごめん・なはり線","後免","JR土讃線",0,-1,-1,0],["JR土讃線","後免","ごめん・なはり線",0,-1,-1,0],["福岡市営地下鉄空港線","姪浜","JR筑肥線",0,-1,-1,0],["JR筑肥線","姪浜","福岡市営地下鉄空港線",0,-1,-1,0],["南阿蘇鉄道高森線","立野","JR豊肥本線",0,-1,-1,0],["JR豊肥本線","立野","南阿蘇鉄道高森線",0,-1,-1,0],["京王線","調布","京王相模原線",0,-1,-1,0,0],["京王相模原線","調布","京王線",0,-1,-1,0],["京王線","北野","京王高尾線",0,-1,-1,0,0],["京王高尾線","北野","京王線",0,-1,-1,0],["京急本線","京急蒲田","京急空港線",0,-1,-1,0,0],["京急空港線","京急蒲田","京急本線",0,-1,-1,0],["京急本線","金沢八景","京急逗子線",0,-1,-1,0,0],["京急逗子線","金沢八景","京急本線",0,-1,-1,0],["京急本線","堀ノ内","京急久里浜線",0,-1,-1,0,0],["京急久里浜線","堀ノ内","京急本線",0,-1,-1,0],["京成本線","京成高砂","京成押上線",0,-1,-1,0,1],["京成押上線","京成高砂","京成本線",0,-1,-1,0],["小田急小田原線","新百合ヶ丘","小田急多摩線",0,-1,-1,0,0],["小田急多摩線","新百合ヶ丘","小田急小田原線",0,-1,-1,0],["小田急小田原線","相模大野","小田急江ノ島線",0,-1,-1,0,0],["小田急江ノ島線","相模大野","小田急小田原線",0,-1,-1,0],["東急田園都市線","溝の口","東急大井町線",1,-1,-1,0,1],["東急大井町線","溝の口","東急田園都市線",1,-1,-1,0],["東武日光線","下今市","東武鬼怒川線",1,-1,-1,0,0],["東武鬼怒川線","下今市","東武日光線",1,-1,-1,0],["東武日光線","栃木","東武宇都宮線",1,-1,-1,0,0],["東武宇都宮線","栃木","東武日光線",1,-1,-1,0],["東武伊勢崎線","太田","東武桐生線",1,-1,-1,0,0],["東武桐生線","太田","東武伊勢崎線",1,-1,-1,0],["西武新宿線","小平","西武拝島線",0,-1,-1,0,0],["西武拝島線","小平","西武新宿線",0,-1,-1,0],["西武池袋線","練馬","西武豊島線",0,-1,-1,0,0],["西武豊島線","練馬","西武池袋線",0,-1,-1,0],["西武池袋線","西所沢","西武狭山線",1,-1,-1,0,0],["西武狭山線","西所沢","西武池袋線",1,-1,-1,0],["相鉄本線","二俣川","相鉄いずみ野線",0,-1,-1,0,0],["相鉄いずみ野線","二俣川","相鉄本線",0,-1,-1,0],["相鉄本線","西谷","相鉄新横浜線",0,-1,-1,0,1],["相鉄新横浜線","西谷","相鉄本線",0,-1,-1,0],["名鉄名古屋本線","国府","名鉄豊川線",0,-1,-1,0,1],["名鉄豊川線","国府","名鉄名古屋本線",0,-1,-1,0],["名鉄名古屋本線","新安城","名鉄西尾線",0,-1,-1,0,1],["名鉄西尾線","新安城","名鉄名古屋本線",0,-1,-1,0],["名鉄名古屋本線","須ヶ口","名鉄津島線",0,-1,-1,0,0],["名鉄津島線","須ヶ口","名鉄名古屋本線",0,-1,-1,0],["名鉄常滑線","太田川","名鉄河和線",0,-1,-1,0,0],["名鉄河和線","太田川","名鉄常滑線",0,-1,-1,0],["名鉄河和線","富貴","名鉄知多新線",0,-1,-1,0,0],["名鉄知多新線","富貴","名鉄河和線",0,-1,-1,0],["名鉄犬山線","犬山","名鉄広見線",0,-1,-1,0,0],["名鉄広見線","犬山","名鉄犬山線",0,-1,-1,0],["名鉄尾西線","津島","名鉄津島線",0,-1,-1,0,0],["名鉄津島線","津島","名鉄尾西線",0,-1,-1,0],["近鉄南大阪線","古市","近鉄長野線",0,-1,-1,0,0],["近鉄長野線","古市","近鉄南大阪線",0,-1,-1,0],["近鉄京都線","大和西大寺","近鉄橿原線",0,-1,-1,0,0],["近鉄橿原線","大和西大寺","近鉄京都線",0,-1,-1,0],["近鉄橿原線","平端","近鉄天理線",1,-1,-1,0,0],["近鉄天理線","平端","近鉄橿原線",1,-1,-1,0],["近鉄大阪線","布施","近鉄奈良線",0,-1,-1,0,0],["近鉄奈良線","布施","近鉄大阪線",0,-1,-1,0],["南海本線","泉佐野","南海空港線",0,-1,-1,0,0],["南海空港線","泉佐野","南海本線",0,-1,-1,0],["京阪本線","天満橋","京阪中之島線",0,-1,-1,0,0],["京阪中之島線","天満橋","京阪本線",0,-1,-1,0],["阪神本線","尼崎","阪神なんば線",0,-1,-1,0,1],["阪神なんば線","尼崎","阪神本線",0,-1,-1,0],["神戸電鉄有馬線","有馬口","神戸電鉄三田線",0,-1,-1,0,0],["神戸電鉄三田線","有馬口","神戸電鉄有馬線",0,-1,-1,0],["神戸電鉄有馬線","鈴蘭台","神戸電鉄粟生線",0,-1,-1,0,0],["神戸電鉄粟生線","鈴蘭台","神戸電鉄有馬線",0,-1,-1,0],["大阪モノレール線","万博記念公園","大阪モノレール彩都線",0,-1,-1,0,0],["大阪モノレール彩都線","万博記念公園","大阪モノレール線",0,-1,-1,0],["能勢電鉄妙見線","山下","能勢電鉄日生線",0,-1,-1,0,0],["能勢電鉄日生線","山下","能勢電鉄妙見線",0,-1,-1,0],["叡山電鉄叡山本線","宝ヶ池","叡山電鉄鞍馬線",0,-1,-1,0,0],["叡山電鉄鞍馬線","宝ヶ池","叡山電鉄叡山本線",0,-1,-1,0],["富山地鉄本線","寺田","富山地鉄立山線",0,-1,-1,0,0],["富山地鉄立山線","寺田","富山地鉄本線",0,-1,-1,0],["西鉄天神大牟田線","西鉄二日市","西鉄太宰府線",1,-1,-1,0,0],["西鉄太宰府線","西鉄二日市","西鉄天神大牟田線",1,-1,-1,0],["京成千葉線","京成津田沼","京成松戸線",0,-1,-1,0],["京成松戸線","京成津田沼","京成千葉線",0,-1,-1,0],["京成千葉線","千葉中央","京成千原線",0,-1,-1,0],["京成千原線","千葉中央","京成千葉線",0,-1,-1,0],["東武スカイツリーライン","東武動物公園","東武伊勢崎線",0,-1,-1,1],["東武スカイツリーライン","東武動物公園","東武日光線",0,-1,-1,1],["東武伊勢崎線","東武動物公園","東武スカイツリーライン",0,-1,-1,0],["東武日光線","東武動物公園","東武スカイツリーライン",0,-1,-1,0],["名鉄犬山線","名鉄名古屋","名鉄名古屋本線",0,-1,-1,1],["名鉄犬山線","名鉄名古屋","名鉄常滑線",0,-1,-1,1],["名鉄常滑線","名鉄名古屋","名鉄犬山線",0,-1,-1,1],["名鉄常滑線","名鉄名古屋","名鉄名古屋本線",0,-1,-1,1],["名鉄常滑線","常滑","名鉄常滑・空港線",0,-1,-1,0],["名鉄常滑・空港線","常滑","名鉄常滑線",0,-1,-1,0],["名鉄竹鼻線","江吉良","名鉄羽島線",0,-1,-1,0],["名鉄羽島線","江吉良","名鉄竹鼻線",0,-1,-1,0],["名鉄犬山線","新鵜沼","名鉄各務原線",1,-1,-1,0],["名鉄各務原線","新鵜沼","名鉄犬山線",1,-1,-1,0],["近鉄大阪線","伊勢中川","近鉄山田線",0,-1,-1,0],["近鉄大阪線","伊勢中川","近鉄名古屋線",1,-1,-1,0],["近鉄名古屋線","伊勢中川","近鉄山田線",0,-1,-1,0],["近鉄名古屋線","伊勢中川","近鉄大阪線",1,-1,-1,0],["近鉄山田線","伊勢中川","近鉄大阪線",0,-1,-1,1],["近鉄山田線","伊勢中川","近鉄名古屋線",0,-1,-1,1],["近鉄山田線","宇治山田","近鉄鳥羽線",0,-1,-1,0],["近鉄鳥羽線","宇治山田","近鉄山田線",0,-1,-1,0],["近鉄鳥羽線","鳥羽","近鉄志摩線",0,-1,-1,0],["近鉄志摩線","鳥羽","近鉄鳥羽線",0,-1,-1,0],["近鉄南大阪線","橿原神宮前","近鉄吉野線",0,-1,-1,0],["近鉄吉野線","橿原神宮前","近鉄南大阪線",0,-1,-1,0],["近鉄大阪線","大阪上本町","近鉄難波線",0,-1,-1,0],["近鉄難波線","大阪上本町","近鉄大阪線",0,-1,-1,0],["南海本線","和歌山市","南海和歌山港線",1,-1,-1,0],["南海和歌山港線","和歌山市","南海本線",1,-1,-1,0],["京阪本線","三条","京阪鴨東線",0,-1,-1,0],["京阪鴨東線","三条","京阪本線",0,-1,-1,0],["京都丹後鉄道宮福線","宮津","京都丹後鉄道宮豊線",0,-1,-1,0],["京都丹後鉄道宮豊線","宮津","京都丹後鉄道宮舞線",0,-1,-1,1],["京都丹後鉄道宮豊線","宮津","京都丹後鉄道宮福線",0,-1,-1,1],["京都丹後鉄道宮舞線","宮津","京都丹後鉄道宮豊線",0,-1,-1,0],["神戸市営地下鉄山手線","新長田","神戸市営地下鉄西神線",0,-1,-1,0],["神戸市営地下鉄西神線","新長田","神戸市営地下鉄山手線",0,-1,-1,0],["神戸市営地下鉄山手線","新神戸","神戸市営地下鉄北神線",0,-1,-1,0],["神戸市営地下鉄北神線","新神戸","神戸市営地下鉄山手線",0,-1,-1,0],["平成筑豊鉄道伊田線","田川伊田","平成筑豊鉄道田川線",0,-1,-1,0],["平成筑豊鉄道田川線","田川伊田","平成筑豊鉄道伊田線",0,-1,-1,0],["土佐くろしお鉄道中村線","中村","土佐くろしお鉄道宿毛線",0,-1,-1,0],["土佐くろしお鉄道宿毛線","中村","土佐くろしお鉄道中村線",0,-1,-1,0],["伊予鉄道高浜線","松山市","伊予鉄道横河原線",0,-1,-1,0],["伊予鉄道横河原線","松山市","伊予鉄道高浜線",0,-1,-1,0],["JR中央線","立川","JR青梅線",0,-1,-1,0,0],["JR青梅線","立川","JR中央線",0,-1,-1,0],["JR青梅線","拝島","JR五日市線",0,-1,-1,0,0],["JR五日市線","拝島","JR青梅線",0,-1,-1,0],["JR函館本線","札幌","JR千歳線",0,-1,-1,0,0],["JR千歳線","札幌","JR函館本線",0,-1,-1,0],["JR千歳線","南千歳","JR石勝線",1,-1,-1,0,1],["JR石勝線","南千歳","JR千歳線",1,-1,-1,0],["JR阪和線","日根野","JR関西空港線",0,-1,-1,0,0],["JR関西空港線","日根野","JR阪和線",0,-1,-1,0],["JR常磐線","我孫子","JR成田線",0,-1,-1,0,0],["JR成田線","我孫子","JR常磐線",0,-1,-1,0],["JR京浜東北・根岸線","東神奈川","JR横浜線",0,-1,-1,0,0],["JR横浜線","東神奈川","JR京浜東北・根岸線",0,-1,-1,0],["JR神戸線","尼崎","JR東西線",0,-1,-1,0,1],["JR東西線","尼崎","JR神戸線",0,-1,-1,1],["JR宝塚線","尼崎","JR東西線",0,-1,-1,0,1],["JR東西線","尼崎","JR宝塚線",0,-1,-1,1],["JR内房線","蘇我","JR京葉線",1,-1,-1,0,1],["JR京葉線","蘇我","JR内房線",1,-1,-1,0],["JR外房線","蘇我","JR京葉線",1,-1,-1,0,1],["JR京葉線","蘇我","JR外房線",1,-1,-1,0],["JR紀勢本線","和歌山","JR阪和線",1,-1,-1,0,0],["JR阪和線","和歌山","JR紀勢本線",1,-1,-1,0],["JR中央本線","塩尻","JR篠ノ井線",0,560,-1,0],["JR中央本線","塩尻","JR篠ノ井線",0,3,-1,0],["JR篠ノ井線","塩尻","JR中央本線",0,-1,560,1],["JR篠ノ井線","塩尻","JR中央本線",0,-1,3,1],["JR篠ノ井線","篠ノ井","JR信越本線",0,-1,-1,0],["JR信越本線","篠ノ井","JR篠ノ井線",0,-1,-1,0],["JR東海道線","熱海","JR伊東線",0,-1,-1,0],["JR伊東線","熱海","JR東海道線",0,-1,-1,0],["JR琵琶湖線","米原","JR北陸本線",0,-1,-1,0],["JR北陸本線","米原","JR琵琶湖線",0,-1,-1,0],["JR湖西線","京都","JR京都線",0,-1,-1,0],["JR京都線","京都","JR湖西線",0,-1,-1,0],["JR学研都市線","京橋","JR東西線",0,-1,-1,0],["JR東西線","京橋","JR学研都市線",0,-1,-1,0],["JR埼京線","大宮","JR川越線",0,-1,-1,0],["JR川越線","大宮","JR埼京線",0,-1,-1,0],["JR横須賀線","東京","JR総武快速線",0,-1,-1,0],["JR総武快速線","東京","JR横須賀線",0,-1,-1,0],["JR宇都宮線","東京","JR東海道線",0,-1,-1,0],["JR総武快速線","千葉","JR内房線",0,-1,-1,1],["JR総武快速線","千葉","JR外房線",0,-1,-1,1],["JR内房線","千葉","JR総武快速線",0,-1,-1,0],["JR外房線","千葉","JR総武快速線",0,-1,-1,0],["JR高崎線","高崎","JR両毛線",0,-1,-1,0],["JR高崎線","高崎","JR上越線",1,-1,-1,0],["JR両毛線","高崎","JR高崎線",0,-1,-1,0],["JR上越線","高崎","JR高崎線",1,-1,-1,0],["JR函館本線","旭川","JR宗谷本線",1,-1,-1,0],["JR函館本線","旭川","JR石北本線",1,-1,-1,0],["JR宗谷本線","旭川","JR函館本線",1,-1,-1,0],["JR石北本線","旭川","JR函館本線",1,-1,-1,0],["西武池袋線","吾野","西武秩父線",0,-1,-1,0],["西武秩父線","吾野","西武池袋線",0,-1,-1,0],["JR京葉線","市川塩浜","JR武蔵野線",0,-1,-1,0,0],["JR武蔵野線","市川塩浜","JR京葉線",0,-1,-1,0],["JR京葉線","南船橋","JR武蔵野線",0,-1,-1,0,1],["JR武蔵野線","南船橋","JR京葉線",0,-1,-1,0],["JR総武本線","佐倉","JR成田線",0,-1,-1,0,0],["JR成田線","佐倉","JR総武本線",0,-1,-1,0],["JR鹿児島本線","鳥栖","JR長崎本線",1,-1,-1,0,0],["JR長崎本線","鳥栖","JR鹿児島本線",1,-1,-1,0],["JR室蘭本線","苫小牧","JR千歳線",1,-1,-1,0,0],["JR千歳線","苫小牧","JR室蘭本線",1,-1,-1,0],["JR篠ノ井線","松本","JR大糸線",1,-1,-1,0,0],["JR大糸線","松本","JR篠ノ井線",1,-1,-1,0],["JR琵琶湖線","草津","JR草津線",1,-1,-1,0,1],["JR草津線","草津","JR琵琶湖線",1,-1,-1,0],["JR北陸本線","近江塩津","JR湖西線",0,-1,-1,0,1],["JR湖西線","近江塩津","JR北陸本線",0,-1,-1,0],["JR山陽本線","相生","JR赤穂線",0,-1,-1,0,0],["JR赤穂線","相生","JR山陽本線",0,-1,-1,0],["JR宇野線","茶屋町","JR瀬戸大橋線",0,-1,-1,0,0],["JR瀬戸大橋線","茶屋町","JR宇野線",0,-1,-1,0],["JR予讃線","宇多津","JR瀬戸大橋線",0,-1,-1,0,0],["JR瀬戸大橋線","宇多津","JR予讃線",0,-1,-1,0],["JR信越本線","新津","JR磐越西線",0,-1,-1,0,1],["JR磐越西線","新津","JR信越本線",0,-1,-1,0],["JR日豊本線","宮崎","JR宮崎空港線",1,-1,-1,0,0],["JR宮崎空港線","宮崎","JR日豊本線",1,-1,-1,0],["JR信越本線","長岡","JR上越線",1,-1,-1,0,1],["JR上越線","長岡","JR信越本線",1,-1,-1,0],["JR大和路線","久宝寺","JRおおさか東線",1,-1,-1,0,0],["JRおおさか東線","久宝寺","JR大和路線",1,-1,-1,0],["JR根室本線","新得","JR石勝線",1,-1,-1,0],["JR石勝線","新得","JR根室本線",1,-1,-1,0],["JR上野東京ライン","上野","JR宇都宮線",0,-1,-1,1],["JR上野東京ライン","上野","JR高崎線",0,-1,-1,1],["JR上野東京ライン","上野","JR常磐線",0,-1,-1,1],["JR高崎線","上野","JR上野東京ライン",0,-1,-1,0],["JR常磐線","上野","JR上野東京ライン",0,-1,-1,0],["JR上野東京ライン","東京","JR東海道線",0,-1,-1,0],["JR東海道線","東京","JR上野東京ライン",0,-1,-1,0],["JR湘南新宿ライン","大宮","JR宇都宮線",0,-1,-1,1],["JR湘南新宿ライン","大宮","JR高崎線",0,-1,-1,1],["JR湘南新宿ライン","大船","JR東海道線",0,-1,-1,1],["JR湘南新宿ライン","大船","JR横須賀線",0,-1,-1,1],["JR宇都宮線","大宮","JR湘南新宿ライン",0,-1,-1,0,1],["JR高崎線","大宮","JR湘南新宿ライン",0,-1,-1,0,1],["JR東海道線","戸塚","JR湘南新宿ライン",0,-1,-1,0,1],["JR横須賀線","大船","JR湘南新宿ライン",0,-1,-1,0,0],["東北新幹線","盛岡","JR田沢湖線",1,-1,-1,0],["JR田沢湖線","盛岡","東北新幹線",1,-1,-1,0],["東北新幹線","福島","JR山形線",1,-1,-1,0],["JR山形線","福島","東北新幹線",1,-1,-1,0],["東北新幹線","大宮","上越新幹線",0,-1,-1,0],["上越新幹線","大宮","東北新幹線",0,-1,-1,0],["東北新幹線","大宮","北陸新幹線",0,-1,-1,0],["北陸新幹線","大宮","東北新幹線",0,-1,-1,0],["東成田線","京成成田","京成本線",0,-1,-1,0],["京成本線","京成成田","東成田線",0,-1,-1,0],["上越新幹線","高崎","北陸新幹線",0,-1,-1,0],["北陸新幹線","高崎","上越新幹線",0,-1,-1,0]];
+        const THROUGH = [["日比谷線","北千住","東武スカイツリーライン",0,-1,-1,0],["東武スカイツリーライン","北千住","日比谷線",0,-1,-1,0,1],["東西線","中野","JR中央・総武線",0,-1,-1,0],["東西線","西船橋","東葉高速線",0,-1,-1,0],["東西線","西船橋","JR中央・総武線",0,-1,-1,0],["東葉高速線","西船橋","東西線",0,-1,-1,0],["JR中央・総武線","中野","東西線",0,-1,-1,0],["JR中央・総武線","西船橋","東西線",0,-1,-1,0,1],["千代田線","代々木上原","小田急小田原線",0,-1,-1,0],["千代田線","綾瀬","JR常磐線（各駅停車）",0,-1,-1,0],["JR常磐線（各駅停車）","綾瀬","千代田線",0,-1,-1,0],["小田急小田原線","代々木上原","千代田線",0,-1,-1,0,1],["有楽町線","和光市","東武東上線",0,-1,-1,0],["有楽町線","小竹向原","西武有楽町線",0,-1,-1,0,1],["副都心線","和光市","東武東上線",0,-1,-1,0],["副都心線","小竹向原","西武有楽町線",0,-1,-1,0,1],["副都心線","渋谷","東急東横線",0,-1,-1,0],["東武東上線","和光市","有楽町線",0,-1,-1,0,1],["東武東上線","和光市","副都心線",0,-1,-1,0,1],["西武有楽町線","小竹向原","有楽町線",0,-1,-1,1],["西武有楽町線","小竹向原","副都心線",0,-1,-1,1],["西武有楽町線","練馬","西武池袋線",0,-1,-1,0],["西武池袋線","練馬","西武有楽町線",0,-1,-1,0,1],["東急東横線","渋谷","副都心線",0,-1,-1,0],["東急東横線","横浜","みなとみらい線",0,-1,-1,0],["東急東横線","日吉","東急新横浜線",0,-1,-1,0],["みなとみらい線","横浜","東急東横線",0,-1,-1,0],["半蔵門線","渋谷","東急田園都市線",0,-1,-1,0],["半蔵門線","押上〈スカイツリー前〉","東武スカイツリーライン",0,-1,-1,0],["東急田園都市線","渋谷","半蔵門線",0,-1,-1,0],["東武スカイツリーライン","押上〈スカイツリー前〉","半蔵門線",0,-1,-1,0,1],["南北線","目黒","東急目黒線",0,-1,-1,0],["南北線","赤羽岩淵","埼玉高速鉄道線",0,-1,-1,0],["埼玉高速鉄道線","赤羽岩淵","南北線",0,-1,-1,0],["都営三田線","目黒","東急目黒線",0,-1,-1,0],["東急目黒線","目黒","南北線",0,-1,-1,1],["東急目黒線","目黒","都営三田線",0,-1,-1,1],["東急目黒線","日吉","東急新横浜線",0,-1,-1,0],["東急新横浜線","日吉","東急目黒線",0,-1,-1,1],["東急新横浜線","日吉","東急東横線",0,-1,-1,1],["東急新横浜線","新横浜","相鉄新横浜線",0,-1,-1,0],["相鉄新横浜線","新横浜","東急新横浜線",0,-1,-1,0],["相鉄新横浜線","羽沢横浜国大","JR埼京線",0,-1,-1,0],["JR埼京線","大崎","りんかい線",0,-1,-1,0],["JR埼京線","大崎","相鉄新横浜線",0,-1,-1,0],["りんかい線","大崎","JR埼京線",0,-1,-1,0],["都営新宿線","新宿","京王新線",0,-1,-1,0],["京王新線","新宿","都営新宿線",0,-1,-1,0],["京王新線","笹塚","京王線",0,-1,-1,0],["京王線","笹塚","京王新線",0,-1,-1,0,1],["都営浅草線","押上（スカイツリー前）","京成押上線",0,-1,-1,0],["都営浅草線","泉岳寺","京急本線",0,-1,-1,0,1],["京急本線","泉岳寺","都営浅草線",0,-1,-1,0],["京成押上線","押上（スカイツリー前）","都営浅草線",0,-1,-1,0],["京成押上線","京成高砂","北総鉄道北総線",0,-1,-1,0],["北総鉄道北総線","京成高砂","京成押上線",0,-1,-1,0],["JR宇都宮線","栗橋","東武日光線",1,-1,-1,0],["東武日光線","栗橋","JR宇都宮線",1,-1,-1,0,1],["小田急小田原線","新松田","JR御殿場線",1,-1,-1,0],["JR御殿場線","松田","小田急小田原線",1,-1,-1,0,1],["小田急小田原線","小田原","箱根登山鉄道鉄道線",0,-1,-1,0],["箱根登山鉄道鉄道線","小田原","小田急小田原線",0,-1,-1,0],["富士急行線","大月","JR中央本線",0,-1,560,0],["JR中央本線","大月","富士急行線",0,560,-1,0],["伊豆急行線","伊東","JR伊東線",0,-1,-1,0],["JR伊東線","伊東","伊豆急行線",0,-1,-1,0],["伊豆箱根鉄道駿豆線","三島","JR東海道本線",1,-1,-1,0],["JR東海道本線","三島","伊豆箱根鉄道駿豆線",1,-1,-1,0],["会津鉄道会津線","西若松","JR只見線",0,-1,-1,0],["JR只見線","西若松","会津鉄道会津線",0,-1,-1,0],["阿武隈急行線","槻木","JR東北本線",0,-1,-1,0],["JR東北本線","槻木","阿武隈急行線",0,-1,-1,0,1],["仙台空港線","名取","JR東北本線",0,-1,-1,0],["JR東北本線","名取","仙台空港線",0,-1,-1,0,1],["いわて銀河鉄道線","好摩","JR花輪線",0,-1,-1,0],["JR花輪線","好摩","いわて銀河鉄道線",0,-1,-1,0],["青い森鉄道線","野辺地","JR大湊線",0,-1,-1,0],["JR大湊線","野辺地","青い森鉄道線",0,-1,-1,0],["JR津軽線","青森","JR奥羽本線",1,-1,-1,0],["JR奥羽本線","青森","JR津軽線",1,-1,-1,0],["えちぜん鉄道三国芦原線","田原町","福井鉄道福武線",0,-1,-1,0,1],["福井鉄道福武線","田原町","えちぜん鉄道三国芦原線",0,-1,-1,0],["名古屋市営地下鉄鶴舞線","上小田井","名鉄犬山線",0,-1,-1,0],["名古屋市営地下鉄鶴舞線","赤池","名鉄豊田線",0,-1,-1,0],["名鉄犬山線","上小田井","名古屋市営地下鉄鶴舞線",0,-1,-1,0,1],["名鉄豊田線","赤池","名古屋市営地下鉄鶴舞線",0,-1,-1,0],["名古屋市営地下鉄上飯田線","上飯田","名鉄小牧線",0,-1,-1,0],["名鉄小牧線","上飯田","名古屋市営地下鉄上飯田線",0,-1,-1,0],["愛知環状鉄道線","高蔵寺","JR中央本線",0,-1,3,0],["JR中央本線","高蔵寺","愛知環状鉄道線",0,3,-1,0,1],["伊勢鉄道伊勢線","河原田","JR関西本線",0,-1,571,0],["伊勢鉄道伊勢線","津","JR紀勢本線",0,-1,-1,0],["JR関西本線","河原田","伊勢鉄道伊勢線",0,571,-1,0],["JR紀勢本線","津","伊勢鉄道伊勢線",0,-1,-1,0,1],["京都市営地下鉄烏丸線","竹田","近鉄京都線",0,-1,-1,0],["近鉄京都線","竹田","京都市営地下鉄烏丸線",0,-1,-1,0,1],["京都市営地下鉄東西線","御陵","京阪京津線",0,-1,-1,0,1],["京阪京津線","御陵","京都市営地下鉄東西線",0,-1,-1,0],["中央線","長田","近鉄けいはんな線",0,-1,-1,0],["近鉄けいはんな線","長田","中央線",0,-1,-1,0],["阪神なんば線","大阪難波","近鉄難波線",0,-1,-1,0],["近鉄難波線","大阪難波","阪神なんば線",0,-1,-1,0],["堺筋線","天神橋筋六丁目","阪急千里線",0,-1,-1,0],["阪急千里線","天神橋筋六丁目","堺筋線",0,-1,-1,0],["御堂筋線","江坂","北大阪急行電鉄",0,-1,-1,0],["北大阪急行電鉄","江坂","御堂筋線",0,-1,-1,0],["阪急神戸本線","神戸三宮","神戸高速東西線",0,-1,-1,0],["阪神本線","元町","神戸高速東西線",0,-1,-1,0],["神戸高速東西線","三宮","阪急神戸本線",0,-1,-1,0],["神戸高速東西線","元町","阪神本線",0,-1,-1,0],["神戸高速東西線","西代","山陽電鉄本線",0,-1,-1,0],["山陽電鉄本線","西代","神戸高速東西線",0,-1,-1,0],["神戸高速南北線","湊川","神戸電鉄有馬線",0,-1,-1,0],["神戸電鉄有馬線","湊川","神戸高速南北線",0,-1,-1,0],["能勢電鉄妙見線","川西能勢口","阪急宝塚本線",0,-1,-1,0],["阪急宝塚本線","川西能勢口","能勢電鉄妙見線",0,-1,-1,0],["泉北線","中百舌鳥","南海高野線",0,-1,-1,0],["南海高野線","中百舌鳥","泉北線",0,-1,-1,0],["京都丹後鉄道宮福線","福知山","JR山陰本線",1,-1,-1,0],["JR山陰本線","福知山","京都丹後鉄道宮福線",1,-1,-1,0],["智頭急行智頭線","上郡","JR山陽本線",1,-1,-1,0],["智頭急行智頭線","智頭","JR因美線",0,-1,-1,0],["JR山陽本線","上郡","智頭急行智頭線",1,-1,-1,0],["JR因美線","智頭","智頭急行智頭線",0,-1,-1,0],["錦川清流線","川西","JR岩徳線",0,-1,-1,0],["JR岩徳線","川西","錦川清流線",0,-1,-1,0],["土佐くろしお鉄道中村線","窪川","JR土讃線",1,-1,-1,0],["JR土讃線","窪川","土佐くろしお鉄道中村線",1,-1,-1,0],["ごめん・なはり線","後免","JR土讃線",0,-1,-1,0],["JR土讃線","後免","ごめん・なはり線",0,-1,-1,0],["福岡市営地下鉄空港線","姪浜","JR筑肥線",0,-1,-1,0],["JR筑肥線","姪浜","福岡市営地下鉄空港線",0,-1,-1,0],["南阿蘇鉄道高森線","立野","JR豊肥本線",0,-1,-1,0],["JR豊肥本線","立野","南阿蘇鉄道高森線",0,-1,-1,0],["京王線","調布","京王相模原線",0,-1,-1,0,0],["京王相模原線","調布","京王線",0,-1,-1,0],["京王線","北野","京王高尾線",0,-1,-1,0,0],["京王高尾線","北野","京王線",0,-1,-1,0],["京急本線","京急蒲田","京急空港線",0,-1,-1,0,0],["京急空港線","京急蒲田","京急本線",0,-1,-1,0],["京急本線","金沢八景","京急逗子線",0,-1,-1,0,0],["京急逗子線","金沢八景","京急本線",0,-1,-1,0],["京急本線","堀ノ内","京急久里浜線",0,-1,-1,0,0],["京急久里浜線","堀ノ内","京急本線",0,-1,-1,0],["京成本線","京成高砂","京成押上線",0,-1,-1,0,1],["京成押上線","京成高砂","京成本線",0,-1,-1,0],["小田急小田原線","新百合ヶ丘","小田急多摩線",0,-1,-1,0,0],["小田急多摩線","新百合ヶ丘","小田急小田原線",0,-1,-1,0],["小田急小田原線","相模大野","小田急江ノ島線",0,-1,-1,0,0],["小田急江ノ島線","相模大野","小田急小田原線",0,-1,-1,0],["東急田園都市線","溝の口","東急大井町線",1,-1,-1,0,1],["東急大井町線","溝の口","東急田園都市線",1,-1,-1,0],["東武日光線","下今市","東武鬼怒川線",1,-1,-1,0,0],["東武鬼怒川線","下今市","東武日光線",1,-1,-1,0],["東武日光線","栃木","東武宇都宮線",1,-1,-1,0,0],["東武宇都宮線","栃木","東武日光線",1,-1,-1,0],["東武伊勢崎線","太田","東武桐生線",1,-1,-1,0,0],["東武桐生線","太田","東武伊勢崎線",1,-1,-1,0],["西武新宿線","小平","西武拝島線",0,-1,-1,0,0],["西武拝島線","小平","西武新宿線",0,-1,-1,0],["西武池袋線","練馬","西武豊島線",0,-1,-1,0,0],["西武豊島線","練馬","西武池袋線",0,-1,-1,0],["西武池袋線","西所沢","西武狭山線",1,-1,-1,0,0],["西武狭山線","西所沢","西武池袋線",1,-1,-1,0],["相鉄本線","二俣川","相鉄いずみ野線",0,-1,-1,0,0],["相鉄いずみ野線","二俣川","相鉄本線",0,-1,-1,0],["相鉄本線","西谷","相鉄新横浜線",0,-1,-1,0,1],["相鉄新横浜線","西谷","相鉄本線",0,-1,-1,0],["名鉄名古屋本線","国府","名鉄豊川線",0,-1,-1,0,1],["名鉄豊川線","国府","名鉄名古屋本線",0,-1,-1,0],["名鉄名古屋本線","新安城","名鉄西尾線",0,-1,-1,0,1],["名鉄西尾線","新安城","名鉄名古屋本線",0,-1,-1,0],["名鉄名古屋本線","須ヶ口","名鉄津島線",0,-1,-1,0,0],["名鉄津島線","須ヶ口","名鉄名古屋本線",0,-1,-1,0],["名鉄常滑線","太田川","名鉄河和線",0,-1,-1,0,0],["名鉄河和線","太田川","名鉄常滑線",0,-1,-1,0],["名鉄河和線","富貴","名鉄知多新線",0,-1,-1,0,0],["名鉄知多新線","富貴","名鉄河和線",0,-1,-1,0],["名鉄犬山線","犬山","名鉄広見線",0,-1,-1,0,0],["名鉄広見線","犬山","名鉄犬山線",0,-1,-1,0],["名鉄尾西線","津島","名鉄津島線",0,-1,-1,0,0],["名鉄津島線","津島","名鉄尾西線",0,-1,-1,0],["近鉄南大阪線","古市","近鉄長野線",0,-1,-1,0,0],["近鉄長野線","古市","近鉄南大阪線",0,-1,-1,0],["近鉄京都線","大和西大寺","近鉄橿原線",0,-1,-1,0,0],["近鉄橿原線","大和西大寺","近鉄京都線",0,-1,-1,0],["近鉄橿原線","平端","近鉄天理線",1,-1,-1,0,0],["近鉄天理線","平端","近鉄橿原線",1,-1,-1,0],["近鉄大阪線","布施","近鉄奈良線",0,-1,-1,0,0],["近鉄奈良線","布施","近鉄大阪線",0,-1,-1,0],["南海本線","泉佐野","南海空港線",0,-1,-1,0,0],["南海空港線","泉佐野","南海本線",0,-1,-1,0],["京阪本線","天満橋","京阪中之島線",0,-1,-1,0,0],["京阪中之島線","天満橋","京阪本線",0,-1,-1,0],["阪神本線","尼崎","阪神なんば線",0,-1,-1,0,1],["阪神なんば線","尼崎","阪神本線",0,-1,-1,0],["神戸電鉄有馬線","有馬口","神戸電鉄三田線",0,-1,-1,0,0],["神戸電鉄三田線","有馬口","神戸電鉄有馬線",0,-1,-1,0],["神戸電鉄有馬線","鈴蘭台","神戸電鉄粟生線",0,-1,-1,0,0],["神戸電鉄粟生線","鈴蘭台","神戸電鉄有馬線",0,-1,-1,0],["大阪モノレール線","万博記念公園","大阪モノレール彩都線",0,-1,-1,0,0],["大阪モノレール彩都線","万博記念公園","大阪モノレール線",0,-1,-1,0],["能勢電鉄妙見線","山下","能勢電鉄日生線",0,-1,-1,0,0],["能勢電鉄日生線","山下","能勢電鉄妙見線",0,-1,-1,0],["叡山電鉄叡山本線","宝ヶ池","叡山電鉄鞍馬線",0,-1,-1,0,0],["叡山電鉄鞍馬線","宝ヶ池","叡山電鉄叡山本線",0,-1,-1,0],["富山地鉄本線","寺田","富山地鉄立山線",0,-1,-1,0,0],["富山地鉄立山線","寺田","富山地鉄本線",0,-1,-1,0],["西鉄天神大牟田線","西鉄二日市","西鉄太宰府線",1,-1,-1,0,0],["西鉄太宰府線","西鉄二日市","西鉄天神大牟田線",1,-1,-1,0],["京成千葉線","京成津田沼","京成松戸線",0,-1,-1,0],["京成松戸線","京成津田沼","京成千葉線",0,-1,-1,0],["京成千葉線","千葉中央","京成千原線",0,-1,-1,0],["京成千原線","千葉中央","京成千葉線",0,-1,-1,0],["東武スカイツリーライン","東武動物公園","東武伊勢崎線",0,-1,-1,1],["東武スカイツリーライン","東武動物公園","東武日光線",0,-1,-1,1],["東武伊勢崎線","東武動物公園","東武スカイツリーライン",0,-1,-1,0],["東武日光線","東武動物公園","東武スカイツリーライン",0,-1,-1,0],["名鉄犬山線","名鉄名古屋","名鉄名古屋本線",0,-1,-1,1],["名鉄犬山線","名鉄名古屋","名鉄常滑線",0,-1,-1,1],["名鉄常滑線","名鉄名古屋","名鉄犬山線",0,-1,-1,1],["名鉄常滑線","名鉄名古屋","名鉄名古屋本線",0,-1,-1,1],["名鉄常滑線","常滑","名鉄常滑・空港線",0,-1,-1,0],["名鉄常滑・空港線","常滑","名鉄常滑線",0,-1,-1,0],["名鉄竹鼻線","江吉良","名鉄羽島線",0,-1,-1,0],["名鉄羽島線","江吉良","名鉄竹鼻線",0,-1,-1,0],["名鉄犬山線","新鵜沼","名鉄各務原線",1,-1,-1,0],["名鉄各務原線","新鵜沼","名鉄犬山線",1,-1,-1,0],["近鉄大阪線","伊勢中川","近鉄山田線",0,-1,-1,0],["近鉄大阪線","伊勢中川","近鉄名古屋線",1,-1,-1,0],["近鉄名古屋線","伊勢中川","近鉄山田線",0,-1,-1,0],["近鉄名古屋線","伊勢中川","近鉄大阪線",1,-1,-1,0],["近鉄山田線","伊勢中川","近鉄大阪線",0,-1,-1,1],["近鉄山田線","伊勢中川","近鉄名古屋線",0,-1,-1,1],["近鉄山田線","宇治山田","近鉄鳥羽線",0,-1,-1,0],["近鉄鳥羽線","宇治山田","近鉄山田線",0,-1,-1,0],["近鉄鳥羽線","鳥羽","近鉄志摩線",0,-1,-1,0],["近鉄志摩線","鳥羽","近鉄鳥羽線",0,-1,-1,0],["近鉄南大阪線","橿原神宮前","近鉄吉野線",0,-1,-1,0],["近鉄吉野線","橿原神宮前","近鉄南大阪線",0,-1,-1,0],["近鉄大阪線","大阪上本町","近鉄難波線",0,-1,-1,0],["近鉄難波線","大阪上本町","近鉄大阪線",0,-1,-1,0],["南海本線","和歌山市","南海和歌山港線",1,-1,-1,0],["南海和歌山港線","和歌山市","南海本線",1,-1,-1,0],["京阪本線","三条","京阪鴨東線",0,-1,-1,0],["京阪鴨東線","三条","京阪本線",0,-1,-1,0],["京都丹後鉄道宮福線","宮津","京都丹後鉄道宮豊線",0,-1,-1,0],["京都丹後鉄道宮豊線","宮津","京都丹後鉄道宮舞線",0,-1,-1,1],["京都丹後鉄道宮豊線","宮津","京都丹後鉄道宮福線",0,-1,-1,1],["京都丹後鉄道宮舞線","宮津","京都丹後鉄道宮豊線",0,-1,-1,0],["神戸市営地下鉄山手線","新長田","神戸市営地下鉄西神線",0,-1,-1,0],["神戸市営地下鉄西神線","新長田","神戸市営地下鉄山手線",0,-1,-1,0],["神戸市営地下鉄山手線","新神戸","神戸市営地下鉄北神線",0,-1,-1,0],["神戸市営地下鉄北神線","新神戸","神戸市営地下鉄山手線",0,-1,-1,0],["平成筑豊鉄道伊田線","田川伊田","平成筑豊鉄道田川線",0,-1,-1,0],["平成筑豊鉄道田川線","田川伊田","平成筑豊鉄道伊田線",0,-1,-1,0],["土佐くろしお鉄道中村線","中村","土佐くろしお鉄道宿毛線",0,-1,-1,0],["土佐くろしお鉄道宿毛線","中村","土佐くろしお鉄道中村線",0,-1,-1,0],["伊予鉄道高浜線","松山市","伊予鉄道横河原線",0,-1,-1,0],["伊予鉄道横河原線","松山市","伊予鉄道高浜線",0,-1,-1,0],["JR中央線","立川","JR青梅線",0,-1,-1,0,0],["JR青梅線","立川","JR中央線",0,-1,-1,0],["JR青梅線","拝島","JR五日市線",0,-1,-1,0,0],["JR五日市線","拝島","JR青梅線",0,-1,-1,0],["JR函館本線","札幌","JR千歳線",0,-1,-1,0,0],["JR千歳線","札幌","JR函館本線",0,-1,-1,0],["JR千歳線","南千歳","JR石勝線",1,-1,-1,0,1],["JR石勝線","南千歳","JR千歳線",1,-1,-1,0],["JR阪和線","日根野","JR関西空港線",0,-1,-1,0,0],["JR関西空港線","日根野","JR阪和線",0,-1,-1,0],["JR常磐線","我孫子","JR成田線",0,-1,-1,0,0],["JR成田線","我孫子","JR常磐線",0,-1,-1,0],["JR京浜東北・根岸線","東神奈川","JR横浜線",0,-1,-1,0,0],["JR横浜線","東神奈川","JR京浜東北・根岸線",0,-1,-1,0],["JR神戸線","尼崎","JR東西線",0,-1,-1,0,1],["JR東西線","尼崎","JR神戸線",0,-1,-1,1],["JR宝塚線","尼崎","JR東西線",0,-1,-1,0,1],["JR東西線","尼崎","JR宝塚線",0,-1,-1,1],["JR内房線","蘇我","JR京葉線",1,-1,-1,0,1],["JR京葉線","蘇我","JR内房線",1,-1,-1,0],["JR外房線","蘇我","JR京葉線",1,-1,-1,0,1],["JR京葉線","蘇我","JR外房線",1,-1,-1,0],["JR紀勢本線","和歌山","JR阪和線",1,-1,-1,0,0],["JR阪和線","和歌山","JR紀勢本線",1,-1,-1,0],["JR中央本線","塩尻","JR篠ノ井線",0,560,-1,0],["JR中央本線","塩尻","JR篠ノ井線",0,3,-1,0],["JR篠ノ井線","塩尻","JR中央本線",0,-1,560,1],["JR篠ノ井線","塩尻","JR中央本線",0,-1,3,1],["JR篠ノ井線","篠ノ井","JR信越本線",0,-1,-1,0],["JR信越本線","篠ノ井","JR篠ノ井線",0,-1,-1,0],["JR東海道線","熱海","JR伊東線",0,-1,-1,0],["JR伊東線","熱海","JR東海道線",0,-1,-1,0],["JR琵琶湖線","米原","JR北陸本線",0,-1,-1,0],["JR北陸本線","米原","JR琵琶湖線",0,-1,-1,0],["JR湖西線","京都","JR京都線",0,-1,-1,0],["JR京都線","京都","JR湖西線",0,-1,-1,0],["JR学研都市線","京橋","JR東西線",0,-1,-1,0],["JR東西線","京橋","JR学研都市線",0,-1,-1,0],["JR埼京線","大宮","JR川越線",0,-1,-1,0],["JR川越線","大宮","JR埼京線",0,-1,-1,0],["JR横須賀線","東京","JR総武快速線",0,-1,-1,0],["JR総武快速線","東京","JR横須賀線",0,-1,-1,0],["JR宇都宮線","東京","JR東海道線",0,-1,-1,0],["JR総武快速線","千葉","JR内房線",0,-1,-1,1],["JR総武快速線","千葉","JR外房線",0,-1,-1,1],["JR内房線","千葉","JR総武快速線",0,-1,-1,0],["JR外房線","千葉","JR総武快速線",0,-1,-1,0],["JR高崎線","高崎","JR両毛線",0,-1,-1,0],["JR高崎線","高崎","JR上越線",1,-1,-1,0],["JR両毛線","高崎","JR高崎線",0,-1,-1,0],["JR上越線","高崎","JR高崎線",1,-1,-1,0],["JR函館本線","旭川","JR宗谷本線",1,-1,-1,0],["JR函館本線","旭川","JR石北本線",1,-1,-1,0],["JR宗谷本線","旭川","JR函館本線",1,-1,-1,0],["JR石北本線","旭川","JR函館本線",1,-1,-1,0],["西武池袋線","吾野","西武秩父線",0,-1,-1,0],["西武秩父線","吾野","西武池袋線",0,-1,-1,0],["JR京葉線","市川塩浜","JR武蔵野線",0,-1,-1,0,0],["JR武蔵野線","市川塩浜","JR京葉線",0,-1,-1,0],["JR京葉線","南船橋","JR武蔵野線",0,-1,-1,0,1],["JR武蔵野線","南船橋","JR京葉線",0,-1,-1,0],["JR総武本線","佐倉","JR成田線",0,-1,-1,0,0],["JR成田線","佐倉","JR総武本線",0,-1,-1,0],["JR鹿児島本線","鳥栖","JR長崎本線",1,-1,-1,0,0],["JR長崎本線","鳥栖","JR鹿児島本線",1,-1,-1,0],["JR室蘭本線","苫小牧","JR千歳線",1,-1,-1,0,0],["JR千歳線","苫小牧","JR室蘭本線",1,-1,-1,0],["JR篠ノ井線","松本","JR大糸線",1,-1,-1,0,0],["JR大糸線","松本","JR篠ノ井線",1,-1,-1,0],["JR琵琶湖線","草津","JR草津線",1,-1,-1,0,1],["JR草津線","草津","JR琵琶湖線",1,-1,-1,0],["JR北陸本線","近江塩津","JR湖西線",0,-1,-1,0,1],["JR湖西線","近江塩津","JR北陸本線",0,-1,-1,0],["JR山陽本線","相生","JR赤穂線",0,-1,-1,0,0],["JR赤穂線","相生","JR山陽本線",0,-1,-1,0],["JR宇野線","茶屋町","JR瀬戸大橋線",0,-1,-1,0,0],["JR瀬戸大橋線","茶屋町","JR宇野線",0,-1,-1,0],["JR予讃線","宇多津","JR瀬戸大橋線",0,-1,-1,0,0],["JR瀬戸大橋線","宇多津","JR予讃線",0,-1,-1,0],["JR信越本線","新津","JR磐越西線",0,-1,-1,0,1],["JR磐越西線","新津","JR信越本線",0,-1,-1,0],["JR日豊本線","宮崎","JR宮崎空港線",1,-1,-1,0,0],["JR宮崎空港線","宮崎","JR日豊本線",1,-1,-1,0],["JR信越本線","長岡","JR上越線",1,-1,-1,0,1],["JR上越線","長岡","JR信越本線",1,-1,-1,0],["JR大和路線","久宝寺","JRおおさか東線",1,-1,-1,0,0],["JRおおさか東線","久宝寺","JR大和路線",1,-1,-1,0],["JR根室本線","新得","JR石勝線",1,-1,-1,0],["JR石勝線","新得","JR根室本線",1,-1,-1,0],["JR上野東京ライン","上野","JR宇都宮線",0,-1,-1,1],["JR上野東京ライン","上野","JR高崎線",0,-1,-1,1],["JR上野東京ライン","上野","JR常磐線",0,-1,-1,1],["JR高崎線","上野","JR上野東京ライン",0,-1,-1,0],["JR常磐線","上野","JR上野東京ライン",0,-1,-1,0],["JR上野東京ライン","東京","JR東海道線",0,-1,-1,0],["JR東海道線","東京","JR上野東京ライン",0,-1,-1,0],["JR湘南新宿ライン","大宮","JR宇都宮線",0,-1,-1,1],["JR湘南新宿ライン","大宮","JR高崎線",0,-1,-1,1],["JR湘南新宿ライン","大船","JR東海道線",0,-1,-1,1],["JR湘南新宿ライン","大船","JR横須賀線",0,-1,-1,1],["JR宇都宮線","大宮","JR湘南新宿ライン",0,-1,-1,0,1],["JR高崎線","大宮","JR湘南新宿ライン",0,-1,-1,0,1],["JR東海道線","戸塚","JR湘南新宿ライン",0,-1,-1,0,1],["JR横須賀線","大船","JR湘南新宿ライン",0,-1,-1,0,0],["東北新幹線","盛岡","JR田沢湖線",1,-1,-1,0],["JR田沢湖線","盛岡","東北新幹線",1,-1,-1,0],["東北新幹線","福島","JR山形線",1,-1,-1,0],["JR山形線","福島","東北新幹線",1,-1,-1,0],["東北新幹線","大宮","上越新幹線",0,-1,-1,0],["上越新幹線","大宮","東北新幹線",0,-1,-1,0],["東北新幹線","大宮","北陸新幹線",0,-1,-1,0],["北陸新幹線","大宮","東北新幹線",0,-1,-1,0],["東成田線","京成成田","京成本線",0,-1,-1,0],["京成本線","京成成田","東成田線",0,-1,-1,0],["上越新幹線","高崎","北陸新幹線",0,-1,-1,0],["北陸新幹線","高崎","上越新幹線",0,-1,-1,0]];
         // 本線の列車がほとんど行かない端の一駅（線の横に小さく枝分かれさせて描き、本線は直通先へまっすぐ延ばす）
         const SPUR = { '千代田線': { at: '綾瀬', st: ['北綾瀬'] } };
         // その駅で直通する先の路線（と、直通先での同じ駅の名前）
@@ -3106,8 +3125,8 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const running = g.i < N - 1 && M2 <= arr[g.i + 1] + 1e-6;
             const ni = Math.min(g.i + 1, N - 1);
             const nextNm = jas[ni];
-            let eta = '';
-            if (running) { const m = Math.max(0, Math.round(arr[ni] - M2)); eta = '约 ' + m + ' 分后'; }
+            let eta = '', etaMin = 0;
+            if (running) { etaMin = Math.max(0, Math.round(arr[ni] - M2)); eta = '约 ' + etaMin + ' 分后'; }
             const col = stLineColorOf(tr.main).bg;
             let sl = '';
             for (let k = 0; k < N; k++) {
@@ -3128,22 +3147,24 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
                     (tm2.length ? '<span class="tr-vtm">' + tm2.join('<i>·</i>') + '</span>' : '') + '</span></div>';
             }
             const chips = (tr.lines || []).slice(0, 5).map(l => '<span class="tr-chip" style="background:' + stLineColorOf(l).bg + '">' + rvEsc(l) + '</span>').join('') + ((tr.lines || []).length > 5 ? '<span class="tr-chip" style="background:#6b7280">+' + (tr.lines.length - 5) + '</span>' : '');
+            document.getElementById('tr-hero').innerHTML =
+                '<div class="tr-hero-top"><span class="tr-st' + (running ? '' : ' stop') + '">' + (running ? '<i class="tr-pulse"></i>運行中' : '停車中') + '</span><span class="tr-hr"></span><span class="tr-clk">' + rvFmtHm(M2 % 1440) + '</span></div>' +
+                '<div class="tr-hero-lb">' + (running ? '次の駅' : '現在地') + '</div>' +
+                '<div class="tr-hero-nm">' + rvEsc(running ? nextNm : jas[g.i]) + '</div>' +
+                '<div class="tr-hero-sub">' + (running ? '到着まで<b>約 ' + etaMin + '分</b>' : '次は<b>' + rvEsc(nextNm) + '</b>へ') + '</div>';
             document.getElementById('tr-body').innerHTML =
-                '<div class="tr-meta">' +
-                '<div class="tr-cell ' + (running ? 'running' : '') + '"><div class="tr-clb">运行状态</div><div class="tr-cv">' + (running ? '<i class="tr-pulse"></i><b>运行中</b>' : '<b>停靠中</b> @ ' + rvEsc(jas[g.i])) + '</div></div>' +
-                '<div class="tr-cell"><div class="tr-clb">下一站</div><div class="tr-cv">' + rvEsc(nextNm) + (eta ? ' <span class="tr-eta">' + eta + '</span>' : '') + '</div></div>' +
-                '</div>' +
-                '<div class="tr-via" style="--lc:' + col + '"><span class="tr-vlb">经由</span><span class="tr-chips">' + chips + '</span></div>' +
-                '<div class="tr-stops"><div class="tr-stops-title">停靠站 <span class="cnt">共 ' + N + ' 站</span></div>' + sl + '</div>' +
+                '<div class="tr-via" style="--lc:' + col + '"><span class="tr-vlb">VIA</span><span class="tr-chips">' + chips + '</span></div>' +
+                '<div class="tr-stops"><div class="tr-sec-title"><span class="tt">停靠駅</span><span class="cnt">' + N + ' 駅</span></div>' + sl + '</div>' +
                 '<div class="tr-wiki" id="trWiki" data-open="0"><div class="tr-wk-hd" id="trWikiHd"><span class="lb">车型百科</span><span class="mv"><span class="dw-v" id="trWikiV"></span><span class="dw-ar"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></span></div><div class="tr-wk-bd"><div class="dw-in"><div class="dw-art" id="trWikiArt"></div></div></div></div>';
             const actRow = document.querySelector('#tr-body .tr-stop.here, #tr-body .tr-stop.next');
             const bodyEl = document.getElementById('tr-body');
             if (actRow && bodyEl) {
-                /* 一打开就把当前运行区间送到内容顶部附近（快速定位，设计意图如此）。
-                    基准必须用视口差值：offsetTop 会落到 .tr-sheet 头上而多算一个头部高度 */
+                /* 一打开就把当前运行区间送到视野里（快速定位，设计意图如此）。
+                   主视觉已移出滚动区常驻，这里只需让当前站贴近内容顶部即可。
+                   基准必须用视口差值：offsetTop 会落到 .tr-sheet 头上而多算一个头部高度 */
                 const rel = actRow.getBoundingClientRect().top - bodyEl.getBoundingClientRect().top;
                 const sb = bodyEl.style.scrollBehavior; bodyEl.style.scrollBehavior = 'auto';
-                bodyEl.scrollTop = Math.max(0, rel + bodyEl.scrollTop - 84);
+                bodyEl.scrollTop = Math.max(0, rel + bodyEl.scrollTop - 8);
                 bodyEl.style.scrollBehavior = sb;
             }
             rvWikiInit(tr);
@@ -3155,12 +3176,24 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const M2 = (function () { let m = rvNowMin(); if (m < dep[0]) m += 1440; return m; })();
             const running = g.i < N - 1 && M2 <= arr[g.i + 1] + 1e-6;
             const ni = Math.min(g.i + 1, N - 1);
-            let eta = '';
-            if (running) { const m = Math.max(0, Math.round(arr[ni] - M2)); eta = '约 ' + m + ' 分后'; }
-            const cell1 = document.querySelector('#tr-body .tr-cell:first-child .tr-cv');
-            const cell2 = document.querySelector('#tr-body .tr-cell:nth-child(2) .tr-cv');
-            if (cell1) { const t1 = running ? '<i class="tr-pulse"></i><b>运行中</b>' : '<b>停靠中</b> @ ' + rvEsc(jas[g.i]); if (cell1.innerHTML !== t1) cell1.innerHTML = t1; cell1.closest('.tr-cell').classList.toggle('running', running); }
-            if (cell2) { const t2 = rvEsc(jas[ni]) + (eta ? ' <span class="tr-eta">' + eta + '</span>' : ''); if (cell2.innerHTML !== t2) cell2.innerHTML = t2; }
+            let etaMin = 0;
+            if (running) etaMin = Math.max(0, Math.round(arr[ni] - M2));
+            const stEl = document.querySelector('#tr-hero .tr-st');
+            if (stEl) {
+                const t = running ? '<i class="tr-pulse"></i>運行中' : '停車中';
+                if (stEl.innerHTML !== t) stEl.innerHTML = t;
+                stEl.classList.toggle('stop', !running);
+            }
+            const lbEl = document.querySelector('#tr-hero .tr-hero-lb');
+            const nmEl = document.querySelector('#tr-hero .tr-hero-nm');
+            const sbEl = document.querySelector('#tr-hero .tr-hero-sub');
+            const ckEl = document.querySelector('#tr-hero .tr-clk');
+            const lb = running ? '次の駅' : '現在地';
+            if (lbEl && lbEl.textContent !== lb) lbEl.textContent = lb;
+            const nmv = running ? jas[ni] : jas[g.i];
+            if (nmEl && nmEl.textContent !== nmv) nmEl.textContent = nmv;
+            if (sbEl) { const s = running ? '到着まで<b>約 ' + etaMin + '分</b>' : '次は<b>' + jas[ni] + '</b>へ'; if (sbEl.innerHTML !== s) sbEl.innerHTML = s; }
+            if (ckEl) ckEl.textContent = rvFmtHm(M2 % 1440);
             const stl = document.getElementById('tr-body');
             if (stl) stl.querySelectorAll('.tr-stop').forEach(row => {
                 const k = parseInt(row.dataset.i, 10);

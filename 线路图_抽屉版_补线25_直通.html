@@ -575,7 +575,13 @@
         .tr-badge .tr-tx { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .tr-badge .tr-bt { display: inline-block; position: relative; z-index: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
         .tr-badge .tr-bs { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: .5em; font-weight: 700; letter-spacing: .05em; line-height: 1.25; opacity: .78; white-space: nowrap; }
-        .tr-note { flex: none; min-width: 0; font-size: .74rem; font-weight: 600; color: #6b7280; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; padding-left: 2px; }
+        .tr-note { flex: none; display: flex; align-items: center; gap: 8px; min-width: 0; padding-left: 2px; }
+        .tr-note .tr-nep { font-size: .78rem; font-weight: 700; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42%; }
+        .tr-note .tr-nln { position: relative; flex: 1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 40%, #e5e7eb)); }
+        .tr-note .tr-nln::before, .tr-note .tr-nln::after { content: ''; position: absolute; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--lc, #4f8ef7); transform: translateY(-50%); }
+        .tr-note .tr-nln::before { left: -3px; }
+        .tr-note .tr-nln::after { right: -3px; }
+        .tr-note .tr-ntm { flex: none; font-size: .68rem; font-weight: 700; color: #9ca3af; font-variant-numeric: tabular-nums; }
         #tr-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 36px; height: 36px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
         #tr-close:hover { background: #e5e7eb; }
         #tr-close:active { transform: scale(.9); }
@@ -622,6 +628,12 @@
         .tr-stop.next .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 4%, transparent); }
         .tr-stop.next .tr-vnm::after { content: '次'; margin-left: 8px; font-size: .58rem; font-weight: 800; color: var(--lc, #4f8ef7); background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #fff); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 40%, transparent); border-radius: 999px; padding: 1px 8px; vertical-align: 2px; }
         .tr-stop.end .tr-vn .dot { border-color: #f59e0b; }
+        .tr-stop.start .dot, .tr-stop.end .dot { width: 12px; height: 12px; margin: 12px 0; }
+        /* 运行中：脉动圆点（动画跟随全线 reduce-motion 设定） */
+        .tr-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 7px; position: relative; vertical-align: 0; }
+        .tr-pulse::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid #10b981; opacity: 0; animation: trPulse 1.8s cubic-bezier(.2,.8,.2,1) infinite; }
+        @keyframes trPulse { 0% { transform: scale(.45); opacity: .75; } 70%, 100% { transform: scale(1.35); opacity: 0; } }
+        @media (prefers-reduced-motion: reduce) { .tr-pulse::after { animation: none; } }
         /* 车型百科折叠（展开高度由 JS 按实测内容设定后再放开，内容再长也不会被裁掉） */
         .tr-wiki { margin: 16px 0 4px; border: 1px solid #eef0f3; border-radius: 18px; overflow: hidden; background: #fafafa; }
         .tr-wiki .tr-wk-hd { display: flex; align-items: center; gap: 8px; padding: 12px 14px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -659,6 +671,10 @@
         html.dark .tr-sheet { background: #1c1e23; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
         html.dark .tr-grab { background: #343842; }
         html.dark .tr-note { color: #8b919c; }
+        html.dark .tr-note .tr-nep { color: #e5e7eb; }
+        html.dark .tr-note .tr-ntm { color: #6b7280; }
+        html.dark .tr-pulse { background: #34d399; }
+        html.dark .tr-pulse::after { border-color: #34d399; }
         html.dark #tr-close { background: #343842; color: #d1d5db; }
         html.dark .tr-meta { background: color-mix(in srgb, var(--lc, #4f8ef7) 13%, #1c1e23); border-color: color-mix(in srgb, var(--lc, #4f8ef7) 20%, #2a2d34); }
         html.dark .tr-cell { background: transparent; }
@@ -3089,6 +3105,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
                 if (k < g.i) cls += ' done';
                 else if (k === g.i) { if (!running && k < N - 1) cls += ' here'; else cls += ' done'; }
                 if (ni > g.i && k === ni) cls += ' next';
+                if (k === 0) cls += ' start';
                 if (k === N - 1) cls += ' end';
                 sl += '<div class="' + cls + '" data-i="' + k + '">' +
                     '<span class="tr-vn">' + (k > 0 ? '<span class="vln up" style="background:' + col + '"></span>' : '') +
@@ -3100,7 +3117,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const chips = (tr.lines || []).slice(0, 5).map(l => '<span class="tr-chip" style="background:' + stLineColorOf(l).bg + '">' + rvEsc(l) + '</span>').join('') + ((tr.lines || []).length > 5 ? '<span class="tr-chip" style="background:#6b7280">+' + (tr.lines.length - 5) + '</span>' : '');
             document.getElementById('tr-body').innerHTML =
                 '<div class="tr-meta">' +
-                '<div class="tr-cell ' + (running ? 'running' : '') + '"><div class="tr-clb">运行状态</div><div class="tr-cv">' + (running ? '<b>运行中</b>' : '<b>停靠中</b> @ ' + rvEsc(jas[g.i])) + '</div></div>' +
+                '<div class="tr-cell ' + (running ? 'running' : '') + '"><div class="tr-clb">运行状态</div><div class="tr-cv">' + (running ? '<i class="tr-pulse"></i><b>运行中</b>' : '<b>停靠中</b> @ ' + rvEsc(jas[g.i])) + '</div></div>' +
                 '<div class="tr-cell"><div class="tr-clb">下一站</div><div class="tr-cv">' + rvEsc(nextNm) + (eta ? ' <span class="tr-eta">' + eta + '</span>' : '') + '</div></div>' +
                 '</div>' +
                 '<div class="tr-via" style="--lc:' + col + '"><span class="tr-vlb">经由</span><span class="tr-chips">' + chips + '</span></div>' +
@@ -3109,14 +3126,12 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const actRow = document.querySelector('#tr-body .tr-stop.here, #tr-body .tr-stop.next');
             const bodyEl = document.getElementById('tr-body');
             if (actRow && bodyEl) {
-                /* offsetTop 会落到别的定位祖先（.tr-sheet）头上，比真实滚动位置多出头部高度，
-                   导致一打开就把状态卡顶出视野。这里改用视口差值求相对滚动内容的真实位置。 */
+                /* 一打开就把当前运行区间送到内容顶部附近（快速定位，设计意图如此）。
+                    基准必须用视口差值：offsetTop 会落到 .tr-sheet 头上而多算一个头部高度 */
                 const rel = actRow.getBoundingClientRect().top - bodyEl.getBoundingClientRect().top;
-                if (rel > bodyEl.clientHeight - 84) {   // 当前站已在新画面里就保持现状，让状态卡留在首屏
-                    const sb = bodyEl.style.scrollBehavior; bodyEl.style.scrollBehavior = 'auto';
-                    bodyEl.scrollTop = Math.max(0, rel + bodyEl.scrollTop - 84);
-                    bodyEl.style.scrollBehavior = sb;
-                }
+                const sb = bodyEl.style.scrollBehavior; bodyEl.style.scrollBehavior = 'auto';
+                bodyEl.scrollTop = Math.max(0, rel + bodyEl.scrollTop - 84);
+                bodyEl.style.scrollBehavior = sb;
             }
             rvWikiInit(tr);
         }
@@ -3131,7 +3146,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             if (running) { const m = Math.max(0, Math.round(arr[ni] - M2)); eta = '约 ' + m + ' 分后'; }
             const cell1 = document.querySelector('#tr-body .tr-cell:first-child .tr-cv');
             const cell2 = document.querySelector('#tr-body .tr-cell:nth-child(2) .tr-cv');
-            if (cell1) { const t1 = running ? '<b>运行中</b>' : '<b>停靠中</b> @ ' + rvEsc(jas[g.i]); if (cell1.innerHTML !== t1) cell1.innerHTML = t1; cell1.closest('.tr-cell').classList.toggle('running', running); }
+            if (cell1) { const t1 = running ? '<i class="tr-pulse"></i><b>运行中</b>' : '<b>停靠中</b> @ ' + rvEsc(jas[g.i]); if (cell1.innerHTML !== t1) cell1.innerHTML = t1; cell1.closest('.tr-cell').classList.toggle('running', running); }
             if (cell2) { const t2 = rvEsc(jas[ni]) + (eta ? ' <span class="tr-eta">' + eta + '</span>' : ''); if (cell2.innerHTML !== t2) cell2.innerHTML = t2; }
             const stl = document.getElementById('tr-body');
             if (stl) stl.querySelectorAll('.tr-stop').forEach(row => {
@@ -3174,7 +3189,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             target.querySelector('.tr-bs').textContent = sub;
             target.querySelector('.tr-bt').textContent = title;
             slot.appendChild(target);
-            document.getElementById('tr-note').textContent = (tr.jas[0] || '') + ' → ' + (tr.jas[tr.jas.length - 1] || '') + ' · ' + rvFmtHm(tr.g.dep[0]) + '–' + rvFmtHm(tr.g.arr[tr.g.N - 1]);
+            document.getElementById('tr-note').innerHTML = '<span class="tr-nep">' + rvEsc(tr.jas[0] || '') + '</span><i class="tr-nln" style="--lc:' + col.bg + '"></i><span class="tr-nep">' + rvEsc(tr.jas[tr.jas.length - 1] || '') + '</span><span class="tr-ntm">' + rvFmtHm(tr.g.dep[0]) + '–' + rvFmtHm(tr.g.arr[tr.g.N - 1]) + '</span>';
             view.hidden = false;
             const sheetH = sheet.offsetHeight;
             const toRaw = target.getBoundingClientRect();

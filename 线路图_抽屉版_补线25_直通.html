@@ -629,6 +629,10 @@
         .tr-stop.next .tr-vnm::after { content: '次'; margin-left: 8px; font-size: .58rem; font-weight: 800; color: var(--lc, #4f8ef7); background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #fff); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 40%, transparent); border-radius: 999px; padding: 1px 8px; vertical-align: 2px; }
         .tr-stop.end .tr-vn .dot { border-color: #f59e0b; }
         .tr-stop.start .dot, .tr-stop.end .dot { width: 12px; height: 12px; margin: 12px 0; }
+        /* 走过的区间：当前站（含）以上的连线淡化——亮线永远在列车前方 */
+        .tr-stop.done .tr-vn .vln.up, .tr-stop.here .tr-vn .vln.up { opacity: .4; }
+        .tr-stop.here .tr-vc, .tr-stop.next .tr-vc { box-shadow: inset 2.5px 0 0 var(--lc, #4f8ef7); }
+        .tr-stop.end:not(.here):not(.next) .tr-vnm::after { content: '終点'; margin-left: 8px; font-size: .56rem; font-weight: 800; color: #b45309; background: #fef3c7; border-radius: 999px; padding: 1px 7px; vertical-align: 2px; }
         /* 运行中：脉动圆点（动画跟随全线 reduce-motion 设定） */
         .tr-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 7px; position: relative; vertical-align: 0; }
         .tr-pulse::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid #10b981; opacity: 0; animation: trPulse 1.8s cubic-bezier(.2,.8,.2,1) infinite; }
@@ -654,6 +658,9 @@
         .dw-sec summary { font-size: .74rem; font-weight: 700; color: #111827; padding: 9px 12px; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
         .dw-sec summary::after { content: '▾'; font-size: .7rem; color: #9ca3af; }
         .dw-sec[open] summary::after { content: '▴'; }
+        .dw-sec summary:active { background: #f6f7f9; }
+        .dw-sec[open] p { animation: dwSecIn .28s cubic-bezier(.2,.8,.2,1); }
+        @keyframes dwSecIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
         .dw-sec p { font-size: .74rem; line-height: 1.75; color: #374151; padding: 0 12px 10px; margin: 0; }
         .dw-none { font-size: .76rem; color: #9ca3af; padding: 10px 0; }
         .dw-trip { font-size: .7rem; color: #9ca3af; margin-top: 8px; }
@@ -664,7 +671,10 @@
         .dw-chip { border: 1px solid #e5e7eb; background: #fff; color: #374151; font-size: .66rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; cursor: pointer; }
         .dw-chip:hover { background: #f3f4f6; }
         .dw-more { font-size: .66rem; color: #9ca3af; font-weight: 700; }
-        .gd-loading { font-size: .78rem; color: #9ca3af; padding: 12px 0; }
+        .gd-loading { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: #9ca3af; padding: 12px 0; }
+        .gd-loading::before { content: ''; flex: none; width: 13px; height: 13px; border-radius: 50%; border: 2px solid #e5e7eb; border-top-color: #9ca3af; animation: gdSpin .8s linear infinite; }
+        @keyframes gdSpin { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) { .gd-loading::before { animation: none; } }
         .gd-retry { margin: 8px 0; border: 1px solid #e5e7eb; background: #fff; border-radius: 999px; padding: 6px 14px; font-size: .74rem; font-weight: 700; color: #374151; cursor: pointer; }
         .dw-note { font-size: .66rem; color: #b45309; margin-top: 8px; }
         .dw-src { font-size: .6rem; color: #d1d5db; margin-top: 10px; text-align: right; }
@@ -675,6 +685,9 @@
         html.dark .tr-note .tr-ntm { color: #6b7280; }
         html.dark .tr-pulse { background: #34d399; }
         html.dark .tr-pulse::after { border-color: #34d399; }
+        html.dark .tr-stop.end:not(.here):not(.next) .tr-vnm::after { color: #fbbf24; background: rgba(245,158,11,.14); }
+        html.dark .dw-sec summary:active { background: #23262d; }
+        html.dark .gd-loading::before { border-color: #343842; border-top-color: #6b7280; }
         html.dark #tr-close { background: #343842; color: #d1d5db; }
         html.dark .tr-meta { background: color-mix(in srgb, var(--lc, #4f8ef7) 13%, #1c1e23); border-color: color-mix(in srgb, var(--lc, #4f8ef7) 20%, #2a2d34); }
         html.dark .tr-cell { background: transparent; }

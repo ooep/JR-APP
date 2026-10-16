@@ -2896,6 +2896,9 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
         }
         function rvTrainIconIdx(t) {
             if (!rvAtlas || !t) return -1;
+            /* 博多南線：运营 500 系新干线列车（山阳新干线蓝涂装）。必须优先于 tokkyu 分支——
+               主站把该车误配为 tokkyu['博多南']=322 灰色普通车，且 t.nm 会先命中该键 */
+            if (t.lines && t.lines.includes('博多南線') && rvAtlas.line['山陽新幹線'] !== undefined) return rvAtlas.line['山陽新幹線'];
             if (t.nm && rvAtlas.tokkyu[t.nm] !== undefined) return rvAtlas.tokkyu[t.nm];
             if (rvIsKeihin(t.lines, t.jas)) { const v = rvAtlas.line['根岸線']; if (v !== undefined) return v; }
             if (rvIsOsakaChuo(t.lines, t.jasN)) { const v = rvAtlas.line['大阪メトロ中央線']; if (v !== undefined) return v; }
@@ -3098,8 +3101,10 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             await _twMapP; return _twMap;
         }
         function rvIconKeyOf(tr) {
-            if (tr.nm && rvAtlas && rvAtlas.tokkyu[tr.nm] !== undefined) return { k: 'tk', v: tr.nm };
             const has = l => !!(rvAtlas && rvAtlas.line[l] !== undefined);
+            /* 博多南線：优先于 tokkyu 误配分支（'博多南'=783系特急图标），车型/图标均按山阳新干线 */
+            if (tr.lines && tr.lines.includes('博多南線') && has('山陽新幹線')) return { k: 'ln', v: '山陽新幹線' };
+            if (tr.nm && rvAtlas && rvAtlas.tokkyu[tr.nm] !== undefined) return { k: 'tk', v: tr.nm };
             const lines = tr.lines || []; let l = null;
             if (rvIsKeihin(tr.lines, tr.jas)) l = '根岸線';
             else if (rvIsOsakaChuo(tr.lines, tr.jasN)) l = '大阪メトロ中央線';

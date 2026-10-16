@@ -578,8 +578,8 @@
         .tr-head { display: flex; flex-direction: column; gap: 13px; padding: 16px 16px 14px; border-bottom: 1px solid #f3f4f6; }
         .tr-row1 { display: flex; align-items: flex-start; gap: 12px; }
         #tr-slot { position: relative; flex: 1; min-width: 0; min-height: 36px; display: flex; align-items: flex-start; }
-        .tr-badge { display: flex; align-items: center; gap: 9px; max-width: 100%; font-weight: 700; font-size: .94rem; letter-spacing: 0; padding: 6px 13px 6px 8px; border-radius: 10px; white-space: nowrap; line-height: 1.25; }
-        .tr-badge .tr-btic { width: 40px; height: 47px; background-repeat: no-repeat; flex: none; }
+        .tr-badge { display: flex; align-items: center; gap: 8px; max-width: 100%; font-weight: 700; font-size: .88rem; letter-spacing: 0; padding: 5px 11px 5px 6px; border-radius: 9px; white-space: nowrap; line-height: 1.25; }
+        .tr-badge .tr-btic { width: 31px; height: 37px; background-repeat: no-repeat; flex: none; }
         .tr-badge .tr-tx { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .tr-badge .tr-bt { display: inline-block; position: relative; z-index: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
         .tr-badge .tr-bs { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: .46em; font-weight: 600; letter-spacing: .05em; line-height: 1.35; opacity: .78; white-space: nowrap; }
@@ -597,16 +597,16 @@
         .tr-body { flex: 1; overflow-y: auto; padding: 18px 20px 40px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
         .tr-body::-webkit-scrollbar { width: 5px; }
         .tr-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        /* 主视觉：运行状态 + 下一站大字。位于滚动区之外常驻——自动定位时不会被切掉 */
-        .tr-hero { flex: none; margin: 14px 20px 0; padding: 13px 15px 14px; border-radius: 14px; background: color-mix(in srgb, var(--lc, #4f8ef7) 6%, #fbfcfd); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 12%, #edf0f4); }
+        /* 主视觉：细状态条——状态胶囊 + 时钟一行，次站信息并入同一行内联，无卡片 */
+        .tr-hero { flex: none; margin: 12px 20px 0; padding: 0 2px 14px; border-bottom: 1px solid #eef1f5; }
         .tr-hero-top { display: flex; align-items: center; gap: 10px; }
-        .tr-st { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: .66rem; font-weight: 700; letter-spacing: .06em; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 4px 10px; }
+        .tr-st { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: .64rem; font-weight: 700; letter-spacing: .06em; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 3px 9px; }
         .tr-st.stop { background: #64748b; }
         .tr-hero-top .tr-hr { flex: 1; height: 1px; background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #e8edf2); }
-        .tr-clk { flex: none; font-size: .7rem; font-weight: 600; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
-        .tr-hero-lb { margin-top: 11px; font-size: .64rem; font-weight: 700; letter-spacing: .1em; color: #94a3b8; }
-        .tr-hero-nm { font-size: 1.3rem; font-weight: 700; color: #0f172a; line-height: 1.3; margin-top: 2px; word-break: break-word; }
-        .tr-hero-sub { margin-top: 5px; font-size: .8rem; font-weight: 600; color: #64748b; line-height: 1.55; }
+        .tr-clk { flex: none; font-size: .68rem; font-weight: 600; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+        .tr-hero-lb { display: inline-block; margin-top: 11px; font-size: .64rem; font-weight: 700; letter-spacing: .08em; color: #94a3b8; margin-right: 8px; }
+        .tr-hero-nm { display: inline-block; font-size: 1.05rem; font-weight: 700; color: #0f172a; line-height: 1.4; word-break: break-word; }
+        .tr-hero-sub { display: inline-block; font-size: .78rem; font-weight: 600; color: #64748b; margin-left: 8px; line-height: 1.5; }
         .tr-hero-sub b { color: var(--lc, #4f8ef7); font-weight: 700; }
         /* 经由线路：无外框，仅一条细线色短杠 + 线路色胶囊 */
         .tr-via { display: flex; align-items: flex-start; gap: 11px; margin: 0 2px; padding: 0; }
@@ -640,12 +640,12 @@
         .tr-stop.here .tr-vnm::after { content: '現在'; margin-left: 9px; font-size: .56rem; font-weight: 700; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 1.5px 8px; vertical-align: 2px; letter-spacing: .05em; }
         .tr-stop.next .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 4%, transparent); }
         .tr-stop.next .tr-vnm { font-weight: 700; }
-        .tr-stop.next .tr-vnm::after { content: '次駅'; margin-left: 9px; font-size: .55rem; font-weight: 700; color: var(--lc, #4f8ef7); background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #fff); border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 40%, transparent); border-radius: 999px; padding: 1px 8px; vertical-align: 2px; letter-spacing: .05em; }
+        .tr-stop.next .tr-vnm::after { content: '次駅'; margin-left: 8px; font-size: .54rem; font-weight: 700; color: var(--lc, #4f8ef7); background: color-mix(in srgb, var(--lc, #4f8ef7) 10%, transparent); border-radius: 999px; padding: 1px 7px; vertical-align: 2px; letter-spacing: .05em; }
         .tr-stop.end .tr-vn .dot { border-color: #f59e0b; }
         .tr-stop.start .dot, .tr-stop.end .dot { width: 10px; height: 10px; margin: 12px 0; }
         /* 走过的区间：当前站（含）以上的连线淡化——亮线永远在列车前方 */
         .tr-stop.done .tr-vn .vln.up, .tr-stop.here .tr-vn .vln.up { opacity: .4; }
-        .tr-stop.here .tr-vc, .tr-stop.next .tr-vc { box-shadow: inset 2.5px 0 0 var(--lc, #4f8ef7); }
+        .tr-stop.here .tr-vc, .tr-stop.next .tr-vc { box-shadow: none; }
         .tr-stop.end:not(.here):not(.next) .tr-vnm::after { content: '終点'; margin-left: 9px; font-size: .55rem; font-weight: 700; color: #b45309; background: #fef3c7; border-radius: 999px; padding: 1px 8px; vertical-align: 2px; letter-spacing: .05em; }
         /* 运行中：脉动圆点（动画跟随全线 reduce-motion 设定） */
         .tr-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 7px; position: relative; vertical-align: 0; }
@@ -701,7 +701,7 @@
         html.dark .tr-note .tr-nln { background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #3a3f4a)); }
         html.dark .tr-pulse { background: #34d399; }
         html.dark .tr-pulse::after { border-color: #34d399; }
-        html.dark .tr-hero { background: color-mix(in srgb, var(--lc, #4f8ef7) 9%, #1c1e23); border-color: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2c313b); }
+        html.dark .tr-hero { border-bottom-color: #2c313b; }
         html.dark .tr-hero-top .tr-hr { background: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2c313b); }
         html.dark .tr-hero-lb { color: #6b7280; }
         html.dark .tr-hero-nm { color: #f8fafc; }
@@ -722,7 +722,7 @@
         html.dark .tr-stop.here .tr-vnm { color: #f8fafc; }
         html.dark .tr-stop.next .tr-vc { background: color-mix(in srgb, var(--lc, #4f8ef7) 6%, transparent); }
         html.dark .tr-stop.next .tr-vnm { color: #e2e8f0; }
-        html.dark .tr-stop.next .tr-vnm::after { background: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #1c1e23); }
+        html.dark .tr-stop.next .tr-vnm::after { background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, transparent); }
         html.dark .tr-stop.end:not(.here):not(.next) .tr-vnm::after { color: #fbbf24; background: rgba(245,158,11,.14); }
         html.dark .tr-wiki { background: #23262d; border-color: #2f333c; }
         html.dark .tr-wiki .tr-wk-hd:active { background: #292d35; }
@@ -3240,7 +3240,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             /* 副标题：有爱称（nm）时只显示线路名（对齐主站 showTrainDetail：有爱称不显示车种字符）；
                无爱称的普通列车保留"线路名 · 车种"（如 JR琵琶湖線 · 普） */
             const sub = (tr.dispName || tr.main || (tr.lines && tr.lines[0]) || '') + (tr.nm ? '' : ' · ' + (tr.i || ''));
-            const iconHtml = (function () { const idx = rvTrainIconIdx(tr); if (idx < 0 || !rvAtlas) return ''; const sc = 1, c2 = idx % rvAtlas.cols, r2 = Math.floor(idx / rvAtlas.cols); return 'background-image:url(' + RV_ATLAS.png + ');background-size:' + (rvAtlas.size[0] * sc) + 'px ' + (rvAtlas.size[1] * sc) + 'px;background-position:-' + ((c2 * rvAtlas.cell[0] + 2) * sc) + 'px -' + ((r2 * rvAtlas.cell[1] + 2) * sc) + 'px;'; })();
+            const iconHtml = (function () { const idx = rvTrainIconIdx(tr); if (idx < 0 || !rvAtlas) return ''; const sc = .78, c2 = idx % rvAtlas.cols, r2 = Math.floor(idx / rvAtlas.cols); return 'background-image:url(' + RV_ATLAS.png + ');background-size:' + (rvAtlas.size[0] * sc) + 'px ' + (rvAtlas.size[1] * sc) + 'px;background-position:-' + ((c2 * rvAtlas.cell[0] + 2) * sc) + 'px -' + ((r2 * rvAtlas.cell[1] + 2) * sc) + 'px;'; })();
             target.innerHTML = '<span class="tr-btic" style="' + iconHtml + '"></span><span class="tr-tx"><span class="tr-bs"></span><span class="tr-bt"></span></span>';
             target.querySelector('.tr-bs').textContent = sub;
             target.querySelector('.tr-bt').textContent = title;

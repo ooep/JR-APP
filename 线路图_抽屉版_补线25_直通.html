@@ -1000,8 +1000,23 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             });
         }
 
+        /* 站名别名表：页面站名（STOPS 原文）→ tmaps 数据源里的原始站名（s_jas 原文）。
+           仅收录「数据源确有列车时刻、但两站名为同一站的不同写法」的情况（括弧→・连接、
+           汉字↔假名、改名前后等）。匹配时用 tmaps 原始字符串精确比对，避免 normStop 归一化
+           后误匹配到同名不同站（如 難波→なんば 不得命中地下鉄なんば）。 */
+        const STATION_ALIAS = {
+            '広島港（宇品）': ['広島港・宇品'],
+            '広電西広島（己斐）': ['広電西広島・己斐'],
+            '廿日市市役所前（平良）': ['廿日市市役所前・平良'],
+            '松山市駅前': ['松山市駅'],
+            '松山駅前': ['JR松山駅前'],
+            '第一イン新湊 クロスベイ前': ['クロスベイ前'],
+            '難波': ['なんば(南海線)'],
+            '郡元南': ['郡元・南'],
+        };
         function stBuildBoard() {
             const nk = normStop(stState.station);
+            const alias = STATION_ALIAS[stState.station] || [];
             const byLine = new Map();
             const entries = [];
             for (const t of TT_raw.T) {
@@ -1010,7 +1025,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                 if (!tm || !tm.s_jas) continue;
                 let idx = -1;
                 for (let i = 0; i < tm.s_jas.length; i++) {
-                    if (normStop(tm.s_jas[i]) === nk) { idx = i; break; }
+                    if (normStop(tm.s_jas[i]) === nk || alias.indexOf(tm.s_jas[i]) >= 0) { idx = i; break; }
                 }
                 if (idx < 0) continue;
                 const trip = ttParseTrip(t);
@@ -1021,6 +1036,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                 const t = e.trip;
                 const jn = t.jas.map(normStop);
                 let idx = jn.indexOf(nk);
+                if (idx < 0 && alias.length) idx = t.jas.findIndex(x => alias.indexOf(x) >= 0);
                 if (idx < 0) continue;
                 // 到达
                 if (idx > 0) {

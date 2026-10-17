@@ -1347,6 +1347,22 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                         const r = await fetch(TT_DATA_BASE + 'tmaps.json', {signal: ctrl.signal});
                         clearTimeout(to);
                         TT_tmaps = await r.json();
+                        /* 迷你新干线补标签：源数据(lines_index.json)未收录秋田/山形新干线，
+                           这里按物理走行区间(车站序列)给真实こまち/つばさ车次补上线路标签，
+                           使其能在对应抽屉显示实时列车。基于车站名判定，对主站时刻表刷新
+                           及未来源数据正式收录均免疫（届时源数据自带标签，下方 if(!includes) 守卫使其变为无害空操作）。 */
+                        (function () {
+                            const AKI = s => s === '秋田' || s.indexOf('大曲') >= 0;
+                            const YAMA = s => s === '山形' || s === '新庄' || s === '米沢' || s.indexOf('かみのやま') >= 0 || s === '天童' || s === '村山' || s === '赤湯' || s === '高畠';
+                            for (const _k in TT_tmaps) {
+                                const _tm = TT_tmaps[_k];
+                                if (!_tm || !_tm.lines) continue;
+                                if (!_tm.lines.some(l => l.indexOf('新幹線') >= 0)) continue;
+                                const _sj = _tm.s_jas || [];
+                                if (_sj.some(AKI) && !_tm.lines.includes('秋田新幹線')) _tm.lines.push('秋田新幹線');
+                                if (_sj.some(YAMA) && !_tm.lines.includes('山形新幹線')) _tm.lines.push('山形新幹線');
+                            }
+                        })();
                     }
                     const ctrl = new AbortController();
                     const to = setTimeout(() => ctrl.abort(), 90000);
@@ -2926,6 +2942,8 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             /* 博多南線：运营 500 系新干线列车（山阳新干线蓝涂装）。必须优先于 tokkyu 分支——
                主站把该车误配为 tokkyu['博多南']=322 灰色普通车，且 t.nm 会先命中该键 */
             if (t.lines && t.lines.includes('博多南線') && rvAtlas.line['山陽新幹線'] !== undefined) return rvAtlas.line['山陽新幹線'];
+            /* 迷你新干线（秋田/山形）：运营东北新干线列车（こまち/つばさ），复用东北新干线蓝白车头图标(cell136) */
+            if (t.lines && (t.lines.includes('秋田新幹線') || t.lines.includes('山形新幹線')) && rvAtlas.line['東北新幹線'] !== undefined) return rvAtlas.line['東北新幹線'];
             if (t.nm && rvAtlas.tokkyu[t.nm] !== undefined) return rvAtlas.tokkyu[t.nm];
             if (rvIsKeihin(t.lines, t.jas)) { const v = rvAtlas.line['根岸線']; if (v !== undefined) return v; }
             if (rvIsOsakaChuo(t.lines, t.jasN)) { const v = rvAtlas.line['大阪メトロ中央線']; if (v !== undefined) return v; }

@@ -2937,19 +2937,13 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             }
             return -1;
         }
-        /* 迷你新干线专属车型图标：主站 atlas 无 E6/E3/E8 车型图(只有标准新干线鸭嘴)，
-           故 JR-APP 内联 SVG(零主站影响)。哨兵值 900/901 不会命中 atlas 真实 cell(最大~491)。 */
-        const RV_MINI_SVG = {
-            '秋田新幹線': (function(){ const s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 40"><path d="M4 30 L4 14 Q4 8 14 7 L58 7 Q62 7 62 11 L62 30 Z" fill="#fff" stroke="#333" stroke-width="1.4"/><path d="M4 30 L4 14 Q4 8 14 7 L21 7 L14 30 Z" fill="#2a8f5a"/><rect x="4" y="17" width="58" height="4" fill="#2a8f5a"/><rect x="4" y="22" width="58" height="3" fill="#1b6fb3"/><g fill="#1b3a6b"><rect x="22" y="10" width="6" height="4" rx="1"/><rect x="31" y="10" width="6" height="4" rx="1"/><rect x="40" y="10" width="6" height="4" rx="1"/><rect x="49" y="10" width="6" height="4" rx="1"/></g><circle cx="16" cy="33" r="3.2" fill="#222"/><circle cx="50" cy="33" r="3.2" fill="#222"/></svg>'; return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s); })(),
-            '山形新幹線': (function(){ const s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 40"><path d="M4 30 L4 14 Q4 8 14 7 L58 7 Q62 7 62 11 L62 30 Z" fill="#fff" stroke="#333" stroke-width="1.4"/><path d="M4 30 L4 14 Q4 8 14 7 L21 7 L14 30 Z" fill="#1b6fb3"/><rect x="4" y="17" width="58" height="4" fill="#1b6fb3"/><rect x="4" y="22" width="58" height="3" fill="#2a8f5a"/><g fill="#1b3a6b"><rect x="22" y="10" width="6" height="4" rx="1"/><rect x="31" y="10" width="6" height="4" rx="1"/><rect x="40" y="10" width="6" height="4" rx="1"/><rect x="49" y="10" width="6" height="4" rx="1"/></g><circle cx="16" cy="33" r="3.2" fill="#222"/><circle cx="50" cy="33" r="3.2" fill="#222"/></svg>'; return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s); })()
-        };
-        function rvMiniIconStyle(ln){ const u = RV_MINI_SVG[ln]; if(!u) return ''; return 'background-image:url(' + u + ');background-size:contain;background-repeat:no-repeat;background-position:center;'; }
+        /* 迷你新干线（秋田/山形）：直接引用主站 atlas 的 tokkyu 映射(こまち=486 E6系 / つばさ=490 E3·E8系)，不再手绘 SVG，随主站更新自动跟随 */
         function rvTrainIconIdx(t) {
             if (!rvAtlas || !t) return -1;
-            /* 迷你新干线（秋田/山形）：源数据无专属车型图，用 JR-APP 内联 SVG 车型图标(哨兵900/901，绝不命中 atlas) */
             const _ml = (t.tm && t.tm.lines) || t.lines || [];
-            if (_ml.includes('秋田新幹線')) return 900;
-            if (_ml.includes('山形新幹線')) return 901;
+            /* 迷你新干线（秋田/山形）：直接引用主站 atlas 的 tokkyu 车型图标(こまち/E6系=486, つばさ/E3·E8系=490)，与主站同源同位置 */
+            if (_ml.includes('秋田新幹線') && rvAtlas.tokkyu && rvAtlas.tokkyu['こまち'] !== undefined) return rvAtlas.tokkyu['こまち'];
+            if (_ml.includes('山形新幹線') && rvAtlas.tokkyu && rvAtlas.tokkyu['つばさ'] !== undefined) return rvAtlas.tokkyu['つばさ'];
             /* 博多南線：运营 500 系新干线列车（山阳新干线蓝涂装）。必须优先于 tokkyu 分支——
                主站把该车误配为 tokkyu['博多南']=322 灰色普通车，且 t.nm 会先命中该键 */
             if (t.lines && t.lines.includes('博多南線') && rvAtlas.line['山陽新幹線'] !== undefined) return rvAtlas.line['山陽新幹線'];
@@ -2971,8 +2965,6 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
         function rvIconStyleFor(t) {
             if (!rvAtlas || !t) return '';
             const idx = rvTrainIconIdx(t);
-            if (idx === 900) return rvMiniIconStyle('秋田新幹線');
-            if (idx === 901) return rvMiniIconStyle('山形新幹線');
             if (idx < 0) return '';
             const sc = 0.75, col = idx % rvAtlas.cols, row = Math.floor(idx / rvAtlas.cols);
             return 'background-image:url(' + RV_ATLAS.png + ');background-size:' + (rvAtlas.size[0] * sc) + 'px ' + (rvAtlas.size[1] * sc) + 'px;background-position:-' + ((col * rvAtlas.cell[0] + 2) * sc) + 'px -' + ((row * rvAtlas.cell[1] + 2) * sc) + 'px;';
@@ -3392,7 +3384,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             /* 副标题：有爱称（nm）时只显示线路名（对齐主站 showTrainDetail：有爱称不显示车种字符）；
                无爱称的普通列车保留"线路名 · 车种"（如 JR琵琶湖線 · 普） */
             const sub = (tr.dispName || tr.main || (tr.lines && tr.lines[0]) || '') + (tr.nm ? '' : ' · ' + (tr.i || ''));
-            const iconHtml = (function () { const idx = rvTrainIconIdx(tr); if (idx === 900) return rvMiniIconStyle('秋田新幹線'); if (idx === 901) return rvMiniIconStyle('山形新幹線'); if (idx < 0 || !rvAtlas) return ''; const sc = .78, c2 = idx % rvAtlas.cols, r2 = Math.floor(idx / rvAtlas.cols); return 'background-image:url(' + RV_ATLAS.png + ');background-size:' + (rvAtlas.size[0] * sc) + 'px ' + (rvAtlas.size[1] * sc) + 'px;background-position:-' + ((c2 * rvAtlas.cell[0] + 2) * sc) + 'px -' + ((r2 * rvAtlas.cell[1] + 2) * sc) + 'px;'; })();
+            const iconHtml = (function () { const idx = rvTrainIconIdx(tr); if (idx < 0 || !rvAtlas) return ''; const sc = .78, c2 = idx % rvAtlas.cols, r2 = Math.floor(idx / rvAtlas.cols); return 'background-image:url(' + RV_ATLAS.png + ');background-size:' + (rvAtlas.size[0] * sc) + 'px ' + (rvAtlas.size[1] * sc) + 'px;background-position:-' + ((c2 * rvAtlas.cell[0] + 2) * sc) + 'px -' + ((r2 * rvAtlas.cell[1] + 2) * sc) + 'px;'; })();
             target.innerHTML = '<span class="tr-btic" style="' + iconHtml + '"></span><span class="tr-tx"><span class="tr-bs"></span><span class="tr-bt"></span></span>';
             target.querySelector('.tr-bs').textContent = sub;
             target.querySelector('.tr-bt').textContent = title;

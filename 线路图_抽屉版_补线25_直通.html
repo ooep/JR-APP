@@ -1001,7 +1001,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
         }
 
         function stBuildBoard() {
-            const nk = stNorm(stState.station);
+            const nk = normStop(stState.station);
             const byLine = new Map();
             const entries = [];
             for (const t of TT_raw.T) {
@@ -1010,7 +1010,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                 if (!tm || !tm.s_jas) continue;
                 let idx = -1;
                 for (let i = 0; i < tm.s_jas.length; i++) {
-                    if (tm.s_jas[i] === stState.station) { idx = i; break; }
+                    if (normStop(tm.s_jas[i]) === nk) { idx = i; break; }
                 }
                 if (idx < 0) continue;
                 const trip = ttParseTrip(t);
@@ -1019,7 +1019,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             }
             for (const e of entries) {
                 const t = e.trip;
-                const jn = t.jas.map(stNorm);
+                const jn = t.jas.map(normStop);
                 let idx = jn.indexOf(nk);
                 if (idx < 0) continue;
                 // 到达
@@ -2953,6 +2953,8 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             if (rvIsMinamiaso(t.lines)) { const v = rvAtlas.line['高森線']; if (v !== undefined) return v; }
             /* 参宮線：远端 atlas 误配琴平参宮電鉄(绿电车 cell71)，实为 JR东海キハ25形気動車——与太多線同型同涂装 */
             if (rvLineMainName() === '参宮線') { const v = rvAtlas.line['太多線']; if (v !== undefined) return v; }
+            /* 鳴門線：远端 atlas 误配黄色塗装車(cell228)，实为 JR四国キハ40・47系気動車——与高徳線同型同涂装 */
+            if (rvLineMainName() === '鳴門線') { const v = rvAtlas.line['高徳線']; if (v !== undefined) return v; }
             /* 山手線：抽屉内全统一 E235 绿头（共享段直通的宇都宮線/東海道線车也显示山手线涂装，视觉一致）——
                必须在 allSkip→fallback 分支之前，否则 lines=[東海道本線,東北本線,山手線] 的车先命中 E217 兜底 */
             if (rvLineMainName() === '山手線' && rvAtlas.line['山手線'] !== undefined) return rvAtlas.line['山手線'];

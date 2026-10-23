@@ -612,31 +612,28 @@
         .tr-badge .tr-tx { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .tr-badge .tr-bt { display: inline-block; position: relative; z-index: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
         .tr-badge .tr-bs { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: .46em; font-weight: 600; letter-spacing: .05em; line-height: 1.35; opacity: .78; white-space: nowrap; }
-        /* 区间条：起点 — 线色渐变 — 终点 */
-        .tr-note { flex: none; display: flex; align-items: center; gap: 8px; min-width: 0; }
-        .tr-note .tr-nep { font-size: .78rem; font-weight: 600; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 38%; }
-        .tr-note .tr-nln { position: relative; flex: 1; height: 2.5px; border-radius: 2px; background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #e2e8f0)); }
-        .tr-note .tr-nln::before, .tr-note .tr-nln::after { content: ''; position: absolute; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--lc, #4f8ef7); transform: translateY(-50%); }
-        .tr-note .tr-nln::before { left: -4px; }
-        .tr-note .tr-nln::after { right: -4px; }
-        .tr-note .tr-ntm { flex: none; font-size: .72rem; font-weight: 600; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+        /* 行先表示機：仿実車行先表示器（愛称徽章+行先大字+次は+車両形式条）——数据缺哪块就隐藏哪块。
+           浅色模式白底深字；暗色模式黑底白字（仿真表示器） */
+        .tr-sign { flex: none; background: linear-gradient(180deg, #ffffff, #f1f3f6); border-radius: 10px; padding: 8px 12px 0; box-shadow: inset 0 0 0 1px #e2e5ea, 0 2px 8px rgba(15,23,42,.08); overflow: hidden; animation: trSignIn .42s cubic-bezier(.2,.8,.2,1) .32s backwards; }
+        @keyframes trSignIn { from { opacity: 0; transform: translateY(5px); } }
+        .tr-sign-main { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+        .tr-sign-nm { flex: none; max-width: 48%; padding: 4px 11px; border-radius: 8px; font-weight: 800; font-size: .95rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 5px rgba(0,0,0,.4); }
+        .tr-sign-info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-end; }
+        .tr-sign-dest { max-width: 100%; font-size: 1.42rem; font-weight: 800; color: #0f172a; letter-spacing: .16em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tr-sign-next { max-width: 100%; font-size: .8rem; font-weight: 700; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tr-sign-next .lb { color: #d97706; margin-right: 7px; }
+        .tr-sign-next .st { color: #0f172a; }
+        .tr-sign-veh { margin: 7px -12px 0; padding: 3px 12px 4.5px; font-weight: 700; font-size: .76rem; text-align: center; letter-spacing: .05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        html.dark .tr-sign { background: linear-gradient(180deg, #171a20, #0a0c0f); box-shadow: inset 0 0 0 1px rgba(255,255,255,.09), 0 2px 8px rgba(0,0,0,.5); }
+        html.dark .tr-sign-dest, html.dark .tr-sign-next .st { color: #fff; }
+        html.dark .tr-sign-next .lb { color: #ffd83d; }
+        @media (prefers-reduced-motion: reduce) { .tr-sign { animation: none; } }
         #tr-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 32px; height: 32px; border-radius: 50%; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
         #tr-close:hover { background: #e5e7eb; }
         #tr-close:active { transform: scale(.9); }
         .tr-body { flex: 1; overflow-y: auto; padding: 18px 20px 40px; scroll-behavior: smooth; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
         .tr-body::-webkit-scrollbar { width: 5px; }
         .tr-body::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--lc, #4f8ef7) 32%, #cbd5e1); border-radius: 3px; }
-        /* 主视觉：细状态条——状态胶囊 + 时钟一行，次站信息并入同一行内联，无卡片 */
-        .tr-hero { flex: none; margin: 12px 20px 0; padding: 0 2px 14px; border-bottom: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 14%, #eef1f5); }
-        .tr-hero-top { display: flex; align-items: center; gap: 10px; }
-        .tr-st { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: .64rem; font-weight: 700; letter-spacing: .06em; color: #fff; background: var(--lc, #4f8ef7); border-radius: 999px; padding: 3px 9px; box-shadow: 0 2px 8px color-mix(in srgb, var(--lc, #4f8ef7) 30%, transparent); }
-        .tr-st.stop { background: #64748b; box-shadow: none; }
-        .tr-hero-top .tr-hr { flex: 1; height: 1px; background: color-mix(in srgb, var(--lc, #4f8ef7) 12%, #e8edf2); }
-        .tr-clk { flex: none; font-size: .68rem; font-weight: 600; color: #94a3b8; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
-        .tr-hero-lb { display: inline-block; margin-top: 11px; font-size: .64rem; font-weight: 700; letter-spacing: .08em; color: #94a3b8; margin-right: 8px; }
-        .tr-hero-nm { display: inline-block; font-size: 1.05rem; font-weight: 700; color: #0f172a; line-height: 1.4; word-break: break-word; }
-        .tr-hero-sub { display: inline-block; font-size: .78rem; font-weight: 600; color: #64748b; margin-left: 8px; line-height: 1.5; }
-        .tr-hero-sub b { color: var(--lc, #4f8ef7); font-weight: 700; }
         /* 经由线路：无外框，仅一条细线色短杠 + 线路色胶囊 */
         .tr-via { display: flex; align-items: flex-start; gap: 11px; margin: 0 2px; padding: 0; }
         .tr-via .tr-vlb { flex: none; font-size: .64rem; font-weight: 700; letter-spacing: .1em; color: #94a3b8; padding-top: 6px; }
@@ -681,11 +678,6 @@
         .tr-stop.done .tr-vn .vln.up, .tr-stop.here .tr-vn .vln.up { opacity: .4; }
         .tr-stop.here .tr-vc, .tr-stop.next .tr-vc { box-shadow: none; }
         .tr-stop.end:not(.here):not(.next) .tr-vnm::after { content: '終点'; margin-left: 9px; font-size: .55rem; font-weight: 700; color: #b45309; background: #fef3c7; border-radius: 999px; padding: 1px 8px; vertical-align: 2px; letter-spacing: .05em; }
-        /* 运行中：脉动圆点（动画跟随全线 reduce-motion 设定） */
-        .tr-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 7px; position: relative; vertical-align: 0; }
-        .tr-pulse::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid #10b981; opacity: 0; animation: trPulse 1.8s cubic-bezier(.2,.8,.2,1) infinite; }
-        @keyframes trPulse { 0% { transform: scale(.45); opacity: .75; } 70%, 100% { transform: scale(1.35); opacity: 0; } }
-        @media (prefers-reduced-motion: reduce) { .tr-pulse::after { animation: none; } }
         /* 车型百科折叠：与上方内容用留白+细线区隔，卡片更轻（展开高度由 JS 按实测内容设定） */
         .tr-wiki { margin: 22px 0 4px; border: 1px solid color-mix(in srgb, var(--lc, #4f8ef7) 16%, #eef1f5); border-radius: 14px; overflow: hidden; background: #fcfdfe; }
         .tr-wiki .tr-wk-hd { display: flex; align-items: center; gap: 10px; padding: 13px 14px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: background .18s; }
@@ -730,17 +722,6 @@
         html.dark .tr-sheet { background: #1c1e23; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
         html.dark .tr-grab { background: #3a3f4a; }
         html.dark .tr-head { border-bottom-color: #2a2d33; }
-        html.dark .tr-note .tr-nep { color: #e2e8f0; }
-        html.dark .tr-note .tr-ntm { color: #6b7280; }
-        html.dark .tr-note .tr-nln { background: linear-gradient(90deg, var(--lc, #4f8ef7), color-mix(in srgb, var(--lc, #4f8ef7) 35%, #3a3f4a)); }
-        html.dark .tr-pulse { background: #34d399; }
-        html.dark .tr-pulse::after { border-color: #34d399; }
-        html.dark .tr-hero { border-bottom-color: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2c313b); }
-        html.dark .tr-hero-top .tr-hr { background: color-mix(in srgb, var(--lc, #4f8ef7) 14%, #2c313b); }
-        html.dark .tr-hero-lb { color: #6b7280; }
-        html.dark .tr-hero-nm { color: #f8fafc; }
-        html.dark .tr-hero-sub { color: #94a3b8; }
-        html.dark .tr-st.stop { background: #4b5563; }
         html.dark .tr-via .tr-vlb { color: #6b7280; }
         html.dark .tr-sec-title { border-bottom-color: #2c313b; }
         html.dark .tr-sec-title .tt { color: #9ca3af; }
@@ -832,9 +813,8 @@
                     <div id="tr-slot"></div>
                     <button type="button" id="tr-close" aria-label="閉じる">✕</button>
                 </div>
-                <div id="tr-note" class="tr-note"></div>
+                <div class="tr-sign" id="tr-sign" hidden></div>
             </div>
-            <div class="tr-hero" id="tr-hero"></div>
             <div class="tr-body" id="tr-body"></div>
         </div>
     </div>
@@ -3296,9 +3276,6 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const M2 = (function () { let m = rvNowMin(); if (m < dep[0]) m += 1440; return m; })();
             const running = g.i < N - 1 && M2 <= arr[g.i + 1] + 1e-6;
             const ni = Math.min(g.i + 1, N - 1);
-            const nextNm = jas[ni];
-            let eta = '', etaMin = 0;
-            if (running) { etaMin = Math.max(0, Math.round(arr[ni] - M2)); eta = '约 ' + etaMin + ' 分后'; }
             const col = stLineColorOf(tr.main).bg;
             let sl = '';
             for (let k = 0; k < N; k++) {
@@ -3319,11 +3296,6 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
                     (tm2.length ? '<span class="tr-vtm">' + tm2.join('<i>·</i>') + '</span>' : '') + '</span></div>';
             }
             const chips = (tr.lines || []).slice(0, 5).map(l => '<span class="tr-chip" style="background:' + stLineColorOf(l).bg + '">' + rvEsc(l) + '</span>').join('') + ((tr.lines || []).length > 5 ? '<span class="tr-chip" style="background:#6b7280">+' + (tr.lines.length - 5) + '</span>' : '');
-            document.getElementById('tr-hero').innerHTML =
-                '<div class="tr-hero-top"><span class="tr-st' + (running ? '' : ' stop') + '">' + (running ? '<i class="tr-pulse"></i>運行中' : '停車中') + '</span><span class="tr-hr"></span><span class="tr-clk">' + rvFmtHm(M2 % 1440) + '</span></div>' +
-                '<div class="tr-hero-lb">' + (running ? '次の駅' : '現在地') + '</div>' +
-                '<div class="tr-hero-nm">' + rvEsc(running ? nextNm : jas[g.i]) + '</div>' +
-                '<div class="tr-hero-sub">' + (running ? '到着まで<b>約 ' + etaMin + '分</b>' : '次は<b>' + rvEsc(nextNm) + '</b>へ') + '</div>';
             document.getElementById('tr-body').innerHTML =
                 '<div class="tr-via" style="--lc:' + col + '"><span class="tr-vlb">VIA</span><span class="tr-chips">' + chips + '</span></div>' +
                 '<div class="tr-stops"><div class="tr-sec-title"><span class="tt">停靠駅</span><span class="cnt">' + N + ' 駅</span></div>' + sl + '</div>' +
@@ -3332,7 +3304,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const bodyEl = document.getElementById('tr-body');
             if (actRow && bodyEl) {
                 /* 一打开就把当前运行区间送到视野里（快速定位，设计意图如此）。
-                   主视觉已移出滚动区常驻，这里只需让当前站贴近内容顶部即可。
+                   只需让当前站贴近内容顶部即可。
                    基准必须用视口差值：offsetTop 会落到 .tr-sheet 头上而多算一个头部高度 */
                 const rel = actRow.getBoundingClientRect().top - bodyEl.getBoundingClientRect().top;
                 const sb = bodyEl.style.scrollBehavior; bodyEl.style.scrollBehavior = 'auto';
@@ -3348,24 +3320,9 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const M2 = (function () { let m = rvNowMin(); if (m < dep[0]) m += 1440; return m; })();
             const running = g.i < N - 1 && M2 <= arr[g.i + 1] + 1e-6;
             const ni = Math.min(g.i + 1, N - 1);
-            let etaMin = 0;
-            if (running) etaMin = Math.max(0, Math.round(arr[ni] - M2));
-            const stEl = document.querySelector('#tr-hero .tr-st');
-            if (stEl) {
-                const t = running ? '<i class="tr-pulse"></i>運行中' : '停車中';
-                if (stEl.innerHTML !== t) stEl.innerHTML = t;
-                stEl.classList.toggle('stop', !running);
-            }
-            const lbEl = document.querySelector('#tr-hero .tr-hero-lb');
-            const nmEl = document.querySelector('#tr-hero .tr-hero-nm');
-            const sbEl = document.querySelector('#tr-hero .tr-hero-sub');
-            const ckEl = document.querySelector('#tr-hero .tr-clk');
-            const lb = running ? '次の駅' : '現在地';
-            if (lbEl && lbEl.textContent !== lb) lbEl.textContent = lb;
-            const nmv = running ? jas[ni] : jas[g.i];
-            if (nmEl && nmEl.textContent !== nmv) nmEl.textContent = nmv;
-            if (sbEl) { const s = running ? '到着まで<b>約 ' + etaMin + '分</b>' : '次は<b>' + jas[ni] + '</b>へ'; if (sbEl.innerHTML !== s) sbEl.innerHTML = s; }
-            if (ckEl) ckEl.textContent = rvFmtHm(M2 % 1440);
+            /* 行先表示機的 次は 同步刷新 */
+            const sgNx = document.querySelector('#tr-sign .tr-sign-next .st');
+            if (sgNx) { const v = jas[ni] || ''; if (sgNx.textContent !== v) sgNx.textContent = v; }
             const stl = document.getElementById('tr-body');
             if (stl) stl.querySelectorAll('.tr-stop').forEach(row => {
                 const k = parseInt(row.dataset.i, 10);
@@ -3380,6 +3337,53 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             trState.seq++; trState.t = null; trState.tm = null; trState.tr = null;
             view.classList.remove('on');
             setTimeout(() => { view.hidden = true; }, 400);
+        }
+        /* ============ 行先表示機（列车详情抽屉徽章下方，仿実車行先表示器） ============
+           愛称徽章(tr.nm) / 行先(終着駅) / 次は(下一停車駅) / 底部条=車両形式(rvWikiVehicles)。
+           无爱称时徽章退化为种别全名（普通/快速/特急等，单字代码经 TR_SIGN_SHU 映射，
+           未知代码按原样显示——与徽章副标题「线路名 · 种别字符」口径一致）。
+           両数・運用区所等数据源没有的字段一律不造；没有种别就藏徽章、没有车型就藏底部条 */
+        const TR_SIGN_SHU = {
+            '普': '普通', '各': '各駅停車', '特': '特急', '快': '快速', '急': '急行', '準': '準急',
+            '区': '区間快速', '通': '通勤快速', '直': '直通快速', '空': '空港急行', '新': '新快速', '青': '青梅特快',
+            'Nozomi': 'のぞみ', 'Hikari': 'ひかり', 'Kodama': 'こだま', 'Hayabusa': 'はやぶさ', 'Hayate': 'はやて',
+            'Yamabiko': 'やまびこ', 'Nasuno': 'なすの', 'Toki': 'とき', 'Tanigawa': 'たにがわ', 'Asama': 'あさま',
+            'Kagayaki': 'かがやき', 'Hakutaka': 'はくたか', 'Tsurugi': 'つるぎ', 'Komachi': 'こまち', 'Tsubasa': 'つばさ',
+            'Sakura': 'さくら', 'Mizuho': 'みずほ', 'Tsubame': 'つばめ', 'Kamome': 'かもめ'
+        };
+        function trSignRender(tr, g) {
+            const el = document.getElementById('tr-sign');
+            if (!el) return;
+            const jas = tr.jas || (trState.tm && trState.tm.s_jas) || [];
+            const N = tr.N || jas.length;
+            if (g == null || N < 2) { el.hidden = true; return; }
+            const col = stLineColorOf(tr.main);
+            const ni = Math.min(g.i + 1, N - 1);
+            const hasNext = ni > g.i && ni < N;
+            const shu = tr.nm || TR_SIGN_SHU[tr.i] || (tr.i || '');
+            const vehOf = m => {
+                try {
+                    const vs = rvWikiVehicles(tr, m);
+                    const s = vs && vs.primary ? rvVShort(vs.primary).replace(/(電車|気動車)\s*$/, '') : '';
+                    return /系|形/.test(s) ? s : '';
+                } catch (e) { return ''; }
+            };
+            const veh = vehOf(_twMap);
+            let h = '<div class="tr-sign-main">';
+            if (shu) h += '<span class="tr-sign-nm" style="background:' + col.bg + ';color:' + col.text + '">' + rvEsc(shu) + '</span>';
+            h += '<span class="tr-sign-info"><span class="tr-sign-dest">' + rvEsc(jas[N - 1] || '') + '</span>' +
+                (hasNext ? '<span class="tr-sign-next"><span class="lb">次は</span><span class="st">' + rvEsc(jas[ni] || '') + '</span></span>' : '') +
+                '</span></div>';
+            if (veh) h += '<div class="tr-sign-veh" style="background:' + col.bg + ';color:' + col.text + '">' + rvEsc(veh) + '</div>';
+            el.innerHTML = h;
+            el.hidden = false;
+            /* 远端车型映射就绪后刷新底部条（内置 v3 兜底已先渲染，通常无变化，避免布局跳动） */
+            rvLoadTwMap().then(m => {
+                const bar = el.querySelector('.tr-sign-veh');
+                if (trState.seq !== tr.seq || !bar) return;
+                const s = vehOf(m);
+                if (s && bar.textContent !== s) bar.textContent = s;
+            }).catch(() => {});
         }
         function trOpen(tr, tm, orig) {
             const view = document.getElementById('tr-view');
@@ -3407,7 +3411,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             target.querySelector('.tr-bs').textContent = sub;
             target.querySelector('.tr-bt').textContent = title;
             slot.appendChild(target);
-            document.getElementById('tr-note').innerHTML = '<span class="tr-nep">' + rvEsc(tr.jas[0] || '') + '</span><i class="tr-nln" style="--lc:' + col.bg + '"></i><span class="tr-nep">' + rvEsc(tr.jas[tr.jas.length - 1] || '') + '</span><span class="tr-ntm">' + rvFmtHm(tr.g.dep[0]) + '–' + rvFmtHm(tr.g.arr[tr.g.N - 1]) + '</span>';
+            trSignRender(tr, tr.g);
             view.hidden = false;
             const sheetH = sheet.offsetHeight;
             const toRaw = target.getBoundingClientRect();

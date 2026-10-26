@@ -3084,28 +3084,36 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
         }
         /* 位置演算：nowMin 为当前时刻；delayMin>0 时按"时刻表整体后移 delayMin 分钟"演算（与主站一致——
            晚点列车的当前位置由延迟后的时刻表决定，表定已终到但实际晚点仍在途的列车也能正确显示） */
+        /* 位置演算：nowMin 为当前时刻；delayMin>0 时按"实际时刻表 = 表定 + 延迟"演算（与主站一致——
+           晚点列车的当前位置由延迟后的时刻表决定，表定已终到但实际晚点仍在途的列车也能正确显示）。
+           坐标系：nowMin wrap 在 0-1439；表定发车与当前相差 >12 小时 → 当前为"次日凌晨"
+           （表定发车在前一天晚上）→ 当前时刻前移一天，与实际时刻表同坐标系比较。
+           此处理覆盖深夜末班大延误（如しなの 表定 23:5x 终到、延误 100+ 分、次日 01:xx 仍在途）场景 */
         function rvTripGeo(t, tm, nowMin, delayMin) {
             const tt = rvTripTimes(t, tm);
             if (!tt) return null;
             const { dep, arr, N } = tt;
-            let now = nowMin - (delayMin || 0);
-            if (now < dep[0]) {
-                if (dep[N - 1] > 1440) now += 1440;
-                /* 未发车：距发车 ≤20 分钟的在始发站显示等待，更远的暂不显示（避免未来班次全堆在始发站） */
-                else if (dep[0] - now > 20) return null;
-                else return { i: 0, frac: 0, dep, arr, N, waiting: true };
+            const D = delayMin || 0;
+            let cur = nowMin;
+            if (dep[0] - cur > 720) cur += 1440;
+            /* 实际时刻表 = 表定 + 延迟 */
+            const rDep0 = dep[0] + D;
+            if (cur < rDep0) {
+                /* 未发车：距实际发车 ≤20 分钟的在始发站显示等待，更远的暂不显示（避免未来班次全堆在始发站） */
+                if (rDep0 - cur > 20) return null;
+                return { i: 0, frac: 0, dep, arr, N, waiting: true };
             }
-            if (now > dep[N - 1]) return null;
+            if (cur > arr[N - 1] + D) return null;
             for (let i = 0; i < N - 1; i++) {
-                const a = dep[i], b = arr[i + 1];
-                if (now >= a && now <= b) {
+                const a = dep[i] + D, b = arr[i + 1] + D;
+                if (cur >= a && cur <= b) {
                     const span = Math.max(0.5, b - a);
-                    return { i, frac: (now - a) / span, dep, arr, N };
+                    return { i, frac: (cur - a) / span, dep, arr, N };
                 }
             }
-            /* 站内停留（停车时段 [arr[i], dep[i]]，晚点演算后尤其常见）→ 位置钉在站 i，避免列车从图上消失 */
+            /* 站内停留（停车时段 [arr[i]+D, dep[i]+D]，晚点演算后尤其常见）→ 位置钉在站 i，避免列车从图上消失 */
             for (let i = 1; i < N; i++) {
-                if (now >= arr[i] && now <= dep[i]) return { i, frac: 0, dep, arr, N, dwell: true };
+                if (cur >= arr[i] + D && cur <= dep[i] + D) return { i, frac: 0, dep, arr, N, dwell: true };
             }
             return null;
         }
@@ -3416,7 +3424,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
         function trRenderBody(tr, tm, g) {
             const N = tr.N, jas = tm.s_jas, dep = g.dep, arr = g.arr;
             const _dly = (tr.dly && tr.dly.delay_min) || 0; /* 晚点列车：预计时刻 = 表定 + 延迟（与主站一致） */
-            const M2 = (function () { let m = rvNowMin(); if (m < dep[0]) m += 1440; return m; })();
+            const M2 = (function () { let m = rvNowMin(); if (dep[0] - m > 720) m += 1440; return m; })(); /* 与 rvTripGeo 同坐标系：表定发车与当前差 >12h → 当前为次日凌晨 */
             const running = g.i < N - 1 && M2 <= arr[g.i + 1] + _dly + 1e-6;
             const ni = Math.min(g.i + 1, N - 1);
             const col = stLineColorOf(tr.main).bg;
@@ -3460,7 +3468,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             const tr = trState.tr, tm = trState.tm, g = trState.tr && trState.tr.g;
             if (!tr || !tm || !g || trState.seq !== tr.seq) return;
             const N = tr.N, jas = tm.s_jas, dep = g.dep, arr = g.arr;
-            const M2 = (function () { let m = rvNowMin(); if (m < dep[0]) m += 1440; return m; })();
+            const M2 = (function () { let m = rvNowMin(); if (dep[0] - m > 720) m += 1440; return m; })(); /* 与 rvTripGeo 同坐标系：表定发车与当前差 >12h → 当前为次日凌晨 */
             const _dly = (tr.dly && tr.dly.delay_min) || 0; /* 晚点后实际到站 = 表定 + 延迟 */
             const running = g.i < N - 1 && M2 <= arr[g.i + 1] + _dly + 1e-6;
             const ni = Math.min(g.i + 1, N - 1);

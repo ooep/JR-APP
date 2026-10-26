@@ -2951,6 +2951,8 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             if (rvLineMainName() === '参宮線') { const v = rvAtlas.line['太多線']; if (v !== undefined) return v; }
             /* 鳴門線：远端 atlas 误配黄色塗装車(cell228)，实为 JR四国キハ40・47系気動車——与高徳線同型同涂装 */
             if (rvLineMainName() === '鳴門線') { const v = rvAtlas.line['高徳線']; if (v !== undefined) return v; }
+            /* 横須賀線：远端 atlas 误配山手線 E235 绿车(cell108)，实为 E217/E235系1000番台 横須賀色——与総武本線同型同涂装(cell147) */
+            if (rvLineMainName() === '横須賀線') { const v = rvAtlas.line['総武本線']; if (v !== undefined) return v; }
             /* 山手線：抽屉内全统一 E235 绿头（共享段直通的宇都宮線/東海道線车也显示山手线涂装，视觉一致）——
                必须在 allSkip→fallback 分支之前，否则 lines=[東海道本線,東北本線,山手線] 的车先命中 E217 兜底 */
             if (rvLineMainName() === '山手線' && rvAtlas.line['山手線'] !== undefined) return rvAtlas.line['山手線'];

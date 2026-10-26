@@ -593,6 +593,11 @@
         .rv-train .rv-tarw.up { border-bottom: 9px solid var(--c, #f59e0b); }
         .rv-train .rv-tarw.dn { border-top: 9px solid var(--c, #f59e0b); }
         .rv-train .rv-ticon { width: 30px; height: 36px; background-repeat: no-repeat; }
+        /* 实时晚点徽标（数据源 jr-delay.suki.ing/delays.json）：红 = ≥4 分，橙 = ≤3 分轻微晚点 */
+        .rv-train .rv-dly { position: absolute; top: -9px; right: -13px; min-width: 20px; height: 15px; padding: 0 3px; background: #d32f2f; color: #fff; font-size: 10px; font-weight: 700; line-height: 15px; text-align: center; border-radius: 8px; z-index: 6; box-shadow: 0 1px 3px rgba(0,0,0,.35); pointer-events: none; }
+        .rv-train .rv-dly.minor { background: #f57c00; }
+        .rv-train.has-dly { filter: drop-shadow(0 0 3px rgba(211,47,47,.55)); }
+        html.dark .rv-train .rv-dly { box-shadow: 0 1px 4px rgba(0,0,0,.6); }
         html.dark .rv-tcol::before { color: rgba(148,163,184,.55); }
         html.dark .rv-tcol.up::after, html.dark .rv-tcol.dn::after { background: rgba(148,163,184,.12); }
 
@@ -612,6 +617,10 @@
         .tr-badge .tr-tx { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .tr-badge .tr-bt { display: inline-block; position: relative; z-index: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
         .tr-badge .tr-bs { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: .46em; font-weight: 600; letter-spacing: .05em; line-height: 1.35; opacity: .78; white-space: nowrap; }
+        /* 详情抽屉晚点徽章（与线路图 .rv-dly 同视觉） */
+        .tr-badge .tr-dly { position: relative; flex: none; align-self: center; min-width: 20px; height: 15px; padding: 0 4px; background: #d32f2f; color: #fff; font-size: 10px; font-weight: 700; line-height: 15px; text-align: center; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.35); margin-left: 2px; }
+        .tr-badge .tr-dly.minor { background: #f57c00; }
+        html.dark .tr-badge .tr-dly { box-shadow: 0 1px 4px rgba(0,0,0,.6); }
         /* 行先表示機：仿実車行先表示器（愛称徽章+行先大字+次は+車両形式条）——数据缺哪块就隐藏哪块。
            浅色模式白底深字；暗色模式黑底白字（仿真表示器） */
         .tr-sign { flex: none; background: linear-gradient(180deg, #ffffff, #f1f3f6); border-radius: 10px; padding: 8px 12px 0; box-shadow: inset 0 0 0 1px #e2e5ea, 0 2px 8px rgba(15,23,42,.08); overflow: hidden; animation: trSignIn .42s cubic-bezier(.2,.8,.2,1) .32s backwards; }
@@ -2849,6 +2858,95 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
         const RV_ATLAS_VER = 10; /* 与远端 train_icons_atlas 更新同步；图集重新生成后 bump 以绕缓存（PNG+JSON 必须同版本） */
         const RV_ATLAS = { url: RV_DATA + 'train_icons_atlas.json?v=' + RV_ATLAS_VER, png: RV_DATA + 'train_icons_atlas.png?v=' + RV_ATLAS_VER };
         const RV_TOKKYU_URL = RV_DATA + 'tokkyu.json';
+        /* ---- 实时晚点数据（主站 delays.json，CORS 全开）---- */
+        const RV_DELAYS_URL = 'https://jr-delay.suki.ing/delays.json';
+        const RV_DELAYS_TTL = 60000;   /* 数据轮询间隔（晚点看板 5 分钟更新，60s 足够） */
+        const RV_DLY_TOL = 3;          /* 表定时刻对齐容差（分钟） */
+        let rvDelaysRaw = null, rvDelaysAt = 0, rvDelaysTimer = null;
+        /* 预构建匹配索引：由 raw 转成 {number, delay_min, line, stops[], dep0, arr0} 数组 */
+        let rvDlyIdx = null;
+        function rvDlyMin(hhmm) { /* "20:06" -> 分钟数 1206 */
+            if (!hhmm) return null;
+            const m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm));
+            return m ? (+m[1]) * 60 + (+m[2]) : null;
+        }
+        function rvDlySubseq(a, b) { /* a 是否 b 的（顺序）子序列：BCD ⊂ ABCD */
+            let i = 0;
+            for (const x of b) if (i < a.length && a[i] === x) i++;
+            return i === a.length;
+        }
+        function rvDlyBuild() {
+            rvDlyIdx = [];
+            if (!rvDelaysRaw || !Array.isArray(rvDelaysRaw.trains)) return;
+            for (const t of rvDelaysRaw.trains) {
+                const sch = t.scheduled || {};
+                const stops = Array.isArray(sch.stops) ? sch.stops.map(rvNormName) : [];
+                if (!stops.length || !t.delay_min) continue;
+                rvDlyIdx.push({
+                    op: t.op, line: t.line || '', number: t.number || '',
+                    delay_min: t.delay_min || 0,
+                    stops: stops,
+                    dep0: rvDlyMin(sch.dep), arr0: rvDlyMin(sch.arr),
+                    origin: stops[0], dest: stops[stops.length - 1],
+                    fromN: t.from ? rvNormName(t.from) : null,
+                    railway: t.railway || ''
+                });
+            }
+        }
+        async function rvDelaysLoad() {
+            if (rvDelaysAt && Date.now() - rvDelaysAt < RV_DELAYS_TTL) return;
+            try {
+                const r = await fetch(RV_DELAYS_URL, { cache: 'no-cache', signal: AbortSignal.timeout(20000) });
+                if (!r.ok) return;
+                rvDelaysRaw = await r.json();
+                rvDelaysAt = Date.now();
+                rvDlyBuild();
+            } catch (e) { /* 静默降级：拿不到晚点数据就不显示徽标，不影响列车渲染 */ }
+        }
+        /* 匹配一辆渲染中的列车：双向停站子序列 + 时刻/位置对齐。
+           哲学：抓取器停站（BCD）可以是时刻表停站（ABCD）的顺序子序列，
+           且表定时刻一致 → 视为同一班（直通/部分区段识别）。
+           - fwd（晚点停站 ⊆ tmap 站序）：用 delay 的始发/终到表定时刻对齐 tmap 内对应站（±RV_DLY_TOL）；
+           - rev（tmap 站序 ⊆ 晚点全程，如中央線快速 ⊂ 中央本線・篠ノ井線）：
+             delay 无中间站时刻，改以 from（当前运行位置站）与列车当前区间端点比对。 */
+        function rvDelayMatch(tm, g) {
+            if (!rvDlyIdx || !tm || !g) return null;
+            const jas = (tm.s_jas || []).map(rvNormName);
+            if (!jas.length) return null;
+            const best = [];
+            for (const d of rvDlyIdx) {
+                const fwd = rvDlySubseq(d.stops, jas);
+                const rev = rvDlySubseq(jas, d.stops);
+                if (!fwd && !rev) continue;
+                let aligned = false;
+                if (fwd) {
+                    const oi = jas.indexOf(d.origin);
+                    const di = jas.indexOf(d.dest);
+                    if (oi >= 0 && d.dep0 != null && g.dep && Math.abs(g.dep[oi] - d.dep0) <= RV_DLY_TOL) aligned = true;
+                    if (!aligned && di >= 0 && d.arr0 != null && g.arr && Math.abs(g.arr[di] - d.arr0) <= RV_DLY_TOL) aligned = true;
+                    /* 位置矛盾排除：delay 有当前位置站且不在本 tmap 站序 → 非本线车（跨系统同名站防串线） */
+                    if (aligned && d.fromN && !jas.includes(d.fromN)) aligned = false;
+                } else if (d.fromN) { /* rev：tmap ⊆ 晚点全程 —— 列车是本线内的部分区段，按当前位置站对齐 */
+                    const segA = jas[g.i], segB = jas[g.i + 1];
+                    if (d.fromN === segA || d.fromN === segB) aligned = true;
+                }
+                if (!aligned) continue;
+                best.push(d);
+            }
+            if (!best.length) return null;
+            /* 多候选取停站重叠最长者（子序列重合度最高 = 最可信） */
+            best.sort((a, b) => {
+                const oa = Math.max(0, a.stops.filter(s => jas.includes(s)).length);
+                const ob = Math.max(0, b.stops.filter(s => jas.includes(s)).length);
+                return ob - oa;
+            });
+            return best[0];
+        }
+        function rvDelaysStart() {
+            if (rvDelaysTimer) return;
+            rvDelaysLoad();
+            rvDelaysTimer = setInterval(rvDelaysLoad, RV_DELAYS_TTL);
+        }
         let rvTrainsTimer = null, rvAtlas = null, rvTokkyu = null, rvYMap = new Map(), rvTrainsSeq = 0;
         /* 山手环 30 站（normStop 归一化后形态；山手線抽屉只收本线列车=起终点均在此环上） */
         const YAMANOTE_RING = new Set(['東京','神田','秋葉原','御徒町','上野','鶯谷','日暮里','西日暮里','田端','駒込','巣鴨','大塚','池袋','目白','高田馬場','新大久保','新宿','代々木','原宿','渋谷','恵比寿','目黒','五反田','大崎','品川','高輪ゲートウェイ','田町','浜松町','新橋','有楽町']);
@@ -3081,7 +3179,17 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                 const st = rvIconStyleFor(trObj);
                 if (st) ic.style.cssText = st;
                 el.append(ar, ic);
-                el.title = (up ? '上り' : '下り') + ' ' + (it.tm.s_jas[it.g.i] || '') + ' → ' + (it.tm.s_jas[it.g.i + 1] || '') + ' (' + (it.t.i || '') + ')';
+                /* 实时晚点徽标：匹配主站 delays.json（停站子序列 + 时刻对齐），命中即叠加 */
+                const dly = rvDelayMatch(it.tm, it.g);
+                if (dly) {
+                    el.classList.add('has-dly');
+                    trObj.dly = dly;
+                    const bd = document.createElement('span');
+                    bd.className = 'rv-dly' + (dly.delay_min <= 3 ? ' minor' : '');
+                    bd.textContent = dly.delay_min + '分';
+                    el.appendChild(bd);
+                }
+                el.title = (up ? '上り' : '下り') + ' ' + (it.tm.s_jas[it.g.i] || '') + ' → ' + (it.tm.s_jas[it.g.i + 1] || '') + ' (' + (it.t.i || '') + ')' + (dly ? ' 遅れ' + dly.delay_min + '分' : '');
                 el.style.cursor = 'pointer';
                 el.addEventListener('click', () => trOpen(trObj, it.tm, el));
                 col.appendChild(el);
@@ -3121,6 +3229,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             }
             clearInterval(rvTrainsTimer);
             rvTrainsTimer = setInterval(rvTrainsRefresh, 10000);
+            rvDelaysStart();
             rvAtlasLoad().then(() => rvTrainsRefresh()).catch(() => rvTrainsRefresh());
             rvTokkyuLoad().then(() => rvTrainsRefresh()).catch(() => rvTrainsRefresh());
             if (TT_raw) { rvTrainsRefresh(); }
@@ -3412,6 +3521,13 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             target.innerHTML = '<span class="tr-btic" style="' + iconHtml + '"></span><span class="tr-tx"><span class="tr-bs"></span><span class="tr-bt"></span></span>';
             target.querySelector('.tr-bs').textContent = sub;
             target.querySelector('.tr-bt').textContent = title;
+            /* 晚点徽章：与线路图 .rv-dly 同步（tr.dly 由 rvTrainsRefresh 匹配 delays.json 注入） */
+            if (tr.dly && tr.dly.delay_min) {
+                const dly = document.createElement('span');
+                dly.className = 'tr-dly' + (tr.dly.delay_min <= 3 ? ' minor' : '');
+                dly.textContent = tr.dly.delay_min + '分';
+                target.appendChild(dly);
+            }
             slot.appendChild(target);
             trSignRender(tr, tr.g);
             view.hidden = false;

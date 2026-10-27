@@ -1316,9 +1316,10 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
 
 
         /* ============ 时刻表引擎 ============ */
-        /* 时刻表数据源：同源 .ttdata/ 优先（随仓库部署，快且稳定），jr-static 兜底。
+        /* 时刻表数据源：同源 ttdata/ 优先（随仓库部署，快且稳定），jr-static 兜底。
+           注意：目录名不能以「.」开头——GitHub Pages 不托管隐藏目录，会导致 404 全站 0 车。
            localhost 走本地快照；file: 协议走本地 8931 服务。 */
-        const TT_BASES = location.protocol === 'file:' ? ['http://localhost:8931/'] : (location.hostname === 'localhost' ? ['./.ttdata/'] : ['./.ttdata/', 'https://jr-static.suki.ing/data/']);
+        const TT_BASES = location.protocol === 'file:' ? ['http://localhost:8931/'] : (location.hostname === 'localhost' ? ['./ttdata/'] : ['./ttdata/', 'https://jr-static.suki.ing/data/']);
         async function ttFetch(file, ms) {
             let lastErr = null;
             for (let round = 0; round < 2; round++) {
@@ -2862,7 +2863,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
     
         /* ============ 线路图实时列车（主站 trains 对接，左列=上り，右列=下り） ============ */
         // 图集与主站默认图标模式一致（default 集）；tokkyu 特急爱称表同源
-        const RV_DATA = location.hostname === 'localhost' ? 'http://localhost:8932/.ttdata/' : 'https://jr-static.suki.ing/data/';
+        const RV_DATA = location.hostname === 'localhost' ? 'http://localhost:8932/ttdata/' : 'https://jr-static.suki.ing/data/';
         const RV_ATLAS_VER = 10; /* 与远端 train_icons_atlas 更新同步；图集重新生成后 bump 以绕缓存（PNG+JSON 必须同版本） */
         const RV_ATLAS = { url: RV_DATA + 'train_icons_atlas.json?v=' + RV_ATLAS_VER, png: RV_DATA + 'train_icons_atlas.png?v=' + RV_ATLAS_VER };
         const RV_TOKKYU_URL = RV_DATA + 'tokkyu.json';

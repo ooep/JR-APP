@@ -1346,19 +1346,17 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             const nowH = Math.floor(rvNowMin() / 60) % 24;
             const hs = [];
             for (let k = -3; k <= 3; k++) hs.push(((nowH + k) % 24 + 24) % 24);
-            try {
-                const parts = [];
-                for (const h of hs) {
-                    const p = await ttFetch('trains_' + dayName + '_h' + String(h).padStart(2, '0') + '.json', 90000);
-                    if (!p || !p.T) throw new Error('bad shard');
-                    parts.push(p.T);
-                }
+            /* 并发拉取 ±3 小时共 7 片，任一断连不影响其他片：成功片合并使用（鲁棒容错），
+               全部失败才回退完整文件（同源已删则走 jr-static 大文件慢速兜底） */
+            const rs = await Promise.allSettled(hs.map(h => ttFetch('trains_' + dayName + '_h' + String(h).padStart(2, '0') + '.json', 90000)));
+            const ok = [];
+            for (const r of rs) if (r.status === 'fulfilled' && r.value && r.value.T) ok.push(r.value.T);
+            if (ok.length) {
                 TT_hLoaded = nowH;
-                return { b: TT_FILES[dayBit], n: parts.reduce((a, b) => a + b.length, 0), T: parts.flat() };
-            } catch (e) {
-                TT_hLoaded = null;   // 回退完整文件：不按小时缓存
-                return await ttFetch(TT_FILES[dayBit], 90000);
+                return { b: TT_FILES[dayBit], n: ok.reduce((a, b) => a + b.length, 0), T: ok.flat() };
             }
+            TT_hLoaded = null;   // 回退完整文件：不按小时缓存
+            return await ttFetch(TT_FILES[dayBit], 90000);
         }
 
         function ttParseTrip(t) {

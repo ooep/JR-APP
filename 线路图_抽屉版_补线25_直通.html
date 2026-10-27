@@ -1336,7 +1336,30 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             throw lastErr || new Error('all sources failed: ' + file);
         }
         const TT_FILES = { 1: 'trains_wd.json', 2: 'trains_sa.json', 4: 'trains_su.json' };
-        let TT_tmaps = null, TT_raw = null, TT_rawCache = {}, TT_dayBit = 1, TT_loading = null, TT_loadingDay = 0;
+        /* 大文件分片：GitHub Pages 同源 13MB 单文件传输慢且易断（实测 60s 只下 0.5MB），
+           改为按发车小时拆分 24 片（每片 ≤1MB），页面只加载「当前 JST 小时 ±3」共 7 片，
+           跨小时自动重载；任一片失败则回退完整文件。 */
+        const TT_HNAME = { 1: 'wd', 2: 'sa', 4: 'su' };
+        let TT_tmaps = null, TT_raw = null, TT_rawCache = {}, TT_dayBit = 1, TT_loading = null, TT_loadingDay = 0, TT_hLoaded = null;
+        async function ttLoadShards(dayBit) {
+            const dayName = TT_HNAME[dayBit] || 'wd';
+            const nowH = Math.floor(rvNowMin() / 60) % 24;
+            const hs = [];
+            for (let k = -3; k <= 3; k++) hs.push(((nowH + k) % 24 + 24) % 24);
+            try {
+                const parts = [];
+                for (const h of hs) {
+                    const p = await ttFetch('trains_' + dayName + '_h' + String(h).padStart(2, '0') + '.json', 90000);
+                    if (!p || !p.T) throw new Error('bad shard');
+                    parts.push(p.T);
+                }
+                TT_hLoaded = nowH;
+                return { b: TT_FILES[dayBit], n: parts.reduce((a, b) => a + b.length, 0), T: parts.flat() };
+            } catch (e) {
+                TT_hLoaded = null;   // 回退完整文件：不按小时缓存
+                return await ttFetch(TT_FILES[dayBit], 90000);
+            }
+        }
 
         function ttParseTrip(t) {
             const tm = TT_tmaps[t.t];
@@ -1383,7 +1406,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                             }
                         })();
                     }
-                    TT_raw = await ttFetch(TT_FILES[dayBit], 90000);
+                    TT_raw = await ttLoadShards(dayBit);
                     TT_rawCache[dayBit] = TT_raw;
                     TT_dayBit = dayBit;
                 } finally { TT_loading = null; }
@@ -3136,6 +3159,11 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
         }
         function rvTrainsRefresh() {
             if (!rvLineObj || !rvYMap.size) return;
+            /* 分片窗口滚动：当前 JST 小时超出已加载窗口（TT_hLoaded）时异步重载时刻表，
+               旧窗口数据保持渲染到新表就绪，避免跨小时列车消失/闪现 */
+            if (TT_raw && TT_hLoaded !== null && Math.floor(rvNowMin() / 60) % 24 !== TT_hLoaded) {
+                ttLoad(rvDayBit()).catch(() => {});
+            }
             if (!rvYMapValid()) {
                 const route = document.querySelector('.rv-route:not(.rv-detached)');
                 if (route) { rvYMap = rvBuildYMap(route); if (!rvYMapValid()) return; }

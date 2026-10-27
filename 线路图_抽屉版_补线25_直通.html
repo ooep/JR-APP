@@ -1316,7 +1316,24 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
 
 
         /* ============ 时刻表引擎 ============ */
-        const TT_DATA_BASE = location.protocol === 'file:' ? 'http://localhost:8931/' : (location.hostname === 'localhost' ? './.ttdata/' : 'https://jr-static.suki.ing/data/');
+        /* 时刻表数据源：同源 .ttdata/ 优先（随仓库部署，快且稳定），jr-static 兜底。
+           localhost 走本地快照；file: 协议走本地 8931 服务。 */
+        const TT_BASES = location.protocol === 'file:' ? ['http://localhost:8931/'] : (location.hostname === 'localhost' ? ['./.ttdata/'] : ['./.ttdata/', 'https://jr-static.suki.ing/data/']);
+        async function ttFetch(file, ms) {
+            let lastErr = null;
+            for (let round = 0; round < 2; round++) {
+                for (const base of TT_BASES) {
+                    try {
+                        const c = new AbortController(); const to = setTimeout(() => c.abort(), ms);
+                        const r = await fetch(base + file, { signal: c.signal });
+                        clearTimeout(to);
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return await r.json();
+                    } catch (e) { lastErr = e; }
+                }
+            }
+            throw lastErr || new Error('all sources failed: ' + file);
+        }
         const TT_FILES = { 1: 'trains_wd.json', 2: 'trains_sa.json', 4: 'trains_su.json' };
         let TT_tmaps = null, TT_raw = null, TT_rawCache = {}, TT_dayBit = 1, TT_loading = null, TT_loadingDay = 0;
 
@@ -1347,11 +1364,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             TT_loading = (async () => {
                 try {
                     if (!TT_tmaps) {
-                        const ctrl = new AbortController();
-                        const to = setTimeout(() => ctrl.abort(), 60000);
-                        const r = await fetch(TT_DATA_BASE + 'tmaps.json', {signal: ctrl.signal});
-                        clearTimeout(to);
-                        TT_tmaps = await r.json();
+                        TT_tmaps = await ttFetch('tmaps.json', 60000);
                         /* 迷你新干线补标签：源数据(lines_index.json)未收录秋田/山形新干线，
                            这里按物理走行区间(车站序列)给真实こまち/つばさ车次补上线路标签，
                            使其能在对应抽屉显示实时列车。基于车站名判定，对主站时刻表刷新
@@ -1369,13 +1382,8 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                             }
                         })();
                     }
-                    const ctrl = new AbortController();
-                    const to = setTimeout(() => ctrl.abort(), 90000);
-                    const r = await fetch(TT_DATA_BASE + TT_FILES[dayBit], {signal: ctrl.signal});
-                    clearTimeout(to);
-                    const raw = await r.json();
-                    TT_raw = raw;
-                    TT_rawCache[dayBit] = raw;
+                    TT_raw = await ttFetch(TT_FILES[dayBit], 90000);
+                    TT_rawCache[dayBit] = TT_raw;
                     TT_dayBit = dayBit;
                 } finally { TT_loading = null; }
             })();

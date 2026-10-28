@@ -637,6 +637,45 @@
         html.dark .tr-sign-dest, html.dark .tr-sign-next .st { color: #fff; }
         html.dark .tr-sign-next .lb { color: #ffd83d; }
         @media (prefers-reduced-motion: reduce) { .tr-sign { animation: none; } }
+        /* 車内コンフォート（jr-comfortable comfort.json）：混雑度・号車別・温度・バリアフリー。
+           数据缺项就整块隐藏（hidden），有数据才占位——不为了排版造数 */
+        .tr-cfo { flex: none; background: #f7f8fa; border-radius: 10px; padding: 8px 11px 9px; box-shadow: inset 0 0 0 1px #e6e9ee; animation: trSignIn .42s cubic-bezier(.2,.8,.2,1) .46s backwards; }
+        .tr-cfo-hd { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+        .tr-cfo-hd .ti { font-size: .64rem; font-weight: 800; letter-spacing: .12em; color: #64748b; }
+        .tr-cfo-hd .src { margin-left: auto; font-size: .62rem; font-weight: 600; color: #a3adba; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tr-cfo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+        .tr-cfo-row + .tr-cfo-row { margin-top: 6px; }
+        .tr-cfo-row .cfo-lb { flex: none; font-size: .62rem; font-weight: 700; letter-spacing: .04em; color: #94a3b8; margin-right: 1px; }
+        .cfo-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2.5px 8px; border-radius: 9px; font-weight: 700; font-size: .7rem; line-height: 1.45; white-space: nowrap; }
+        .cfo-chip.c1 { background: rgba(16,185,129,.14); color: #047857; }
+        .cfo-chip.c2 { background: rgba(245,158,11,.17); color: #b45309; }
+        .cfo-chip.c3 { background: rgba(244,63,94,.14); color: #dc2626; }
+        .cfo-chip.g { background: rgba(59,130,246,.13); color: #1d4ed8; }
+        .cfo-chip.t { background: rgba(100,116,139,.13); color: #475569; }
+        .cfo-chip.a { background: rgba(14,165,233,.13); color: #0369a1; }
+        .cfo-chip.avg { background: rgba(100,116,139,.10); color: #6b7a90; }
+        .cfo-cars { display: inline-flex; align-items: flex-end; gap: 2px; height: 17px; padding: 0 3px; }
+        .cfo-cars i { display: inline-block; width: 4px; min-height: 2px; border-radius: 1px; background: #cbd5e1; }
+        .cfo-cars i.b1 { background: #10b981; }
+        .cfo-cars i.b2 { background: #f59e0b; }
+        .cfo-cars i.b3 { background: #f43f5e; }
+        .cfo-cars-lb { font-size: .6rem; font-weight: 700; color: #94a3b8; letter-spacing: .02em; }
+        html.dark .tr-cfo { background: #12161c; box-shadow: inset 0 0 0 1px rgba(255,255,255,.09); }
+        html.dark .tr-cfo-hd .ti { color: #94a3b8; }
+        html.dark .tr-cfo-hd .src { color: #64748b; }
+        html.dark .tr-cfo-row .cfo-lb { color: #6b7a90; }
+        html.dark .cfo-chip.c1 { background: rgba(52,211,153,.16); color: #34d399; }
+        html.dark .cfo-chip.c2 { background: rgba(251,191,36,.18); color: #fbbf24; }
+        html.dark .cfo-chip.c3 { background: rgba(251,113,133,.18); color: #fb7185; }
+        html.dark .cfo-chip.g { background: rgba(96,165,250,.16); color: #60a5fa; }
+        html.dark .cfo-chip.t { background: rgba(148,163,184,.18); color: #94a3b8; }
+        html.dark .cfo-chip.a { background: rgba(56,189,248,.16); color: #38bdf8; }
+        html.dark .cfo-chip.avg { background: rgba(148,163,184,.14); color: #94a3b8; }
+        html.dark .cfo-cars i { background: #334155; }
+        html.dark .cfo-cars i.b1 { background: #34d399; }
+        html.dark .cfo-cars i.b2 { background: #fbbf24; }
+        html.dark .cfo-cars i.b3 { background: #fb7185; }
+        html.dark .cfo-cars-lb { color: #6b7a90; }
         #tr-close { flex: none; margin-left: auto; border: 0; background: #f3f4f6; color: #6b7280; width: 32px; height: 32px; border-radius: 50%; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
         #tr-close:hover { background: #e5e7eb; }
         #tr-close:active { transform: scale(.9); }
@@ -823,6 +862,7 @@
                     <button type="button" id="tr-close" aria-label="閉じる">✕</button>
                 </div>
                 <div class="tr-sign" id="tr-sign" hidden></div>
+                <div class="tr-cfo" id="tr-cfo" hidden></div>
             </div>
             <div class="tr-body" id="tr-body"></div>
         </div>
@@ -2981,6 +3021,168 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             rvDelaysLoad();
             rvDelaysTimer = setInterval(rvDelaysLoad, RV_DELAYS_TTL);
         }
+        /* ---- 車内コンフォート（ooep/jr-comfortable：混雑度・号車別・車内温度・グリーン車・バリアフリー） ----
+           与主站 jr.suki.ing 读同一份 comfort.json。烘焙端已用本页同一套 tmaps 做过
+           站序 + 时刻双重校验，所以浏览器侧不再猜：只认 (tmaps key, 始発発車分, 始発駅)
+           三项全等且当日当班次唯一命中的记录，命中 0 件或多件一律不显示（宁漏不误报）。
+           日型：comfort.json 是「今天」的实况，故还要求该趟车今日确实运行（T.r 位掩码），
+           这样即使抽屉停在「平日」表上，周六/休日的实时数据也只贴到当天真开的班次。 */
+        const RV_COMFORT_URLS = [
+            'https://cdn.jsdelivr.net/gh/ooep/jr-comfortable@main/data/comfort.json',
+            'https://ooep.github.io/jr-comfortable/data/comfort.json',
+            'https://raw.githubusercontent.com/ooep/jr-comfortable/main/data/comfort.json'
+        ];
+        const RV_CFO_TTL = 5 * 60000, RV_CFO_MAX_AGE = 45 * 60000;
+        const RV_CFO_OP = { 'JR-East': 'JR東日本', 'JR-West': 'JR西日本', '東京メトロ': '東京メトロ', '東京都交通局': '都営地下鉄', 'OsakaMetro': '大阪メトロ' };
+        const RV_CFO_FAC = { wheelchair: '車いす', stroller: 'ベビーカー', wifi: 'Wi-Fi', restroom: 'トイレ', luggage: '荷物置き' };
+        let rvCfoIdx = null, rvCfoGen = 0, rvCfoDate = '', rvCfoAt = 0, rvCfoTimer = null, rvCfoBusy = false;
+        /* 日本の祝日（2024-2030 固定日+春分秋分，振替/国民の休日按规则推导）——与主站同源。
+           没有它就无法区分「月曜但休日ダイヤ」，那种日子宁可整块不显示 */
+        const RV_HOLIDAY_BASE = {
+            2024: [[1,1],[1,8],[2,12],[2,23],[3,20],[4,29],[5,3],[5,4],[5,5],[5,6],[7,15],[8,11],[9,16],[9,23],[10,14],[11,4],[11,23]],
+            2025: [[1,1],[1,13],[2,11],[2,23],[3,20],[4,29],[5,3],[5,4],[5,5],[5,6],[7,21],[8,11],[9,15],[9,23],[10,13],[11,3],[11,24]],
+            2026: [[1,1],[1,12],[2,11],[2,23],[3,20],[4,29],[5,3],[5,4],[5,5],[5,6],[7,20],[8,11],[9,21],[9,22],[9,23],[10,12],[11,3],[11,23]],
+            2027: [[1,1],[1,11],[2,11],[2,23],[3,22],[4,29],[5,3],[5,4],[5,5],[7,19],[8,11],[9,20],[9,23],[10,11],[11,3],[11,23]],
+            2028: [[1,1],[1,10],[2,11],[2,23],[3,20],[4,29],[5,3],[5,4],[5,5],[7,17],[8,11],[9,18],[9,22],[10,9],[11,3],[11,23]],
+            2029: [[1,1],[1,8],[2,11],[2,12],[2,23],[3,20],[4,29],[5,3],[5,4],[5,5],[7,16],[8,11],[9,17],[9,23],[10,8],[11,3],[11,23]],
+            2030: [[1,1],[1,14],[2,11],[2,23],[3,21],[4,29],[5,3],[5,4],[5,5],[5,6],[7,15],[8,11],[9,16],[9,23],[10,14],[11,4],[11,23]]
+        };
+        const RV_HOLIDAYS = (function () {
+            const keyOf = d => d.toISOString().slice(0, 10);
+            const set = new Set();
+            for (const y in RV_HOLIDAY_BASE) {
+                for (const [m, d] of RV_HOLIDAY_BASE[y]) set.add(keyOf(new Date(Date.UTC(y, m - 1, d))));
+                for (const [m, d] of RV_HOLIDAY_BASE[y]) {   // 振替休日：日曜の祝日は次の非祝日平日へ
+                    const dt = new Date(Date.UTC(y, m - 1, d));
+                    if (dt.getUTCDay() !== 0) continue;
+                    const nx = new Date(dt);
+                    do { nx.setUTCDate(nx.getUTCDate() + 1); } while (set.has(keyOf(nx)) || nx.getUTCDay() === 0);
+                    set.add(keyOf(nx));
+                }
+                for (let t = 0; t < 370; t++) {              // 国民の休日：二つの祝日に挟まれた平日
+                    const dt = new Date(Date.UTC(y, 0, 1 + t)), wd = dt.getUTCDay();
+                    if (wd < 1 || wd > 5) continue;
+                    if (set.has(keyOf(new Date(dt.getTime() - 864e5))) && set.has(keyOf(new Date(dt.getTime() + 864e5))) && !set.has(keyOf(dt))) set.add(keyOf(dt));
+                }
+            }
+            return set;
+        })();
+        function rvJstToday() { return new Date(Date.now() + 9 * 3600 * 1000); }
+        function rvTodayKey() { return rvJstToday().toISOString().slice(0, 10); }
+        function rvTodayBit() { const d = rvJstToday(); if (RV_HOLIDAYS.has(rvTodayKey())) return 4; const w = d.getUTCDay(); return w === 0 ? 4 : (w === 6 ? 2 : 1); }
+        function rvCfoLive() { return !!(rvCfoIdx && rvCfoGen && rvTodayKey() === rvCfoDate && Date.now() - rvCfoGen < RV_CFO_MAX_AGE); }
+        function rvCfoBuild(raw) {
+            const idx = new Map();
+            const list = raw && Array.isArray(raw.trains) ? raw.trains : [];
+            for (const t of list) {
+                const key = t && t.suki && t.suki[0] && t.suki[0].key != null ? String(t.suki[0].key) : null;
+                const sch = t && t.scheduled;
+                const dep = sch ? rvDlyMin(sch.dep) : null;
+                if (key === null || dep === null || !t.comfort) continue;
+                let a = idx.get(key);
+                if (!a) idx.set(key, a = []);
+                a.push({
+                    dep: dep, origin: sch.origin ? rvNormName(sch.origin) : '', cfo: t.comfort,
+                    op: RV_CFO_OP[t.op] || t.op || '', line: t.line || '', number: t.number || '', cars: t.cars || null
+                });
+            }
+            rvCfoIdx = idx;
+        }
+        /* 三重一致 + 今日确实运行 + 唯一命中 → 那趟车；任何一条不成立返回 null。
+           先查索引再判时效：37k 趟车里绝大多数没有 key，别为它们算日期 */
+        function rvCfoMatch(tkey, dep0, originJa, rBit) {
+            if (!rvCfoIdx || !rBit) return null;
+            const a = rvCfoIdx.get(String(tkey));
+            if (!a) return null;
+            if (!rvCfoLive() || !(rBit & rvTodayBit())) return null;
+            const o = originJa ? rvNormName(originJa) : '';
+            const hits = a.filter(e => e.dep === dep0 && (!o || !e.origin || e.origin === o));
+            return hits.length === 1 ? hits[0] : null;
+        }
+        async function rvCfoLoad() {
+            if (rvCfoBusy || (rvCfoAt && Date.now() - rvCfoAt < RV_CFO_TTL)) return;
+            rvCfoBusy = true;
+            try {
+                let best = null, bestGen = 0;
+                for (const url of RV_COMFORT_URLS) {
+                    try {
+                        const r = await fetch(url + '?t=' + Date.now(), { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+                        if (!r.ok) continue;
+                        const d = await r.json();
+                        if (!d || d.version !== 1 || !Array.isArray(d.trains)) continue;
+                        const g = Date.parse(d.generated_at);
+                        if (!(g > bestGen)) continue;
+                        best = d; bestGen = g;
+                        if (Date.now() - g <= RV_CFO_MAX_AGE) break;  /* 新鲜即止，源陈旧再试备用 */
+                    } catch (e) { /* 单源失败换下一个源 */ }
+                }
+                if (best) { rvCfoGen = bestGen; rvCfoDate = best.date || ''; rvCfoBuild(best); }
+                rvCfoAt = Date.now();
+            } finally { rvCfoBusy = false; }
+        }
+        function rvCfoStart() {
+            if (rvCfoTimer) return;
+            rvCfoLoad();
+            rvCfoTimer = setInterval(() => { rvCfoLoad().then(rvCfoSyncOpen); }, RV_CFO_TTL);
+        }
+        function rvCfoLbl(cls) { return cls >= 3 ? '混雑' : (cls === 2 ? 'やや混雑' : '空いている'); }
+        function rvCfoHtml(e) {
+            const c = e.cfo || {}, cg = c.congestion || {};
+            let row = '', carsRow = '', facRow = '';
+            if (cg.rate != null) {
+                const cls = Math.max(1, Math.min(3, +cg.class || 1));
+                row += '<span class="cfo-chip c' + cls + '">' + rvCfoLbl(cls) + ' ' + Math.round(+cg.rate) + '%</span>';
+            } else if (cg.level != null) {
+                const lv = Math.max(1, Math.min(6, +cg.level));
+                const cls = Math.max(1, Math.min(3, +cg.class || (lv <= 2 ? 1 : (lv <= 4 ? 2 : 3))));
+                row += '<span class="cfo-chip c' + cls + '">' + rvCfoLbl(cls) + ' Lv.' + lv + '</span>';
+                if (cg.est) row += '<span class="cfo-chip avg">5日平均</span>';
+            }
+            if (c.green_car && c.green_car.rate != null) {
+                row += '<span class="cfo-chip g">グリーン車 ' + Math.round(+c.green_car.rate) + '%</span>';
+            } else if (c.green_car_present) row += '<span class="cfo-chip g">グリーン車あり</span>';
+            const tc = Array.isArray(c.temperature_cars) ? c.temperature_cars : [];
+            let mn = null, mx = null;
+            for (const v of tc) { if (v == null) continue; if (mn === null || v < mn) mn = v; if (mx === null || v > mx) mx = v; }
+            if (mn !== null) row += '<span class="cfo-chip t">車内 ' + (Math.round(mn * 10) / 10) + (mx !== mn ? '〜' + (Math.round(mx * 10) / 10) : '') + '℃</span>';
+            /* 両数只是编成情报，没有混雑/温度读数时单独一块没有意义 → 有实测才陪着显示 */
+            if (row && e.cars != null && Number.isFinite(+e.cars)) row += '<span class="cfo-chip t">' + (+e.cars) + '両</span>';
+            const cc = Array.isArray(c.congestion_cars) ? c.congestion_cars : [];
+            if (cc.length > 1) {
+                let mxv = 1;
+                for (const v of cc) if (v != null && v > mxv) mxv = v;
+                let bars = '';
+                for (let i = 0; i < cc.length; i++) {
+                    const v = cc[i];
+                    const k = (v == null) ? 0 : (v <= 50 ? 1 : (v <= 100 ? 2 : 3));
+                    const bh = (v == null) ? 2 : Math.max(3, Math.round(3 + 14 * v / mxv));
+                    bars += '<i' + (k ? ' class="b' + k + '"' : '') + ' style="height:' + bh + 'px" title="' + (i + 1) + '号車' + (v == null ? ' 未集計' : ' ' + v + '%') + '"></i>';
+                }
+                carsRow = '<div class="tr-cfo-row"><span class="cfo-lb">号車別</span><span class="cfo-cars">' + bars + '</span><span class="cfo-cars-lb">1→' + cc.length + '号車</span></div>';
+            }
+            const fac = (Array.isArray(c.facilities) ? c.facilities : []).map(f => RV_CFO_FAC[f]).filter(Boolean);
+            if (fac.length) facRow = '<div class="tr-cfo-row"><span class="cfo-lb">バリアフリー</span><span class="cfo-chip a">' + fac.join('・') + '</span></div>';
+            if (!row && !carsRow && !facRow) return '';
+            const src = [e.op, e.number ? '列車番号 ' + e.number : '', rvCfoGen ? rvFmtHm(((rvCfoGen + 9 * 3600 * 1000) % 86400000) / 60000) + ' 時点' : ''].filter(Boolean).join(' · ');
+            return '<div class="tr-cfo-hd"><span class="ti">車内コンフォート</span><span class="src">' + rvEsc(src) + '</span></div>' +
+                (row ? '<div class="tr-cfo-row">' + row + '</div>' : '') + carsRow + facRow;
+        }
+        function rvCfoPaint(tr) {
+            const el = document.getElementById('tr-cfo');
+            if (!el) return;
+            const h = tr && tr.cfo && rvCfoLive() ? rvCfoHtml(tr.cfo) : '';
+            if (!h) { el.hidden = true; el.innerHTML = ''; return; }
+            el.innerHTML = h; el.hidden = false;
+        }
+        /* 数据刚刷新而抽屉正开着这趟车 → 重算一次，让新读数立刻出现 */
+        function rvCfoSyncOpen() {
+            const tr = trState.tr, tm = trState.tm, g = tr && tr.g;
+            if (!tr || !tm || !g || !trState.t) return;
+            const e = rvCfoMatch(trState.t.t, g.dep[0], (tm.s_jas || [])[0], tr.r);
+            if (e === tr.cfo) return;
+            tr.cfo = e;
+            rvCfoPaint(tr);
+        }
         let rvTrainsTimer = null, rvAtlas = null, rvTokkyu = null, rvYMap = new Map(), rvTrainsSeq = 0;
         /* 山手环 30 站（normStop 归一化后形态；山手線抽屉只收本线列车=起终点均在此环上） */
         const YAMANOTE_RING = new Set(['東京','神田','秋葉原','御徒町','上野','鶯谷','日暮里','西日暮里','田端','駒込','巣鴨','大塚','池袋','目白','高田馬場','新大久保','新宿','代々木','原宿','渋谷','恵比寿','目黒','五反田','大崎','品川','高輪ゲートウェイ','田町','浜松町','新橋','有楽町']);
@@ -3231,7 +3433,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                     if (gd) g2 = gd;
                     else continue;
                 }
-                if (g2) items.push({ t, tm, g: g2, dly });
+                if (g2) items.push({ t, tm, g: g2, dly, cfo: rvCfoMatch(t.t, tt.dep[0], (tm.s_jas || [])[0], t.r) });
             }
             items.sort((a, b) => a.g.i - b.g.i);
             let placed = 0;
@@ -3247,7 +3449,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                 el.style.top = y + 'px';
                 const ar = document.createElement('i'); ar.className = 'rv-tarw ' + (up ? 'up' : 'dn');
                 const ic = document.createElement('span'); ic.className = 'rv-ticon';
-                const trObj = { t: it.t.t, i: it.t.i || '', s: it.t.s, w: it.t.w || '', N: it.tm.s_jas.length, jas: it.tm.s_jas, jasN: it.tm.s_jas.map(rvNormName), lines: it.tm.lines || [], linesN: (it.tm.lines || []).map(rvNormName), nm: rvTripName(it.t.i || '', it.tm.s_jas.length, it.tm.s_jas, (it.tm.lines || []).map(rvNormName)), main: main, dispName: (rvLineObj && rvLineObj.name) || main, g: it.g, seq: 0 };
+                const trObj = { t: it.t.t, i: it.t.i || '', s: it.t.s, w: it.t.w || '', r: it.t.r, cfo: it.cfo || null, N: it.tm.s_jas.length, jas: it.tm.s_jas, jasN: it.tm.s_jas.map(rvNormName), lines: it.tm.lines || [], linesN: (it.tm.lines || []).map(rvNormName), nm: rvTripName(it.t.i || '', it.tm.s_jas.length, it.tm.s_jas, (it.tm.lines || []).map(rvNormName)), main: main, dispName: (rvLineObj && rvLineObj.name) || main, g: it.g, seq: 0 };
                 const st = rvIconStyleFor(trObj);
                 if (st) ic.style.cssText = st;
                 el.append(ar, ic);
@@ -3277,6 +3479,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
                 const _dly = (trState.tr && trState.tr.dly && trState.tr.dly.delay_min) || 0;
                 const g2 = rvTripGeo(trState.t, trState.tm, nowMin, _dly);
                 if (g2) { trState.tr.g = g2; trStatusTick(); }
+                rvCfoSyncOpen();
             }
         }
         async function rvTrainsInit() {
@@ -3304,6 +3507,7 @@ function lineNameEn(nm){if(LINE_EN_SP[nm])return LINE_EN_SP[nm];let s=nm;for(let
             clearInterval(rvTrainsTimer);
             rvTrainsTimer = setInterval(rvTrainsRefresh, 10000);
             rvDelaysStart();
+            rvCfoStart();
             rvAtlasLoad().then(() => rvTrainsRefresh()).catch(() => rvTrainsRefresh());
             rvTokkyuLoad().then(() => rvTrainsRefresh()).catch(() => rvTrainsRefresh());
             if (TT_raw) { rvTrainsRefresh(); }
@@ -3606,6 +3810,7 @@ const _TW_MAP_BUILTIN = {"v":3,"tk":{"SLばんえつ物語":["JR東日本","国�
             }
             slot.appendChild(target);
             trSignRender(tr, tr.g);
+            rvCfoPaint(tr);
             view.hidden = false;
             const sheetH = sheet.offsetHeight;
             const toRaw = target.getBoundingClientRect();

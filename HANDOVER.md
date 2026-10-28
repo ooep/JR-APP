@@ -33,6 +33,11 @@
   - `tokkyu.json`（特急爱称表）
   - `train_wiki_map.json`（车型索引：`tk` 特急爱称→车型、`ln` 线名→车型、`fb` 兜底列表）——**含已知错配，见 §5**
 - 车型百科正文：`https://ressha-wiki.suki.ing/data/<车型名>.json`
+- 車内コンフォート（**不经 RV_DATA**，独立三源回退，见 §15）：
+  `https://cdn.jsdelivr.net/gh/ooep/jr-comfortable@main/data/comfort.json` →
+  `https://ooep.github.io/jr-comfortable/data/comfort.json` →
+  `https://raw.githubusercontent.com/ooep/jr-comfortable/main/data/comfort.json`
+  （由 ooep/jr-comfortable 的 Action 每 9 分钟烘焙，字段 `suki[].key` 就是本页 `tmaps` 的 key）
 
 ## 4. 核心机制（改动前必读）
 
@@ -278,3 +283,28 @@ nohup python3 -m http.server 8932 --directory <主目录> &
 
 ### 14.4 图集 v7.3（同日第五轮：实物照片比对）
 56 个新指派图标逐一与必应实物照片并排比对（Wikipedia 被网络屏蔽，改走 cn.bing.com/images/async）。约 50 组吻合；2 处涂装级修复：肥薩おれんじ鉄道線→hsor100yg（白车身变体，原蓝色变体与实物不符）、広島電鉄6线→hrdn3900（现行3900形白+绿）。cell 548–549，?v=10 / RV_ATLAS_VER=10。
+
+## 15. 第十五轮：列车详情抽屉接入「車内コンフォート」（2026-10-28）
+
+用户指着抽屉顶部 `#tr-slot`（JR大阪環状線 · 区 #8212）要求：把新做的 comfort 接口
+（拥挤度 / 车内温度 / 无障碍）也引进这个区域，并做好 UI 适配。
+
+- **位置**：`.tr-head` 内、行先表示機 `#tr-sign` 下方新增 `#tr-cfo`（缺数据即 `hidden`，不占位）。
+- **数据**：`ooep/jr-comfortable` 的 `data/comfort.json`（JR東日本 cloudrail、JR西日本
+  trainmonitorinfo、東京メトロ/大阪メトロ/都営），与主站 jr.suki.ing 同一份、同一套锚点。
+- **匹配（rvCfoMatch）**：`(tmaps key, 始発発車分, 始発駅)` 三项全等 + `T.r` 位掩码含今日
+  + **唯一命中**才采信；命中 0 或多条一律不显示（宁漏不误报）。烘焙端已做过站序+时刻
+  双重校验，浏览器侧不再猜站序。
+- **日型**：新增 `RV_HOLIDAYS`（2024–2030 祝日 + 振替/国民の休日推导，与主站同源）算
+  `rvTodayBit()`。页面 daybar 默认停在「平日」，靠 `T.r` 判定「这趟车今天到底开不开」，
+  所以周六/休日/祝日也不会把别日的读数贴错车。
+- **UI**：`混雑 105%` / `空いている Lv.2`（メトロ只有 1–6 级，附 `5日平均` 角标）/
+  `グリーン車 51%` / `車内 20〜23℃` / `8両`；`号車別` 逐车厢柱状（数组序=车厢号升序，
+  烘焙端已按车号排好）；`バリアフリー` 车いす・ベビーカー・Wi-Fi・トイレ・荷物置き。
+  浅色/暗夜两套配色（`html.dark`），条幅 416px 宽下三行不溢出。
+- **时效**：5 分钟重拉、数据龄 >45 分钟或日期不符 → 整块清空；三源回退取 `generated_at`
+  最新者。`rvCfoStart()` 与 `rvDelaysStart()` 并列挂在 `rvTrainsInit`。
+- **实测**（localhost:8932，17:32 快照）：JR大阪環状線 38 趟在途车 8 趟有读数、銀座線
+  49 趟 11 趟有读数；离线复算 h14–h20 共 37471 趟 → 1417 条 comfort 记录命中，
+  **歧义 0、始発駅不符 0**。抽查 4188M：key 1279 = 天王寺 17:27 発環状線全周（39 站），
+  与抽屉「次は 野田」位置一致。
